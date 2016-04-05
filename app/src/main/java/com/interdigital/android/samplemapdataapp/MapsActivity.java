@@ -32,7 +32,8 @@ public class MapsActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.setIndoorEnabled(false);
-        markerData = new MarkerData();
+        markerData = new MarkerData(getApplicationContext());
+        googleMap.setInfoWindowAdapter(markerData);
         markerData.addMapMarkers(googleMap);
         markerData.pointCamera(googleMap);
         handler.sendEmptyMessageDelayed(MSG_SET_UPDATING, 10000L);
