@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.lang.annotation.Retention;
+import java.util.HashMap;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -27,34 +28,27 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
     public static final int MARKER_TYPE_UPDATING = 2;
     public static final int MARKER_TYPE_UPDATED = 3;
 
-    private static final String[] CARPARK_NAMES = {"Desborough", "DesboroughRd", "Dovecot",
-            "Easton_Street", "Eden", "Exchange_St", "Friars_Square", "Friarscroft", "Hampden_House",
-            "Swan", "Upper_Hundreds", "Walton_Street_MSCP"};
-    private static final LatLng[] CARPARK_LAT_LNGS = {
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
-            new LatLng(51.62821 + Math.random() / 40, -0.7502827 + Math.random() / 40),
+    private Item[] items = {
+            new CloudAmberItem("Desborough", 51.63254, -0.759396434),
+            new CloudAmberItem("Desborough Road", 51.6324043, -0.759920359),
+            new CloudAmberItem("Dovecot", 51.63209, -0.7551319),
+            new CloudAmberItem("Easton Street", 51.6288719, -0.746551454),
+            new CloudAmberItem("Eden", 51.62928, -0.7544288),
+            new DemoUnitItem("Exchange Street", 51.8160477, -0.810069442),
+            new DemoUnitItem("Friars Square", 51.81417, -0.813673258),
+            new DemoUnitItem("Friarscroft", 51.8149834, -0.8187729),
+            // We only need eight.
+//            new CloudAmberItem("Hampden House", 51.8173523, -0.8081491),
+//            new CloudAmberItem("Swan", 51.62821, -0.7502827),
+//            new CloudAmberItem("Upper Hundreds", 51.8174934, -0.809059262),
+//            new CloudAmberItem("Walton Street MSCP", 51.8122864, -0.809660852)
+            new AnprItem("ANPR1",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
+            new AnprItem("ANPR2",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
+            new AnprItem("ANPR3",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
+            new AnprItem("ANPR4",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20)
     };
-
-    private static final String[] ANPR_NAMES = {"ANPR 1", "ANPR 2", "ANPR 3", "ANPR 4"};
-    private static final LatLng[] ANPR_LAT_LNGS = {
-            new LatLng(51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
-            new LatLng(51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
-            new LatLng(51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
-            new LatLng(51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20)
-    };
-
-    private Marker[] carparkMarkers = new Marker[CARPARK_NAMES.length];
-    private Marker[] anprMarkers = new Marker[ANPR_NAMES.length];
+    // Needed for quick look-up.
+    private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Context context;
 
     public MarkerData(Context context) {
@@ -62,27 +56,14 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
     }
 
     public void addMapMarkers(GoogleMap googleMap) {
-        for (int i = 0; i < CARPARK_NAMES.length; i++) {
-            carparkMarkers[i] = googleMap.addMarker(
-                    new MarkerOptions()
-                            .position(CARPARK_LAT_LNGS[i])
-                            .anchor(0.5f, 0.5f)
-                            .title(CARPARK_NAMES[i])
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.carpark_icon)));
-        }
-
-        for (int i = 0; i < ANPR_NAMES.length; i++) {
-            anprMarkers[i] = googleMap.addMarker(
-                    new MarkerOptions()
-                            .position(ANPR_LAT_LNGS[i])
-                            .anchor(0.5f, 0.5f)
-                            .title(ANPR_NAMES[i])
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.anpr_icon)));
+        for (int i = 0; i < items.length; i++) {
+            items[i].addMarker(googleMap);
+            markerMap.put(items[i].getMarker(), items[i]);
         }
     }
 
     public void pointCamera(GoogleMap googleMap) {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CARPARK_LAT_LNGS[0], 12));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(items[0].getLatLng(), 12));
     }
 
     @Override
@@ -97,40 +78,15 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
             textView.setText("ANPR Camera");
             textView.setTextColor(0xffff0000);
         } else {
-            textView.setText("High Wycombe car park");
+            textView.setText(markerMap.get(marker).getTitle());
             textView.setTextColor(0xff0000ff);
         }
         return textView;
     }
 
     public void setMarkerIcons(@MarkerType int markerType) {
-        setMarkerIcons(markerType, carparkMarkers, R.drawable.carpark_icon,
-                R.drawable.carpark_updating_icon, R.drawable.carpark_icon, R.drawable.carpark_full_icon);
-        setMarkerIcons(markerType, anprMarkers, R.drawable.anpr_icon,
-                R.drawable.anpr_updating_icon, R.drawable.anpr_icon, 0);
-    }
-
-    private void setMarkerIcons(@MarkerType int markerType, Marker[] markers,
-                                int resourcePlain, int resourceUpdating, int resourceUpdated,
-                                int alternateResource) {
-        for (int i = 0; i < markers.length; i++) {
-            int resource;
-            switch (markerType) {
-                case MARKER_TYPE_UPDATING:
-                    resource = resourceUpdating;
-                    break;
-                case MARKER_TYPE_UPDATED:
-                    if (Math.random() < 0.3 && alternateResource != 0) {
-                        resource = alternateResource;
-                    } else {
-                        resource = resourceUpdated;
-                    } break;
-                case MARKER_TYPE_PLAIN:
-                default:
-                    resource = resourcePlain;
-                    break;
-            }
-            markers[i].setIcon(BitmapDescriptorFactory.fromResource(resource));
+        for (Item item : items) {
+            item.setMarkerIcon(markerType);
         }
     }
 }
