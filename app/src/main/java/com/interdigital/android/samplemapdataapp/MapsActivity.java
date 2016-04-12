@@ -14,6 +14,7 @@ public class MapsActivity extends FragmentActivity
 
     private static final int MSG_SET_UPDATING = 1;
     private static final int MSG_SET_UPDATED = 2;
+    private static final int MSG_SET_PLEASE_UPDATE = 3;
 
     private GoogleMap googleMap;
     private MarkerData markerData;
@@ -37,19 +38,15 @@ public class MapsActivity extends FragmentActivity
         googleMap.setInfoWindowAdapter(markerData);
         markerData.addMapMarkers(googleMap);
         markerData.pointCamera(googleMap);
-        handler.sendEmptyMessageDelayed(MSG_SET_UPDATING, 10000L);
+        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 5000L);
     }
 
     @Override
     public boolean handleMessage(Message message) {
         switch (message.what) {
-            case MSG_SET_UPDATING:
-                markerData.setMarkerIcons(MarkerData.MARKER_TYPE_UPDATING);
-                handler.sendEmptyMessageDelayed(MSG_SET_UPDATED, 5000L);
-                break;
-            case MSG_SET_UPDATED:
-                markerData.setMarkerIcons(MarkerData.MARKER_TYPE_UPDATED);
-                handler.sendEmptyMessageDelayed(MSG_SET_UPDATING, 10000L);
+            case MSG_SET_PLEASE_UPDATE:
+                markerData.updateAll();
+                handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
                 break;
         }
         return false;

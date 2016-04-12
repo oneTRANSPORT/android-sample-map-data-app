@@ -3,14 +3,10 @@ package com.interdigital.android.samplemapdataapp;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.lang.annotation.Retention;
 import java.util.HashMap;
@@ -42,10 +38,10 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
 //            new CloudAmberItem("Swan", 51.62821, -0.7502827),
 //            new CloudAmberItem("Upper Hundreds", 51.8174934, -0.809059262),
 //            new CloudAmberItem("Walton Street MSCP", 51.8122864, -0.809660852)
-            new AnprItem("ANPR1",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
-            new AnprItem("ANPR2",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
-            new AnprItem("ANPR3",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
-            new AnprItem("ANPR4",51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20)
+            new AnprItem("ANPR1", 51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
+            new AnprItem("ANPR2", 51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
+            new AnprItem("ANPR3", 51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20),
+            new AnprItem("ANPR4", 51.62821 + Math.random() / 20, -0.7502827 + Math.random() / 20)
     };
     // Needed for quick look-up.
     private HashMap<Marker, Item> markerMap = new HashMap<>();
@@ -73,20 +69,21 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoContents(Marker marker) {
-        TextView textView = new TextView(context);
-        if (marker.getTitle().contains("ANPR")) {
-            textView.setText("ANPR Camera");
-            textView.setTextColor(0xffff0000);
-        } else {
-            textView.setText(markerMap.get(marker).getTitle());
-            textView.setTextColor(0xff0000ff);
-        }
-        return textView;
+        return markerMap.get(marker).getInfoContents(context);
+//        TextView textView = new TextView(context);
+//        if (marker.getTitle().contains("ANPR")) {
+//            textView.setText("ANPR Camera");
+//            textView.setTextColor(0xffff0000);
+//        } else {
+//            textView.setText(markerMap.get(marker).getTitle());
+//            textView.setTextColor(0xff0000ff);
+//        }
+//        return textView;
     }
 
-    public void setMarkerIcons(@MarkerType int markerType) {
+    public void updateAll() {
         for (Item item : items) {
-            item.setMarkerIcon(markerType);
+            item.update();
         }
     }
 }

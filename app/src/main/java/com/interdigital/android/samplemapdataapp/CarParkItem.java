@@ -4,7 +4,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class CarParkItem extends Item {
+public abstract class CarParkItem extends Item {
 
     public CarParkItem(String title, double latitude, double longitude) {
         super(title, latitude, longitude);

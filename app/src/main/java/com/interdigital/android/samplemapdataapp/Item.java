@@ -1,5 +1,8 @@
 package com.interdigital.android.samplemapdataapp;
 
+import android.content.Context;
+import android.view.View;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -51,5 +54,9 @@ public abstract class Item {
     public abstract int getUpdatedResource();
 
     public abstract int getAlternateResource();
+
+    public abstract void update();
+
+    public abstract View getInfoContents(Context context);
 
 }

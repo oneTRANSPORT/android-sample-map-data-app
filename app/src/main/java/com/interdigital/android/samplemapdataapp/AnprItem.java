@@ -1,5 +1,9 @@
 package com.interdigital.android.samplemapdataapp;
 
+import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -54,5 +58,18 @@ public class AnprItem extends Item {
     @Override
     public int getAlternateResource() {
         return R.drawable.anpr_icon;
+    }
+
+    @Override
+    public View getInfoContents(Context context) {
+        TextView textView = new TextView(context);
+        textView.setText(getTitle());
+        textView.setTextColor(0xffff0000);
+        return textView;
+    }
+
+    @Override
+    public void update() {
+        // TODO
     }
 }
