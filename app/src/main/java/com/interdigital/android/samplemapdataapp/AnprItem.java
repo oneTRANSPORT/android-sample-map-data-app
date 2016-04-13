@@ -6,7 +6,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.HashMap;
 
 public class AnprItem extends Item {
 
@@ -14,15 +17,18 @@ public class AnprItem extends Item {
         super(title, latitude, longitude);
     }
 
-    public void addMarker(GoogleMap googleMap) {
+    @Override
+    public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
         setMarker(googleMap.addMarker(
                 new MarkerOptions()
                         .title(getTitle())
                         .position(getLatLng())
                         .anchor(0.5f, 0.5f)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.anpr_icon))));
+        markerMap.put(getMarker(), this);
     }
 
+    @Override
     public void setMarkerIcon(@MarkerData.MarkerType int markerType) {
         int resource;
         switch (markerType) {

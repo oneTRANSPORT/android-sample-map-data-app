@@ -1,32 +1,47 @@
 package com.interdigital.android.samplemapdataapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.interdigital.android.dougal.Types;
+import com.interdigital.android.dougal.exception.DougalException;
+import com.interdigital.android.dougal.resource.ApplicationEntity;
+import com.interdigital.android.dougal.resource.DougalCallback;
+import com.interdigital.android.dougal.resource.Resource;
+
+import java.util.UUID;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, Handler.Callback {
+        implements OnMapReadyCallback, Handler.Callback, DougalCallback {
 
+    private static final String TAG = "MapsActivity";
     private static final int MSG_SET_UPDATING = 1;
     private static final int MSG_SET_UPDATED = 2;
     private static final int MSG_SET_PLEASE_UPDATE = 3;
 
+    private Context context;
     private GoogleMap googleMap;
+    private SupportMapFragment mapFragment;
     private MarkerData markerData;
     private Handler handler = new Handler(this);
+    private String installationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         setContentView(R.layout.activity_maps);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        maybeCreateInstallationId();
+        maybeCreateAe();
     }
 
     @Override
@@ -52,11 +67,42 @@ public class MapsActivity extends FragmentActivity
         return false;
     }
 
+
+    @Override
+    public void getResponse(Resource resource, Throwable throwable) {
+        if (throwable != null) {
+            int statusCode = ((DougalException) throwable).getCode();
+            if (statusCode != Types.STATUS_CODE_CONFLICT) {
+                Log.e(TAG, "Error creating application entity, status code " + statusCode);
+            }
+        }
+        mapFragment.getMapAsync(this);
+    }
+
     @Override
     protected void onPause() {
         handler.removeMessages(MSG_SET_UPDATING);
         handler.removeMessages(MSG_SET_UPDATED);
         super.onPause();
     }
+
+    private void maybeCreateInstallationId() {
+        installationId = Storage.getInstallationId(context);
+        if (installationId == null) {
+            installationId = UUID.randomUUID().toString();
+            Storage.putInstallationId(context, installationId);
+        }
+    }
+
+    private void maybeCreateAe() {
+        CseDetails.aeId = "C-samplemapdataapp-" + installationId;
+        CseDetails.appName = "SampleMapDataApp-" + installationId;
+        String applicationId = "App-id-" + installationId;
+        ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
+                CseDetails.appName, applicationId);
+        applicationEntity.createAsync(CseDetails.METHOD + CseDetails.HOST, CseDetails.CSE_NAME,
+                CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+    }
+
 }
 

@@ -30,9 +30,9 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
             new CloudAmberItem("Dovecot", 51.63209, -0.7551319),
             new CloudAmberItem("Easton Street", 51.6288719, -0.746551454),
             new CloudAmberItem("Eden", 51.62928, -0.7544288),
-            new DemoUnitItem("Exchange Street", 51.8160477, -0.810069442),
-            new DemoUnitItem("Friars Square", 51.81417, -0.813673258),
-            new DemoUnitItem("Friarscroft", 51.8149834, -0.8187729),
+            new WorldsensingItem(0),
+            new WorldsensingItem(1),
+            new WorldsensingItem(2),
             // We only need eight.
 //            new CloudAmberItem("Hampden House", 51.8173523, -0.8081491),
 //            new CloudAmberItem("Swan", 51.62821, -0.7502827),
@@ -53,8 +53,7 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
 
     public void addMapMarkers(GoogleMap googleMap) {
         for (int i = 0; i < items.length; i++) {
-            items[i].addMarker(googleMap);
-            markerMap.put(items[i].getMarker(), items[i]);
+            items[i].addMarker(googleMap, markerMap);
         }
     }
 
@@ -70,15 +69,6 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker) {
         return markerMap.get(marker).getInfoContents(context);
-//        TextView textView = new TextView(context);
-//        if (marker.getTitle().contains("ANPR")) {
-//            textView.setText("ANPR Camera");
-//            textView.setTextColor(0xffff0000);
-//        } else {
-//            textView.setText(markerMap.get(marker).getTitle());
-//            textView.setTextColor(0xff0000ff);
-//        }
-//        return textView;
     }
 
     public void updateAll() {

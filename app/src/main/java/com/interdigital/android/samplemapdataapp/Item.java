@@ -7,6 +7,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.HashMap;
+
 public abstract class Item {
 
     private String title;
@@ -43,7 +45,7 @@ public abstract class Item {
         this.marker = marker;
     }
 
-    public abstract void addMarker(GoogleMap googleMap);
+    public abstract void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap);
 
     public abstract void setMarkerIcon(@MarkerData.MarkerType int markerType);
 
