@@ -52,8 +52,7 @@ public class MapsActivity extends FragmentActivity
         markerData = new MarkerData(getApplicationContext());
         googleMap.setInfoWindowAdapter(markerData);
         markerData.addMapMarkers(googleMap);
-        markerData.pointCamera(googleMap);
-        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 5000L);
+        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
     }
 
     @Override
@@ -71,9 +70,11 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
         if (throwable != null) {
-            int statusCode = ((DougalException) throwable).getCode();
-            if (statusCode != Types.STATUS_CODE_CONFLICT) {
-                Log.e(TAG, "Error creating application entity, status code " + statusCode);
+            if (throwable instanceof DougalException) {
+                int statusCode = ((DougalException) throwable).getCode();
+                if (statusCode != Types.STATUS_CODE_CONFLICT) {
+                    Log.e(TAG, "Error creating application entity, status code " + statusCode);
+                }
             }
         }
         mapFragment.getMapAsync(this);

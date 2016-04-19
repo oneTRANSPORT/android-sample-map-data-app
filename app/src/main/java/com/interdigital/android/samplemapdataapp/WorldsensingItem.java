@@ -6,19 +6,22 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.interdigital.android.dougal.resource.Container;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.dougal.resource.ContentInstance;
 import com.interdigital.android.dougal.resource.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
+import com.interdigital.android.samplemapdataapp.items.Item;
+import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class WorldsensingItem extends CarParkItem implements DougalCallback {
+public class WorldsensingItem extends Item implements DougalCallback {
 
     private static final String TAG = "WorldsensingItem";
     private static final String APP_NAME = "Worldsensing";
@@ -35,64 +38,69 @@ public class WorldsensingItem extends CarParkItem implements DougalCallback {
     private int offset;
     private GoogleMap googleMap;
     private HashMap<Marker, Item> markerMap;
+    private LatLng latLng;
+    private boolean full = false;
 
     public WorldsensingItem(int offset) {
-        super("Worldsensing " + String.valueOf(offset), 0, 0);
+        super("Worldsensing " + String.valueOf(offset));
         this.offset = offset;
+        loadPosition();
+    }
+
+    @Override
+    public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
+        // WS does not need this.  TODO Refactor?
     }
 
     @Override
     public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
         this.googleMap = googleMap;
         this.markerMap = markerMap;
-        Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.METHOD + CseDetails.HOST,
-                CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
-                CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+        setMarker(googleMap.addMarker(
+                new MarkerOptions()
+                        .title(getTitle())
+                        .position(latLng)
+                        .anchor(0.5f, 0.5f)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_icon))));
+        markerMap.put(getMarker(), this);
     }
 
+    public void setMarkerIcon(@MarkerData.MarkerType int markerType) {
+        int resource;
+        switch (markerType) {
+            case MarkerData.MARKER_TYPE_UPDATING:
+                resource = R.drawable.worldsensing_updating;
+                break;
+            case MarkerData.MARKER_TYPE_UPDATED:
+                if (full) {
+                    resource = R.drawable.worldsensing_full;
+                } else {
+                    resource = R.drawable.worldsensing_updated;
+                }
+                break;
+            case MarkerData.MARKER_TYPE_PLAIN:
+            default:
+                resource = R.drawable.worldsensing_icon;
+                break;
+        }
+        getMarker().setIcon(BitmapDescriptorFactory.fromResource(resource));
+    }
 
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
         if (resource == null) {
-            Log.e(TAG, "Worldsensing container not retrieved.");
+            Log.e(TAG, "Worldsensing content instance not retrieved.");
             return;
         }
         String jsonContent = ((ContentInstance) resource).getContent();
         try {
             JSONObject jsonObject = new JSONObject(jsonContent);
-            if (jsonObject.optJSONObject("position") != null) {
-                double lat = jsonObject.getJSONObject("position").getDouble("lat");
-                double lon = jsonObject.getJSONObject("position").getDouble("lon");
-                setLatLng(new LatLng(lat, lon));
-                super.addMarker(googleMap, markerMap);
-            } else {
-                setFull(jsonObject.optBoolean("occupied"));
-                super.setMarkerIcon(MarkerData.MARKER_TYPE_UPDATED);
-            }
+//            setFull(jsonObject.optBoolean("occupied"));
+//            super.setMarkerIcon(MarkerData.MARKER_TYPE_UPDATED);
         } catch (JSONException e) {
             e.printStackTrace();
-            super.setMarkerIcon(MarkerData.MARKER_TYPE_PLAIN);
+//            super.setMarkerIcon(MarkerData.MARKER_TYPE_PLAIN);
         }
-    }
-
-    @Override
-    public int getPlainResource() {
-        return R.drawable.worldsensing_icon;
-    }
-
-    @Override
-    public int getUpdatingResource() {
-        return R.drawable.worldsensing_updating;
-    }
-
-    @Override
-    public int getUpdatedResource() {
-        return R.drawable.worldsensing_updated;
-    }
-
-    @Override
-    public int getAlternateResource() {
-        return R.drawable.worldsensing_full;
     }
 
     @Override
@@ -103,11 +111,32 @@ public class WorldsensingItem extends CarParkItem implements DougalCallback {
         return textView;
     }
 
-    @Override
     public void update() {
-        setMarkerIcon(MarkerData.MARKER_TYPE_UPDATING);
-        Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.METHOD + CseDetails.HOST,
-                CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_UPDATING[offset],
-                CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+//       TODO Put back in when CIs exist on server.
+//        setMarkerIcon(MarkerData.MARKER_TYPE_UPDATING);
+//        Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.METHOD + CseDetails.HOST,
+//                CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_UPDATING[offset],
+//                CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+    }
+
+    private void loadPosition() {
+//        try {
+        // TODO These are on CSE-01 at the moment.
+//            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
+//                    CseDetails.METHOD + CseDetails.HOST,
+//                    CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
+//                    CseDetails.USER_NAME, CseDetails.PASSWORD);
+//            String jsonContent = contentInstance.getContent();
+//            JSONObject jsonObject = new JSONObject(jsonContent);
+//            if (jsonObject.optJSONObject("position") != null) {
+//                double lat = jsonObject.getJSONObject("position").getDouble("lat");
+//                double lon = jsonObject.getJSONObject("position").getDouble("lon");
+//                latLng = new LatLng(lat, lon);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        // TODO Remove this.
+        latLng = new LatLng(Math.random() - 0.5 + 51.62821, Math.random() - 0.5 + -0.7502827);
     }
 }
