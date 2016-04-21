@@ -1,4 +1,4 @@
-package com.interdigital.android.samplemapdataapp.items;
+package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -57,7 +57,6 @@ public class CaTrafficFlowItem extends Item {
 
     @Override
     public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
-        // TODO We don't yet have the full list of predefined locations.
         if (predefinedLocationMap.containsKey(locationReference)) {
             PredefinedLocation predefinedLocation = predefinedLocationMap.get(locationReference);
             setLatLng(new LatLng(
@@ -139,9 +138,9 @@ public class CaTrafficFlowItem extends Item {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
-        ((TextView) view.findViewById(R.id.cars_text_view)).setText(vehicleFlow+" cars/min");
+        ((TextView) view.findViewById(R.id.cars_text_view)).setText(vehicleFlow + " cars/min");
         ((TextView) view.findViewById(R.id.speed_text_view)).setText(
-                averageVehicleSpeed.replaceFirst("\\.[0-9]*","") +"kph");
+                averageVehicleSpeed.replaceFirst("\\.[0-9]*", "") + "kph");
         // TODO Looks like we don't have this data available.
 //        ((TextView) view.findViewById(R.id.timer_text_view)).setText(travelTime+" secs");
         ((TextView) view.findViewById(R.id.location_text_view)).setText(locationReference);

@@ -27,7 +27,6 @@ public class MapsActivity extends FragmentActivity
     private static final int MSG_SET_PLEASE_UPDATE = 3;
 
     private Context context;
-    private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
     private MarkerData markerData;
     private Handler handler = new Handler(this);
@@ -46,13 +45,13 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         markerData = new MarkerData(getApplicationContext());
         googleMap.setInfoWindowAdapter(markerData);
         markerData.addMapMarkers(googleMap);
-        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+        // TODO Enable updates.
+//        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
     }
 
     @Override
@@ -85,6 +84,7 @@ public class MapsActivity extends FragmentActivity
         handler.removeMessages(MSG_SET_UPDATING);
         handler.removeMessages(MSG_SET_UPDATED);
         super.onPause();
+        finish();
     }
 
     private void maybeCreateInstallationId() {

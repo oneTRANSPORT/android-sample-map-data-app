@@ -10,11 +10,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.interdigital.android.dougal.resource.Container;
 import com.interdigital.android.dougal.resource.ContentInstance;
-import com.interdigital.android.samplemapdataapp.items.CaCarParkItem;
-import com.interdigital.android.samplemapdataapp.items.CaTrafficFlowItem;
-import com.interdigital.android.samplemapdataapp.items.CaVmsItem;
-import com.interdigital.android.samplemapdataapp.items.Item;
 import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
+import com.interdigital.android.samplemapdataapp.json.items.CaCarParkItem;
+import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
+import com.interdigital.android.samplemapdataapp.json.items.CaVmsItem;
+import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,23 +65,20 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void loadPredefinedLocations() throws Exception {
-        // URL BCCFeedImportPredefinedSectionLocation/All
-        // URL BCCFeedImportPredefinedTrLocation/All TODO Broken, needs fix.
-        // URL BCCFeedImportPredefinedVmsLocation/All
-        // URL BCCFeedImportPredefinedLinkLocation/All
-//        String json = "[ { \"locationId\": \"VMS30080112\", \"latitude\": \"51.39322\", \"longitude\": \"-0.5603392\", \"name\": \"M40/8353B M42 southBound\", \"descriptor\": \"M40/8353B M42 southBound\", \"tpegDirection\": \"allDirections\" }, { \"locationId\": \"VMS30080113\", \"latitude\": \"51.39323\", \"longitude\": \"-0.5603393\", \"name\": \"M40/8353B M43 southBound\", \"descriptor\": \"M40/8353B M43 southBound\", \"tpegDirection\": \"allDirections\" }, { \"locationId\": \"VMS30080114\", \"latitude\": \"51.39324\", \"longitude\": \"-0.5603394\", \"name\": \"M40/8353B M44 southBound\", \"descriptor\": \"M40/8353B M44 southBound\", \"tpegDirection\": \"allDirections\" }, { \"locationId\": \"TRBUCK-1210711742\", \"fromLatitude\": \"61.39322\", \"fromLongitude\": \"-0.5703394\", \"toLatitude\": \"71.39322\", \"toLongitude\": \"-1.39322\", \"fromDescriptor\": \"from desc\", \"toDescriptor\": \"to desc\", \"tpegDirection\": \"direction1\" } ]";
         PredefinedLocation[][] predefinedLocations = new PredefinedLocation[3][];
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCFeedImportPredefinedSectionLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
+        // TODO This feed is currently broken.
+        // TODO But we don't think there is much in it that we need.
 //        contentInstance = Container.retrieveLatest(CseDetails.aeId,
 //                CseDetails.BASE_URL, "BCCFeedImportPredefinedTrLocation/All",
 //                CseDetails.USER_NAME, CseDetails.PASSWORD);
 //        predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
 //                PredefinedLocation[].class);
-         contentInstance = Container.retrieveLatest(CseDetails.aeId,
+        contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCFeedImportPredefinedVmsLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
@@ -99,8 +96,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void loadCaVms() throws Exception {
-        // URL BCCSignSettingFeedImport/All
-//        String json = " [ { \"locationReference\": \"VMSBUCK-3\", \"numberOfCharacters\": \"16\", \"numberOfRows\": \"4\", \"vmsLegends\": [\"Major Works 1\",\"Bierton 1 Rd\",\"by prison 1\",\"7-25 Mar\"], \"vmsType\": \"other 1\" }, { \"locationReference\": \"VMSBUCK-4\", \"numberOfCharacters\": \"17\", \"numberOfRows\": \"5\", \"vmsLegends\": [\"Major Works 2\",\"Bierton 2 Rd\",\"by prison 2\",\"8-26 Mar\"], \"vmsType\": \"other 2\" }, { \"locationReference\": \"VMSBUCK-5\", \"numberOfCharacters\": \"18\", \"numberOfRows\": \"6\", \"vmsLegends\": [\"Major Works 3\",\"Bierton 3 Rd\",\"by prison 3\",\"9-27 Mar\"], \"vmsType\": \"other 3\" } ]";
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCSignSettingFeedImport/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
@@ -114,7 +109,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void loadCaCarParks() throws Exception {
-        // URL BCCCarPark2FeedImport/All
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCCarPark2FeedImport/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
@@ -128,7 +122,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void loadCaTrafficFlow() throws Exception {
-        // URL BCCTrafficFlowFeedImport/All
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCTrafficFlowFeedImport/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);

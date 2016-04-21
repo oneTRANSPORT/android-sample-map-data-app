@@ -1,4 +1,4 @@
-package com.interdigital.android.samplemapdataapp.items;
+package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
 import android.graphics.Typeface;

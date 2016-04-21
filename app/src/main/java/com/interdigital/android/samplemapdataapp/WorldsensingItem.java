@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.dougal.resource.ContentInstance;
 import com.interdigital.android.dougal.resource.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
-import com.interdigital.android.samplemapdataapp.items.Item;
+import com.interdigital.android.samplemapdataapp.json.items.Item;
 import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
 
 import org.json.JSONException;
@@ -75,26 +75,26 @@ public class WorldsensingItem extends Item implements DougalCallback {
         markerMap.put(getMarker(), this);
     }
 
-    public void setMarkerIcon(@MarkerData.MarkerType int markerType) {
-        int resource;
-        switch (markerType) {
-            case MarkerData.MARKER_TYPE_UPDATING:
-                resource = R.drawable.worldsensing_updating;
-                break;
-            case MarkerData.MARKER_TYPE_UPDATED:
-                if (full) {
-                    resource = R.drawable.worldsensing_full;
-                } else {
-                    resource = R.drawable.worldsensing_updated;
-                }
-                break;
-            case MarkerData.MARKER_TYPE_PLAIN:
-            default:
-                resource = R.drawable.worldsensing_icon;
-                break;
-        }
-        getMarker().setIcon(BitmapDescriptorFactory.fromResource(resource));
-    }
+//    public void setMarkerIcon(@MarkerData.MarkerType int markerType) {
+//        int resource;
+//        switch (markerType) {
+//            case MarkerData.MARKER_TYPE_UPDATING:
+//                resource = R.drawable.worldsensing_updating;
+//                break;
+//            case MarkerData.MARKER_TYPE_UPDATED:
+//                if (full) {
+//                    resource = R.drawable.worldsensing_full;
+//                } else {
+//                    resource = R.drawable.worldsensing_updated;
+//                }
+//                break;
+//            case MarkerData.MARKER_TYPE_PLAIN:
+//            default:
+//                resource = R.drawable.worldsensing_icon;
+//                break;
+//        }
+//        getMarker().setIcon(BitmapDescriptorFactory.fromResource(resource));
+//    }
 
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
