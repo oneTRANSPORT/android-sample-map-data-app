@@ -6,6 +6,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,9 +43,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             addWorldSensing();
             loadPredefinedLocations();
             loadCaVms();
-            publishProgress(66);
+            publishProgress(77);
             loadCaCarParks();
-            publishProgress(83);
+            publishProgress(88);
             loadCaTrafficFlow();
             publishProgress(100);
         } catch (Exception e) {
@@ -66,14 +67,16 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             item.addMarker(googleMap, markerMap);
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                itemList.get(0).getMarker().getPosition(), 12));
+                new LatLng(51.8128587, -0.8086542), 15));
     }
 
     private void addWorldSensing() {
-        // TODO Add loading time on progress bar.
         itemList.add(new WorldsensingItem(0));
+        publishProgress(11);
         itemList.add(new WorldsensingItem(1));
+        publishProgress(22);
         itemList.add(new WorldsensingItem(2));
+        publishProgress(33);
     }
 
     private void loadPredefinedLocations() throws Exception {
@@ -83,7 +86,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        publishProgress(16);
+        publishProgress(44);
         // TODO This feed is currently broken.
         // TODO But we don't think there is much in it that we need.
 //        contentInstance = Container.retrieveLatest(CseDetails.aeId,
@@ -97,13 +100,13 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        publishProgress(33);
+        publishProgress(55);
         contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCFeedImportPredefinedLinkLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[2] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        publishProgress(49);
+        publishProgress(66);
         for (int i = 0; i < predefinedLocations.length; i++) {
             for (int j = 0; j < predefinedLocations[i].length; j++) {
                 predefinedLocationMap.put(predefinedLocations[i][j].locationId, predefinedLocations[i][j]);

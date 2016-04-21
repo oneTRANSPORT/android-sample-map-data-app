@@ -152,8 +152,18 @@ public class WorldsensingItem extends Item implements DougalCallback {
                 latLng = new LatLng(lat, lon);
             }
         } catch (Exception e) {
-            // Make up a random location if we don't get anything from the server.
-            latLng = new LatLng(Math.random() - 0.5 + 51.62821, Math.random() - 0.5 + -0.7502827);
+            // Generate a nearby location if no response from the CSE.
+            switch (offset) {
+                case 0:
+                    latLng = new LatLng(51.807744, -0.811782);
+                    break;
+                case 1:
+                    latLng = new LatLng(51.811396, -0.814565);
+                    break;
+                case 2:
+                    latLng = new LatLng(51.814096, -0.802537);
+                    break;
+            }
         }
     }
 
