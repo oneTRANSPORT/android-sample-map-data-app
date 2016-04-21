@@ -15,13 +15,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.interdigital.android.dougal.resource.Container;
 import com.interdigital.android.dougal.resource.ContentInstance;
 import com.interdigital.android.dougal.resource.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
-import com.interdigital.android.samplemapdataapp.json.items.Item;
 import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
+import com.interdigital.android.samplemapdataapp.json.items.Item;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -45,6 +45,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
     private HashMap<Marker, Item> markerMap;
     private LatLng latLng;
     private boolean full = false;
+    private boolean updating = false;
 
     public WorldsensingItem(int offset) {
         super("Worldsensing " + String.valueOf(offset));
@@ -75,42 +76,29 @@ public class WorldsensingItem extends Item implements DougalCallback {
         markerMap.put(getMarker(), this);
     }
 
-//    public void setMarkerIcon(@MarkerData.MarkerType int markerType) {
-//        int resource;
-//        switch (markerType) {
-//            case MarkerData.MARKER_TYPE_UPDATING:
-//                resource = R.drawable.worldsensing_updating;
-//                break;
-//            case MarkerData.MARKER_TYPE_UPDATED:
-//                if (full) {
-//                    resource = R.drawable.worldsensing_full;
-//                } else {
-//                    resource = R.drawable.worldsensing_updated;
-//                }
-//                break;
-//            case MarkerData.MARKER_TYPE_PLAIN:
-//            default:
-//                resource = R.drawable.worldsensing_icon;
-//                break;
-//        }
-//        getMarker().setIcon(BitmapDescriptorFactory.fromResource(resource));
-//    }
-
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
         if (resource == null) {
             Log.e(TAG, "Worldsensing content instance not retrieved.");
-            return;
+            full = false;
+            if (Math.random() > 0.7) {
+                full = true;
+            }
+        } else {
+            try {
+                String jsonContent = ((ContentInstance) resource).getContent();
+                JSONObject jsonObject = new JSONObject(jsonContent);
+                full = jsonObject.optBoolean("occupied");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        String jsonContent = ((ContentInstance) resource).getContent();
-        try {
-            JSONObject jsonObject = new JSONObject(jsonContent);
-//            setFull(jsonObject.optBoolean("occupied"));
-//            super.setMarkerIcon(MarkerData.MARKER_TYPE_UPDATED);
-        } catch (JSONException e) {
-            e.printStackTrace();
-//            super.setMarkerIcon(MarkerData.MARKER_TYPE_PLAIN);
+        if (full) {
+            getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_full));
+        } else {
+            getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_updated));
         }
+        updating = false;
     }
 
     @Override
@@ -122,7 +110,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if (full) {
+        if (!full) {
             signTextView.setText("SPACE");
         } else {
             signTextView.setText("FULL");
@@ -140,31 +128,33 @@ public class WorldsensingItem extends Item implements DougalCallback {
     }
 
     public void update() {
-//       TODO Put back in when CIs exist on server.
-//        setMarkerIcon(MarkerData.MARKER_TYPE_UPDATING);
-//        Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.METHOD + CseDetails.HOST,
-//                CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_UPDATING[offset],
-//                CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+        if (!updating) {
+            updating = true;
+            getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_updating));
+            Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.BASE_URL,
+                    APP_NAME + CONTAINERS_UPDATING[offset],
+                    CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+        }
     }
 
     private void loadPosition() {
-//        try {
-        // TODO These are on CSE-01 at the moment.
-//            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-//                    CseDetails.METHOD + CseDetails.HOST,
-//                    CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
-//                    CseDetails.USER_NAME, CseDetails.PASSWORD);
-//            String jsonContent = contentInstance.getContent();
-//            JSONObject jsonObject = new JSONObject(jsonContent);
-//            if (jsonObject.optJSONObject("position") != null) {
-//                double lat = jsonObject.getJSONObject("position").getDouble("lat");
-//                double lon = jsonObject.getJSONObject("position").getDouble("lon");
-//                latLng = new LatLng(lat, lon);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        // TODO Remove this.
-        latLng = new LatLng(Math.random() - 0.5 + 51.62821, Math.random() - 0.5 + -0.7502827);
+        try {
+            // TODO Waiting for David to put these on CSE-02.
+            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
+                    CseDetails.METHOD + CseDetails.HOST,
+                    CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
+                    CseDetails.USER_NAME, CseDetails.PASSWORD);
+            String jsonContent = contentInstance.getContent();
+            JSONObject jsonObject = new JSONObject(jsonContent);
+            if (jsonObject.optJSONObject("position") != null) {
+                double lat = jsonObject.getJSONObject("position").getDouble("lat");
+                double lon = jsonObject.getJSONObject("position").getDouble("lon");
+                latLng = new LatLng(lat, lon);
+            }
+        } catch (Exception e) {
+            // Make up a random location if we don't get anything from the server.
+            latLng = new LatLng(Math.random() - 0.5 + 51.62821, Math.random() - 0.5 + -0.7502827);
+        }
     }
+
 }

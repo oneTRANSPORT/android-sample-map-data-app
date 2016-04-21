@@ -21,6 +21,7 @@ import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MapsActivity extends FragmentActivity
@@ -28,9 +29,7 @@ public class MapsActivity extends FragmentActivity
         DougalCallback {
 
     private static final String TAG = "MapsActivity";
-    private static final int MSG_SET_UPDATING = 1;
-    private static final int MSG_SET_UPDATED = 2;
-    private static final int MSG_SET_PLEASE_UPDATE = 3;
+    private static final int MSG_SET_PLEASE_UPDATE = 1;
 
     private Context context;
     private SupportMapFragment mapFragment;
@@ -58,15 +57,14 @@ public class MapsActivity extends FragmentActivity
         googleMap.setInfoWindowAdapter(this);
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar))
                 .execute();
-        // TODO Enable updates.
-//        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
     }
 
     @Override
     public boolean handleMessage(Message message) {
         switch (message.what) {
             case MSG_SET_PLEASE_UPDATE:
-// TODO Implement this.                updateAll();
+                updateAll();
                 handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
                 break;
         }
@@ -98,8 +96,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     protected void onPause() {
-        handler.removeMessages(MSG_SET_UPDATING);
-        handler.removeMessages(MSG_SET_UPDATED);
+        handler.removeMessages(MSG_SET_PLEASE_UPDATE);
         super.onPause();
         finish();
     }
@@ -120,6 +117,15 @@ public class MapsActivity extends FragmentActivity
                 CseDetails.appName, applicationId);
         applicationEntity.createAsync(CseDetails.METHOD + CseDetails.HOST, CseDetails.CSE_NAME,
                 CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+    }
+
+    private void updateAll() {
+        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
+            Item item = entry.getValue();
+            if (item instanceof WorldsensingItem) {
+                ((WorldsensingItem) item).update();
+            }
+        }
     }
 }
 
