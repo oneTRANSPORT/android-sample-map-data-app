@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,7 +50,7 @@ public class MapsActivity extends FragmentActivity
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         markerData = new MarkerData(getApplicationContext());
         googleMap.setInfoWindowAdapter(markerData);
-        markerData.addMapMarkers(googleMap);
+        markerData.addMapMarkers(googleMap, (ProgressBar) findViewById(R.id.progress_bar));
         // TODO Enable updates.
 //        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
     }

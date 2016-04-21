@@ -1,19 +1,17 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
-import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
+// TODO Refactor this class away?  Doesn't do much.
 public class MarkerData implements GoogleMap.InfoWindowAdapter {
 
     private ArrayList<Item> itemList = new ArrayList<>();
@@ -25,8 +23,8 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
         this.context = context;
     }
 
-    public void addMapMarkers(GoogleMap googleMap) {
-        new LoadMarkerTask(googleMap, itemList, markerMap).execute();
+    public void addMapMarkers(GoogleMap googleMap, ProgressBar progressBar) {
+        new LoadMarkerTask(googleMap, itemList, markerMap, progressBar).execute();
     }
 
     @Override
@@ -39,7 +37,7 @@ public class MarkerData implements GoogleMap.InfoWindowAdapter {
         return markerMap.get(marker).getInfoContents(context);
     }
 
-    public void updateAll(){
+    public void updateAll() {
         // TODO Update Worldsensing stuff.  Should it go here or in WS items?
     }
 }

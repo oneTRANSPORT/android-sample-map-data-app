@@ -2,6 +2,8 @@ package com.interdigital.android.samplemapdataapp;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,19 +21,21 @@ import com.interdigital.android.samplemapdataapp.json.items.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
+public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private GoogleMap googleMap;
     private ArrayList<Item> itemList;
     private HashMap<Marker, Item> markerMap = new HashMap<>();
+    private ProgressBar progressBar;
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private HashMap<String, PredefinedLocation> predefinedLocationMap = new HashMap<>();
 
     public LoadMarkerTask(GoogleMap googleMap, ArrayList<Item> itemList,
-                          HashMap<Marker, Item> markerMap) {
+                          HashMap<Marker, Item> markerMap, ProgressBar progressBar) {
         this.googleMap = googleMap;
         this.itemList = itemList;
         this.markerMap = markerMap;
+        this.progressBar = progressBar;
     }
 
     @Override
@@ -40,12 +44,21 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
             addWorldSensing();
             loadPredefinedLocations();
             loadCaVms();
+            publishProgress(66);
             loadCaCarParks();
+            publishProgress(83);
             loadCaTrafficFlow();
+            publishProgress(100);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        progressBar.setProgress(values[0]);
     }
 
     @Override
@@ -59,6 +72,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void addWorldSensing() {
+        // TODO Add loading time on progress bar.
         itemList.add(new WorldsensingItem(0));
         itemList.add(new WorldsensingItem(1));
         itemList.add(new WorldsensingItem(2));
@@ -71,6 +85,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
+        publishProgress(16);
         // TODO This feed is currently broken.
         // TODO But we don't think there is much in it that we need.
 //        contentInstance = Container.retrieveLatest(CseDetails.aeId,
@@ -78,16 +93,19 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
 //                CseDetails.USER_NAME, CseDetails.PASSWORD);
 //        predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
 //                PredefinedLocation[].class);
+//        publishProgress(--);
         contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCFeedImportPredefinedVmsLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
+        publishProgress(33);
         contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCFeedImportPredefinedLinkLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[2] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
+        publishProgress(49);
         for (int i = 0; i < predefinedLocations.length; i++) {
             for (int j = 0; j < predefinedLocations[i].length; j++) {
                 predefinedLocationMap.put(predefinedLocations[i][j].locationId, predefinedLocations[i][j]);
