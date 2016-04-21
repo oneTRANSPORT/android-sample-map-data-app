@@ -6,21 +6,26 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.interdigital.android.dougal.Types;
 import com.interdigital.android.dougal.exception.DougalException;
 import com.interdigital.android.dougal.resource.ApplicationEntity;
 import com.interdigital.android.dougal.resource.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
+import com.interdigital.android.samplemapdataapp.json.items.Item;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, Handler.Callback, DougalCallback {
+        implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, Handler.Callback,
+        DougalCallback {
 
     private static final String TAG = "MapsActivity";
     private static final int MSG_SET_UPDATING = 1;
@@ -29,9 +34,11 @@ public class MapsActivity extends FragmentActivity
 
     private Context context;
     private SupportMapFragment mapFragment;
-    private MarkerData markerData;
+    // Needed for quick look-up.
+    private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Handler handler = new Handler(this);
     private String installationId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +55,9 @@ public class MapsActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        markerData = new MarkerData(getApplicationContext());
-        googleMap.setInfoWindowAdapter(markerData);
-        markerData.addMapMarkers(googleMap, (ProgressBar) findViewById(R.id.progress_bar));
+        googleMap.setInfoWindowAdapter(this);
+        new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar))
+                .execute();
         // TODO Enable updates.
 //        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
     }
@@ -59,13 +66,12 @@ public class MapsActivity extends FragmentActivity
     public boolean handleMessage(Message message) {
         switch (message.what) {
             case MSG_SET_PLEASE_UPDATE:
-                markerData.updateAll();
+// TODO Implement this.                updateAll();
                 handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
                 break;
         }
         return false;
     }
-
 
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
@@ -78,6 +84,16 @@ public class MapsActivity extends FragmentActivity
             }
         }
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return markerMap.get(marker).getInfoContents(context);
     }
 
     @Override
@@ -105,6 +121,5 @@ public class MapsActivity extends FragmentActivity
         applicationEntity.createAsync(CseDetails.METHOD + CseDetails.HOST, CseDetails.CSE_NAME,
                 CseDetails.USER_NAME, CseDetails.PASSWORD, this);
     }
-
 }
 

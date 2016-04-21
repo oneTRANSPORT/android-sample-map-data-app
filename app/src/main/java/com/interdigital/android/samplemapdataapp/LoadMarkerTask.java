@@ -2,7 +2,6 @@ package com.interdigital.android.samplemapdataapp;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,16 +23,15 @@ import java.util.HashMap;
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private GoogleMap googleMap;
-    private ArrayList<Item> itemList;
+    private ArrayList<Item> itemList = new ArrayList<>();
     private HashMap<Marker, Item> markerMap = new HashMap<>();
     private ProgressBar progressBar;
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private HashMap<String, PredefinedLocation> predefinedLocationMap = new HashMap<>();
 
-    public LoadMarkerTask(GoogleMap googleMap, ArrayList<Item> itemList,
-                          HashMap<Marker, Item> markerMap, ProgressBar progressBar) {
+    public LoadMarkerTask(GoogleMap googleMap, HashMap<Marker, Item> markerMap,
+                          ProgressBar progressBar) {
         this.googleMap = googleMap;
-        this.itemList = itemList;
         this.markerMap = markerMap;
         this.progressBar = progressBar;
     }
