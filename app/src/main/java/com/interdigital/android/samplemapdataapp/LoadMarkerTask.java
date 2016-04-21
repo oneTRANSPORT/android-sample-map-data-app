@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -65,18 +66,30 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
 
     private void loadPredefinedLocations() throws Exception {
         // URL BCCFeedImportPredefinedSectionLocation/All
-        // URL BCCFeedImportPredefinedTrLocation/All
+        // URL BCCFeedImportPredefinedTrLocation/All TODO Broken, needs fix.
+        // URL BCCFeedImportPredefinedVmsLocation/All
+        // URL BCCFeedImportPredefinedLinkLocation/All
 //        String json = "[ { \"locationId\": \"VMS30080112\", \"latitude\": \"51.39322\", \"longitude\": \"-0.5603392\", \"name\": \"M40/8353B M42 southBound\", \"descriptor\": \"M40/8353B M42 southBound\", \"tpegDirection\": \"allDirections\" }, { \"locationId\": \"VMS30080113\", \"latitude\": \"51.39323\", \"longitude\": \"-0.5603393\", \"name\": \"M40/8353B M43 southBound\", \"descriptor\": \"M40/8353B M43 southBound\", \"tpegDirection\": \"allDirections\" }, { \"locationId\": \"VMS30080114\", \"latitude\": \"51.39324\", \"longitude\": \"-0.5603394\", \"name\": \"M40/8353B M44 southBound\", \"descriptor\": \"M40/8353B M44 southBound\", \"tpegDirection\": \"allDirections\" }, { \"locationId\": \"TRBUCK-1210711742\", \"fromLatitude\": \"61.39322\", \"fromLongitude\": \"-0.5703394\", \"toLatitude\": \"71.39322\", \"toLongitude\": \"-1.39322\", \"fromDescriptor\": \"from desc\", \"toDescriptor\": \"to desc\", \"tpegDirection\": \"direction1\" } ]";
+        PredefinedLocation[][] predefinedLocations = new PredefinedLocation[3][];
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.BASE_URL, "BCCFeedImportPredefinedSectionLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
-        PredefinedLocation[][] predefinedLocations = new PredefinedLocation[2][];
         predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCFeedImportPredefinedTrLocation/All",
+//        contentInstance = Container.retrieveLatest(CseDetails.aeId,
+//                CseDetails.BASE_URL, "BCCFeedImportPredefinedTrLocation/All",
+//                CseDetails.USER_NAME, CseDetails.PASSWORD);
+//        predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
+//                PredefinedLocation[].class);
+         contentInstance = Container.retrieveLatest(CseDetails.aeId,
+                CseDetails.BASE_URL, "BCCFeedImportPredefinedVmsLocation/All",
                 CseDetails.USER_NAME, CseDetails.PASSWORD);
         predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
+                PredefinedLocation[].class);
+        contentInstance = Container.retrieveLatest(CseDetails.aeId,
+                CseDetails.BASE_URL, "BCCFeedImportPredefinedLinkLocation/All",
+                CseDetails.USER_NAME, CseDetails.PASSWORD);
+        predefinedLocations[2] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
         for (int i = 0; i < predefinedLocations.length; i++) {
             for (int j = 0; j < predefinedLocations[i].length; j++) {
@@ -94,7 +107,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
         CaVmsItem[] caVmsItems = gson.fromJson(contentInstance.getContent(), CaVmsItem[].class);
         for (CaVmsItem caVmsItem : caVmsItems) {
             caVmsItem.updateLocation(predefinedLocationMap);
-            itemList.add(caVmsItem);
+            if (caVmsItem.shouldAdd()) {
+                itemList.add(caVmsItem);
+            }
         }
     }
 
@@ -106,7 +121,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
         String content = contentInstance.getContent();
         CaCarParkItem[] caCarParkItems = gson.fromJson(content, CaCarParkItem[].class);
         for (CaCarParkItem caCarParkItem : caCarParkItems) {
-            itemList.add(caCarParkItem);
+            if (caCarParkItem.shouldAdd()) {
+                itemList.add(caCarParkItem);
+            }
         }
     }
 
@@ -124,19 +141,19 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
                 flowMap.put(locationReference, caTrafficFlowItem);
             } else {
                 CaTrafficFlowItem existingCaTrafficFlowItem = flowMap.get(locationReference);
-                if (caTrafficFlowItem.getAverageVehicleSpeed() != null) {
+                if (!TextUtils.isEmpty(caTrafficFlowItem.getAverageVehicleSpeed())) {
                     existingCaTrafficFlowItem.setAverageVehicleSpeed(caTrafficFlowItem.getAverageVehicleSpeed());
                 }
-                if (caTrafficFlowItem.getFreeFlowSpeed() != null) {
+                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowSpeed())) {
                     existingCaTrafficFlowItem.setFreeFlowSpeed(caTrafficFlowItem.getFreeFlowSpeed());
                 }
-                if (caTrafficFlowItem.getFreeFlowTravelTime() != null) {
+                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowTravelTime())) {
                     existingCaTrafficFlowItem.setFreeFlowTravelTime(caTrafficFlowItem.getFreeFlowTravelTime());
                 }
-                if (caTrafficFlowItem.getTravelTime() != null) {
+                if (!TextUtils.isEmpty(caTrafficFlowItem.getTravelTime())) {
                     existingCaTrafficFlowItem.setTravelTime(caTrafficFlowItem.getTravelTime());
                 }
-                if (caTrafficFlowItem.getVehicleFlow() != null) {
+                if (!TextUtils.isEmpty(caTrafficFlowItem.getVehicleFlow())) {
                     existingCaTrafficFlowItem.setVehicleFlow(caTrafficFlowItem.getVehicleFlow());
                 }
             }
@@ -144,7 +161,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Void, Void> {
         for (String key : flowMap.keySet()) {
             CaTrafficFlowItem caTrafficFlowItem = flowMap.get(key);
             caTrafficFlowItem.updateLocation(predefinedLocationMap);
-            itemList.add(caTrafficFlowItem);
+            if (caTrafficFlowItem.shouldAdd()) {
+                itemList.add(caTrafficFlowItem);
+            }
         }
     }
 }

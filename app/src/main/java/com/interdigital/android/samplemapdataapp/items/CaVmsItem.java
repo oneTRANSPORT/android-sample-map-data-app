@@ -1,7 +1,13 @@
 package com.interdigital.android.samplemapdataapp.items;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -39,34 +45,76 @@ public class CaVmsItem extends Item {
     }
 
     @Override
+    public boolean shouldAdd() {
+        if (vmsLegends == null || vmsLegends.length == 0) {
+            return false;
+        }
+        if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
+            return false;
+        }
+        for (String line : vmsLegends) {
+            if (line.trim().length() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
         setMarker(googleMap.addMarker(
                 new MarkerOptions()
                         .title(getTitle())
                         .position(getLatLng())
-                        .anchor(0.5f, 0.5f)
+                        .anchor(0.5f, 0.8f)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.vm_sign_icon))));
         markerMap.put(getMarker(), this);
     }
 
     @Override
     public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
-        // TODO We don't yet have the full list of predefined locations.
         if (predefinedLocationMap.containsKey(locationReference)) {
             PredefinedLocation predefinedLocation = predefinedLocationMap.get(locationReference);
             setLatLng(new LatLng(
                     Double.valueOf(predefinedLocation.latitude),
                     Double.valueOf(predefinedLocation.longitude)));
+            if (!TextUtils.isEmpty(predefinedLocation.descriptor)) {
+                locationReference = predefinedLocation.descriptor;
+            } else if (!TextUtils.isEmpty(predefinedLocation.toDescriptor)) {
+                locationReference = predefinedLocation.toDescriptor;
+            } else if (!TextUtils.isEmpty(predefinedLocation.fromDescriptor)) {
+                locationReference = predefinedLocation.fromDescriptor;
+            }
         } else {
-            setLatLng(new LatLng(Math.random() - 0.5 + 51.62821, Math.random() - 0.5 + -0.7502827));
+            setLatLng(new LatLng(0, 0));
         }
     }
 
     @Override
     public View getInfoContents(Context context) {
-        TextView textView = new TextView(context);
-        textView.setText(locationReference);
-        textView.setTextColor(0xffff0000);
-        return textView;
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        TextView signTextView = new TextView(context);
+        signTextView.setTextColor(0xff000000);
+        signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        signTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        StringBuffer buf = new StringBuffer();
+        for (String line : vmsLegends) {
+            buf.append(line.trim());
+            if (line.trim().length() > 0) {
+                buf.append("\n");
+            }
+        }
+        signTextView.setText(buf.toString().trim());
+        linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView nameTextView = new TextView(context);
+        nameTextView.setText(locationReference);
+        nameTextView.setTextColor(0xff808080);
+        nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        nameTextView.setGravity(Gravity.RIGHT);
+        linearLayout.addView(nameTextView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return linearLayout;
     }
 }

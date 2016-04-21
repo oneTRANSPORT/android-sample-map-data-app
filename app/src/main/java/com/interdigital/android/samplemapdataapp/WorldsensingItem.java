@@ -1,8 +1,13 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -45,6 +50,11 @@ public class WorldsensingItem extends Item implements DougalCallback {
         super("Worldsensing " + String.valueOf(offset));
         this.offset = offset;
         loadPosition();
+    }
+
+    @Override
+    public boolean shouldAdd() {
+        return true;
     }
 
     @Override
@@ -105,10 +115,28 @@ public class WorldsensingItem extends Item implements DougalCallback {
 
     @Override
     public View getInfoContents(Context context) {
-        TextView textView = new TextView(context);
-        textView.setText(getTitle());
-        textView.setTextColor(0xff008000);
-        return textView;
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        TextView signTextView = new TextView(context);
+        signTextView.setTextColor(0xff000000);
+        signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        signTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        if (full) {
+            signTextView.setText("SPACE");
+        } else {
+            signTextView.setText("FULL");
+        }
+        linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView nameTextView = new TextView(context);
+        nameTextView.setText("Worldsensing");
+        nameTextView.setTextColor(0xff808080);
+        nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        nameTextView.setGravity(Gravity.RIGHT);
+        linearLayout.addView(nameTextView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return linearLayout;
     }
 
     public void update() {

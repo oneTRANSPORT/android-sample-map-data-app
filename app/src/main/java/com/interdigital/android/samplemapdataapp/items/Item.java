@@ -50,4 +50,8 @@ public abstract class Item {
 
     public abstract View getInfoContents(Context context);
 
+    // Return true if we should add this item to the map.
+    // Might want to discard elements with missing data from the feeds.
+    public abstract boolean shouldAdd();
+
 }
