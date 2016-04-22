@@ -31,18 +31,16 @@ public class WorldsensingItem extends Item implements DougalCallback {
     private static final String TAG = "WorldsensingItem";
     private static final String APP_NAME = "Worldsensing";
     private static final String[] CONTAINERS_STATIC = {
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/555b11dbcb9b3277b782e708",
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/555b15b0cb9b3277b782ec0d",
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/555b12b4cb9b3277b782e821"
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b11dbcb9b3277b782e708",
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b15b0cb9b3277b782ec0d",
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b12b4cb9b3277b782e821"
     };
     private static final String[] CONTAINERS_UPDATING = {
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/555b11dbcb9b3277b782e708",
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/555b15b0cb9b3277b782ec0d",
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/555b12b4cb9b3277b782e821"
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b11dbcb9b3277b782e708",
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b15b0cb9b3277b782ec0d",
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b12b4cb9b3277b782e821"
     };
     private int offset;
-    private GoogleMap googleMap;
-    private HashMap<Marker, Item> markerMap;
     private LatLng latLng;
     private boolean full = false;
     private boolean updating = false;
@@ -65,8 +63,6 @@ public class WorldsensingItem extends Item implements DougalCallback {
 
     @Override
     public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
-        this.googleMap = googleMap;
-        this.markerMap = markerMap;
         setMarker(googleMap.addMarker(
                 new MarkerOptions()
                         .title(getTitle())
@@ -138,20 +134,20 @@ public class WorldsensingItem extends Item implements DougalCallback {
     }
 
     private void loadPosition() {
-        try {
-            // TODO Waiting for David to put these on CSE-02.
-            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                    CseDetails.METHOD + CseDetails.HOST,
-                    CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
-                    CseDetails.USER_NAME, CseDetails.PASSWORD);
-            String jsonContent = contentInstance.getContent();
-            JSONObject jsonObject = new JSONObject(jsonContent);
-            if (jsonObject.optJSONObject("position") != null) {
-                double lat = jsonObject.getJSONObject("position").getDouble("lat");
-                double lon = jsonObject.getJSONObject("position").getDouble("lon");
-                latLng = new LatLng(lat, lon);
-            }
-        } catch (Exception e) {
+//        try {
+//            // TODO Waiting for David to put these on CSE-02.
+//            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
+//                    CseDetails.METHOD + CseDetails.HOST,
+//                    CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
+//                    CseDetails.USER_NAME, CseDetails.PASSWORD);
+//            String jsonContent = contentInstance.getContent();
+//            JSONObject jsonObject = new JSONObject(jsonContent);
+//            if (jsonObject.optJSONObject("position") != null) {
+//                double lat = jsonObject.getJSONObject("position").getDouble("lat");
+//                double lon = jsonObject.getJSONObject("position").getDouble("lon");
+//                latLng = new LatLng(lat, lon);
+//            }
+//        } catch (Exception e) {
             // Generate a nearby location if no response from the CSE.
             switch (offset) {
                 case 0:
@@ -164,7 +160,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
                     latLng = new LatLng(51.814096, -0.802537);
                     break;
             }
-        }
+//        }
     }
 
 }
