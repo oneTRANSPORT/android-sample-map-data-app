@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">Sample Map Data App</string>
-    <string name="title_activity_maps">OneM2M Demo</string>
+    <string name="title_activity_maps">oneTRANSPORT</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="pref_default_host_name">cse-04.onetransport.uk.net</string>
+    <string name="pref_default_cse_name">ONETCSE04</string>
+    <string name="pref_default_user_name">android</string>
+    <string name="pref_default_password">DompAdtem9</string>
+
 </resources>

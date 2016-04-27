@@ -84,8 +84,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private void loadPredefinedLocations() throws Exception {
         PredefinedLocation[][] predefinedLocations = new PredefinedLocation[3][];
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCFeedImportPredefinedSectionLocation/All",
-                CseDetails.USER_NAME, CseDetails.PASSWORD);
+                CseDetails.baseUrl, "BCCFeedImportPredefinedSectionLocation/All",
+                CseDetails.userName, CseDetails.password);
         predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
         publishProgress(44);
@@ -98,14 +98,14 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 //                PredefinedLocation[].class);
 //        publishProgress(--);
         contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCFeedImportPredefinedVmsLocation/All",
-                CseDetails.USER_NAME, CseDetails.PASSWORD);
+                CseDetails.baseUrl, "BCCFeedImportPredefinedVmsLocation/All",
+                CseDetails.userName, CseDetails.password);
         predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
         publishProgress(55);
         contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCFeedImportPredefinedLinkLocation/All",
-                CseDetails.USER_NAME, CseDetails.PASSWORD);
+                CseDetails.baseUrl, "BCCFeedImportPredefinedLinkLocation/All",
+                CseDetails.userName, CseDetails.password);
         predefinedLocations[2] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
         publishProgress(66);
@@ -118,8 +118,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private void loadCaVms() throws Exception {
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCSignSettingFeedImport/All",
-                CseDetails.USER_NAME, CseDetails.PASSWORD);
+                CseDetails.baseUrl, "BCCSignSettingFeedImport/All",
+                CseDetails.userName, CseDetails.password);
         CaVmsItem[] caVmsItems = gson.fromJson(contentInstance.getContent(), CaVmsItem[].class);
         for (CaVmsItem caVmsItem : caVmsItems) {
             caVmsItem.updateLocation(predefinedLocationMap);
@@ -131,8 +131,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private void loadCaCarParks() throws Exception {
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCCarPark2FeedImport/All",
-                CseDetails.USER_NAME, CseDetails.PASSWORD);
+                CseDetails.baseUrl, "BCCCarPark2FeedImport/All",
+                CseDetails.userName, CseDetails.password);
         String content = contentInstance.getContent();
         CaCarParkItem[] caCarParkItems = gson.fromJson(content, CaCarParkItem[].class);
         for (CaCarParkItem caCarParkItem : caCarParkItems) {
@@ -144,8 +144,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private void loadCaTrafficFlow() throws Exception {
         ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.BASE_URL, "BCCTrafficFlowFeedImport/All",
-                CseDetails.USER_NAME, CseDetails.PASSWORD);
+                CseDetails.baseUrl, "BCCTrafficFlowFeedImport/All",
+                CseDetails.userName, CseDetails.password);
         String content = contentInstance.getContent();
         CaTrafficFlowItem[] caTrafficFlowItems = gson.fromJson(content, CaTrafficFlowItem[].class);
         HashMap<String, CaTrafficFlowItem> flowMap = new HashMap<>();

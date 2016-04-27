@@ -1,15 +1,27 @@
 package com.interdigital.android.samplemapdataapp;
 
+import android.content.Context;
+
 public class CseDetails {
 
     public static final String METHOD = "https://";
-    public static final String HOST = "cse-04.onetransport.uk.net";
-    public static final String CSE_NAME = "ONETCSE04";
-    public static final String BASE_URL = METHOD + HOST + "/" + CSE_NAME + "/";
-//    public static final String USER_NAME = "pthomas";
-//    public static final String PASSWORD = "EKFYGUCC";
-    public static final String USER_NAME = "android";
-    public static final String PASSWORD = "DompAdtem9";
+    public static String hostName;
+    public static String cseName;
+    public static String baseUrl;
+    public static String userName;
+    public static String password;
     public static String aeId;
     public static String appName;
+
+    public static void initialiseFromPrefs(Context context) {
+        hostName = Storage.getHostName(context);
+        cseName = Storage.getCseName(context);
+        userName = Storage.getUserName(context);
+        password = Storage.getPassword(context);
+        makeBaseUrl();
+    }
+
+    public static void makeBaseUrl() {
+        baseUrl = METHOD + hostName + "/" + cseName + "/";
+    }
 }

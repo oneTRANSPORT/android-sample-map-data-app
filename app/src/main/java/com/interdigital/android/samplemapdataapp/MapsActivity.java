@@ -1,9 +1,11 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -48,6 +50,9 @@ public class MapsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         setContentView(R.layout.activity_maps);
+        PreferenceManager.setDefaultValues(this, Storage.FILE_NAME, MODE_PRIVATE,
+                R.xml.pref_general, false);
+        CseDetails.initialiseFromPrefs(context);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         maybeCreateInstallationId();
@@ -96,6 +101,9 @@ public class MapsActivity extends AppCompatActivity
                     item.setIcon(R.drawable.ic_anpr_white_24dp);
                     setItemVisible(Item.TYPE_ANPR, true);
                 }
+                return true;
+            case R.id.settings_item:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -150,7 +158,6 @@ public class MapsActivity extends AppCompatActivity
     protected void onPause() {
         handler.removeMessages(MSG_SET_PLEASE_UPDATE);
         super.onPause();
-        finish();
     }
 
     private void maybeCreateInstallationId() {
@@ -167,8 +174,8 @@ public class MapsActivity extends AppCompatActivity
         String applicationId = "App-id-" + installationId;
         ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
                 CseDetails.appName, applicationId);
-        applicationEntity.createAsync(CseDetails.METHOD + CseDetails.HOST, CseDetails.CSE_NAME,
-                CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+        applicationEntity.createAsync(CseDetails.METHOD + CseDetails.hostName, CseDetails.cseName,
+                CseDetails.userName, CseDetails.password, this);
     }
 
     private void updateAll() {

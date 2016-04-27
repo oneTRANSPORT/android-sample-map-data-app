@@ -128,9 +128,9 @@ public class WorldsensingItem extends Item implements DougalCallback {
         if (!updating) {
             updating = true;
             getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_updating));
-            Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.BASE_URL,
+            Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.baseUrl,
                     APP_NAME + CONTAINERS_UPDATING[offset],
-                    CseDetails.USER_NAME, CseDetails.PASSWORD, this);
+                    CseDetails.userName, CseDetails.password, this);
         }
     }
 
