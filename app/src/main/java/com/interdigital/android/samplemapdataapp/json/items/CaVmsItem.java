@@ -40,8 +40,8 @@ public class CaVmsItem extends Item {
     @SerializedName("vmsType")
     private String vmsType;
 
-    public CaVmsItem(String title) {
-        super(title);
+    public CaVmsItem(){
+        setType(TYPE_VMS);
     }
 
     @Override

@@ -39,8 +39,8 @@ public class CaTrafficFlowItem extends Item {
     @SerializedName("freeFlowTravelTime")
     private String freeFlowTravelTime;
 
-    public CaTrafficFlowItem(String title) {
-        super(title);
+    public CaTrafficFlowItem() {
+        setType(TYPE_ANPR);
     }
 
     @Override

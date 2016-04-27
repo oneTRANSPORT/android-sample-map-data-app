@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -22,6 +24,7 @@ import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,6 +52,54 @@ public class MapsActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         maybeCreateInstallationId();
         maybeCreateAe();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.vms_item:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                    item.setIcon(R.drawable.ic_vms_white_off_24dp);
+                    setItemVisible(Item.TYPE_VMS, false);
+                } else {
+                    item.setChecked(true);
+                    item.setIcon(R.drawable.ic_vms_white_24dp);
+                    setItemVisible(Item.TYPE_VMS, true);
+                }
+                return true;
+            case R.id.car_park_item:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                    item.setIcon(R.drawable.ic_car_park_white_off_24dp);
+                    setItemVisible(Item.TYPE_CAR_PARK, false);
+                } else {
+                    item.setChecked(true);
+                    item.setIcon(R.drawable.ic_car_park_white_24dp);
+                    setItemVisible(Item.TYPE_CAR_PARK, true);
+                }
+                return true;
+            case R.id.traffic_camera_item:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                    item.setIcon(R.drawable.ic_anpr_white_off_24dp);
+                    setItemVisible(Item.TYPE_ANPR, false);
+                } else {
+                    item.setChecked(true);
+                    item.setIcon(R.drawable.ic_anpr_white_24dp);
+                    setItemVisible(Item.TYPE_ANPR, true);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -125,6 +176,16 @@ public class MapsActivity extends AppCompatActivity
             Item item = entry.getValue();
             if (item instanceof WorldsensingItem) {
                 ((WorldsensingItem) item).update();
+            }
+        }
+    }
+
+    private void setItemVisible(@Item.Type int type, boolean visible) {
+        Iterator<Map.Entry<Marker, Item>> iterator = markerMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Marker, Item> entry = iterator.next();
+            if (entry.getValue().getType() == type) {
+                entry.getKey().setVisible(visible);
             }
         }
     }

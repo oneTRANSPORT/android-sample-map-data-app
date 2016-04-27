@@ -48,6 +48,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
     public WorldsensingItem(int offset) {
         super("Worldsensing " + String.valueOf(offset));
         this.offset = offset;
+        setType(TYPE_CAR_PARK);
         loadPosition();
     }
 
@@ -148,18 +149,18 @@ public class WorldsensingItem extends Item implements DougalCallback {
 //                latLng = new LatLng(lat, lon);
 //            }
 //        } catch (Exception e) {
-            // Generate a nearby location if no response from the CSE.
-            switch (offset) {
-                case 0:
-                    latLng = new LatLng(51.807744, -0.811782);
-                    break;
-                case 1:
-                    latLng = new LatLng(51.811396, -0.814565);
-                    break;
-                case 2:
-                    latLng = new LatLng(51.814096, -0.802537);
-                    break;
-            }
+        // Generate a nearby location if no response from the CSE.
+        switch (offset) {
+            case 0:
+                latLng = new LatLng(51.807744, -0.811782);
+                break;
+            case 1:
+                latLng = new LatLng(51.811396, -0.814565);
+                break;
+            case 2:
+                latLng = new LatLng(51.814096, -0.802537);
+                break;
+        }
 //        }
     }
 

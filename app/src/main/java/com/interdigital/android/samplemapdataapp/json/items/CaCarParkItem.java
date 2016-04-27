@@ -54,8 +54,8 @@ public class CaCarParkItem extends Item {
     @SerializedName("longitude")
     private String longitude;
 
-    public CaCarParkItem(String title) {
-        super(title);
+    public CaCarParkItem() {
+        setType(TYPE_CAR_PARK);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CaCarParkItem extends Item {
 
     @Override
     public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
-
+        // No updates currently available.
     }
 
     @Override
