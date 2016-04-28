@@ -29,12 +29,14 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private ProgressBar progressBar;
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private HashMap<String, PredefinedLocation> predefinedLocationMap = new HashMap<>();
+    private boolean moveMap;
 
     public LoadMarkerTask(GoogleMap googleMap, HashMap<Marker, Item> markerMap,
-                          ProgressBar progressBar) {
+                          ProgressBar progressBar, boolean moveMap) {
         this.googleMap = googleMap;
         this.markerMap = markerMap;
         this.progressBar = progressBar;
+        this.moveMap = moveMap;
     }
 
     @Override
@@ -68,8 +70,10 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         }
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(51.8128587, -0.8086542), 15));
+        if (moveMap) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(51.8128587, -0.8086542), 15));
+        }
     }
 
     private void addWorldSensing() {

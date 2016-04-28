@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -39,19 +40,19 @@ import java.util.UUID;
 
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, Handler.Callback,
-        DougalCallback, NavigationView.OnNavigationItemSelectedListener {
+        DougalCallback, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "MapsActivity";
     private static final int MSG_SET_PLEASE_UPDATE = 1;
 
     private Context context;
     private SupportMapFragment mapFragment;
+    private GoogleMap googleMap;
     // Needed for quick look-up.
     private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Handler handler = new Handler(this);
     private String installationId;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -65,25 +66,19 @@ public class MapsActivity extends AppCompatActivity
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
         PreferenceManager.setDefaultValues(this, Storage.FILE_NAME, MODE_PRIVATE,
-                R.xml.pref_general, false);
+                R.xml.pref_server, false);
         CseDetails.initialiseFromPrefs(context);
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         maybeCreateInstallationId();
         maybeCreateAe();
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(this);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
-//        drawerList = (ListView) findViewById(R.id.left_drawer);
-//        drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item,
-//                new String[]{"VM signs", "Car parks", "Traffic flow"}));
-//        drawerList.setOnItemClickListener(this);
-//        for (int i = 0; i < drawerList.getChildCount(); i++) {
-//            drawerList.setItemChecked(i, true);
-//        }
+        ((CheckBox) findViewById(R.id.vms_checkbox)).setOnCheckedChangeListener(this);
+        ((CheckBox) findViewById(R.id.car_park_checkbox)).setOnCheckedChangeListener(this);
+        ((CheckBox) findViewById(R.id.traffic_flow_checkbox)).setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -118,39 +113,15 @@ public class MapsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         actionBarDrawerToggle.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-//            case R.id.vms_item:
-//                if (item.isChecked()) {
-//                    item.setChecked(false);
-//                    item.setIcon(R.drawable.ic_vms_white_off_24dp);
-//                    setItemVisible(Item.TYPE_VMS, false);
-//                } else {
-//                    item.setChecked(true);
-//                    item.setIcon(R.drawable.ic_vms_white_24dp);
-//                    setItemVisible(Item.TYPE_VMS, true);
-//                }
-//                return true;
-//            case R.id.car_park_item:
-//                if (item.isChecked()) {
-//                    item.setChecked(false);
-//                    item.setIcon(R.drawable.ic_car_park_white_off_24dp);
-//                    setItemVisible(Item.TYPE_CAR_PARK, false);
-//                } else {
-//                    item.setChecked(true);
-//                    item.setIcon(R.drawable.ic_car_park_white_24dp);
-//                    setItemVisible(Item.TYPE_CAR_PARK, true);
-//                }
-//                return true;
-//            case R.id.traffic_camera_item:
-//                if (item.isChecked()) {
-//                    item.setChecked(false);
-//                    item.setIcon(R.drawable.ic_anpr_white_off_24dp);
-//                    setItemVisible(Item.TYPE_ANPR, false);
-//                } else {
-//                    item.setChecked(true);
-//                    item.setIcon(R.drawable.ic_anpr_white_24dp);
-//                    setItemVisible(Item.TYPE_ANPR, true);
-//                }
-//                return true;
+            case R.id.refresh_item:
+                googleMap.clear();
+                markerMap.clear();
+                ((CheckBox) findViewById(R.id.vms_checkbox)).setChecked(true);
+                ((CheckBox) findViewById(R.id.car_park_checkbox)).setChecked(true);
+                ((CheckBox) findViewById(R.id.traffic_flow_checkbox)).setChecked(true);
+                new LoadMarkerTask(googleMap, markerMap,
+                        (ProgressBar) findViewById(R.id.progress_bar), false).execute();
+                return true;
             case R.id.settings_item:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
@@ -161,11 +132,12 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(this);
-        new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar))
-                .execute();
+        new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
+                true).execute();
         handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
     }
 
@@ -203,47 +175,32 @@ public class MapsActivity extends AppCompatActivity
         return markerMap.get(marker).getInfoContents(context);
     }
 
+
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.vms_item:
-                if (item.isChecked()) {
-                    item.setIcon(R.drawable.ic_vms_white_off_24dp);
-                    setItemVisible(Item.TYPE_VMS, false);
-//                    item.setChecked(false);
-                } else {
-                    item.setIcon(R.drawable.ic_vms_white_24dp);
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        switch (compoundButton.getId()) {
+            case R.id.vms_checkbox:
+                if (checked) {
                     setItemVisible(Item.TYPE_VMS, true);
-//                    item.setChecked(true);
-                }
-                drawerLayout.closeDrawers();
-                return true;
-            case R.id.car_park_item:
-                if (item.isChecked()) {
-                    item.setIcon(R.drawable.ic_car_park_white_off_24dp);
-                    setItemVisible(Item.TYPE_CAR_PARK, false);
-//                    item.setChecked(false);
                 } else {
-                    item.setIcon(R.drawable.ic_car_park_white_24dp);
+                    setItemVisible(Item.TYPE_VMS, false);
+                }
+                break;
+            case R.id.car_park_checkbox:
+                if (checked) {
                     setItemVisible(Item.TYPE_CAR_PARK, true);
-//                    item.setChecked(true);
-                }
-                drawerLayout.closeDrawers();
-                return true;
-            case R.id.traffic_camera_item:
-                if (item.isChecked()) {
-                    item.setIcon(R.drawable.ic_anpr_white_off_24dp);
-                    setItemVisible(Item.TYPE_ANPR, false);
-//                    item.setChecked(false);
                 } else {
-                    item.setIcon(R.drawable.ic_anpr_white_24dp);
-                    setItemVisible(Item.TYPE_ANPR, true);
-//                    item.setChecked(true);
+                    setItemVisible(Item.TYPE_CAR_PARK, false);
                 }
-                drawerLayout.closeDrawers();
-                return true;
+                break;
+            case R.id.traffic_flow_checkbox:
+                if (checked) {
+                    setItemVisible(Item.TYPE_ANPR, true);
+                } else {
+                    setItemVisible(Item.TYPE_ANPR, false);
+                }
+                break;
         }
-        return false;
     }
 
     @Override

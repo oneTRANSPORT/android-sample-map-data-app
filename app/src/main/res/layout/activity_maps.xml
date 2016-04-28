@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
         <fragment
             android:id="@+id/map"
@@ -36,11 +36,105 @@
             android:layout_marginTop="-8dp"/><!-- TODO Fix. -->
     </RelativeLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/navigation"
+    <LinearLayout
+        android:id="@+id/overlay_chooser"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/navigation_menu"/>
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/drawer_header"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/vms_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:checked="true"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:alpha="222"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Variable Message Signs"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/car_park_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:checked="true"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:alpha="222"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Car parks"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/traffic_flow_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:checked="true"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:alpha="222"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Traffic flow"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -105,6 +105,7 @@ public class CaCarParkItem extends Item {
         linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView nameTextView = new TextView(context);
+        // TODO Decide what we want in the feed.
         nameTextView.setText(carParkIdentity.replace("BUCK-", "").replaceAll("_", " "));
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
