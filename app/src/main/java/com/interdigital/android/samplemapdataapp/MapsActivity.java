@@ -52,33 +52,25 @@ public class MapsActivity extends AppCompatActivity
     private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Handler handler = new Handler(this);
     private String installationId;
+    private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private CheckBox vmsCheckbox;
+    private CheckBox carParkCheckbox;
+    private CheckBox trafficFlowCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         setContentView(R.layout.activity_maps);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-
-        PreferenceManager.setDefaultValues(this, Storage.FILE_NAME, MODE_PRIVATE,
-                R.xml.pref_server, false);
-        CseDetails.initialiseFromPrefs(context);
+        initialiseToolbar();
+        initialisePreferences();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         maybeCreateInstallationId();
         maybeCreateAe();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.open_drawer, R.string.close_drawer);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        ((CheckBox) findViewById(R.id.vms_checkbox)).setOnCheckedChangeListener(this);
-        ((CheckBox) findViewById(R.id.car_park_checkbox)).setOnCheckedChangeListener(this);
-        ((CheckBox) findViewById(R.id.traffic_flow_checkbox)).setOnCheckedChangeListener(this);
+        initialiseDrawer();
     }
 
     @Override
@@ -209,6 +201,13 @@ public class MapsActivity extends AppCompatActivity
         super.onPause();
     }
 
+    private void initialiseToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+    }
+
     private void maybeCreateInstallationId() {
         installationId = Storage.getInstallationId(context);
         if (installationId == null) {
@@ -225,6 +224,25 @@ public class MapsActivity extends AppCompatActivity
                 CseDetails.appName, applicationId);
         applicationEntity.createAsync(CseDetails.METHOD + CseDetails.hostName, CseDetails.cseName,
                 CseDetails.userName, CseDetails.password, this);
+    }
+
+    private void initialisePreferences() {
+        PreferenceManager.setDefaultValues(this, Storage.FILE_NAME, MODE_PRIVATE,
+                R.xml.pref_server, false);
+        CseDetails.initialiseFromPrefs(context);
+    }
+
+    private void initialiseDrawer() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.open_drawer, R.string.close_drawer);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        vmsCheckbox = (CheckBox) findViewById(R.id.vms_checkbox);
+        carParkCheckbox.setOnCheckedChangeListener(this);
+        trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
+        vmsCheckbox.setOnCheckedChangeListener(this);
+        carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
+        trafficFlowCheckBox.setOnCheckedChangeListener(this);
     }
 
     private void updateAll() {
