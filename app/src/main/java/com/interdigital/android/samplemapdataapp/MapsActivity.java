@@ -238,10 +238,10 @@ public class MapsActivity extends AppCompatActivity
                 R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         vmsCheckbox = (CheckBox) findViewById(R.id.vms_checkbox);
-        carParkCheckbox.setOnCheckedChangeListener(this);
+        carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
-        carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
+        carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
     }
 
