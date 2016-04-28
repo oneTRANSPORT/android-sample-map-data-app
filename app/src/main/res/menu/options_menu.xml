@@ -1,32 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:checkableBehavior="all">
-        <item
-            android:id="@+id/vms_item"
-            android:checked="true"
-            android:icon="@drawable/ic_vms_white_24dp"
-            android:orderInCategory="1"
-            android:title="Variable message signs"
-            app:showAsAction="always"/>
-        <item
-            android:id="@+id/car_park_item"
-            android:checked="true"
-            android:icon="@drawable/ic_car_park_white_24dp"
-            android:orderInCategory="2"
-            android:title="Car parks"
-            app:showAsAction="always"/>
-        <item
-            android:id="@+id/traffic_camera_item"
-            android:checked="true"
-            android:icon="@drawable/ic_anpr_white_24dp"
-            android:orderInCategory="3"
-            android:title="Traffic cameras"
-            app:showAsAction="always"/>
-    </group>
     <item
         android:id="@+id/settings_item"
+        android:icon="@drawable/ic_settings_white_24dp"
         android:orderInCategory="4"
         android:title="Settings"
-        app:showAsAction="never"/>
+        app:showAsAction="always"/>
 </menu>

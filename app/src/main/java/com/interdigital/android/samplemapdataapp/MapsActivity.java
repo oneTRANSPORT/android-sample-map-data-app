@@ -2,11 +2,18 @@ package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +39,7 @@ import java.util.UUID;
 
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, Handler.Callback,
-        DougalCallback {
+        DougalCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MapsActivity";
     private static final int MSG_SET_PLEASE_UPDATE = 1;
@@ -43,13 +50,20 @@ public class MapsActivity extends AppCompatActivity
     private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Handler handler = new Handler(this);
     private String installationId;
-
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         setContentView(R.layout.activity_maps);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+
         PreferenceManager.setDefaultValues(this, Storage.FILE_NAME, MODE_PRIVATE,
                 R.xml.pref_general, false);
         CseDetails.initialiseFromPrefs(context);
@@ -57,6 +71,40 @@ public class MapsActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         maybeCreateInstallationId();
         maybeCreateAe();
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.open_drawer, R.string.close_drawer);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+//        drawerList = (ListView) findViewById(R.id.left_drawer);
+//        drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item,
+//                new String[]{"VM signs", "Car parks", "Traffic flow"}));
+//        drawerList.setOnItemClickListener(this);
+//        for (int i = 0; i < drawerList.getChildCount(); i++) {
+//            drawerList.setItemChecked(i, true);
+//        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onPostCreate(savedInstanceState, persistentState);
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -68,40 +116,41 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        actionBarDrawerToggle.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case R.id.vms_item:
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                    item.setIcon(R.drawable.ic_vms_white_off_24dp);
-                    setItemVisible(Item.TYPE_VMS, false);
-                } else {
-                    item.setChecked(true);
-                    item.setIcon(R.drawable.ic_vms_white_24dp);
-                    setItemVisible(Item.TYPE_VMS, true);
-                }
-                return true;
-            case R.id.car_park_item:
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                    item.setIcon(R.drawable.ic_car_park_white_off_24dp);
-                    setItemVisible(Item.TYPE_CAR_PARK, false);
-                } else {
-                    item.setChecked(true);
-                    item.setIcon(R.drawable.ic_car_park_white_24dp);
-                    setItemVisible(Item.TYPE_CAR_PARK, true);
-                }
-                return true;
-            case R.id.traffic_camera_item:
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                    item.setIcon(R.drawable.ic_anpr_white_off_24dp);
-                    setItemVisible(Item.TYPE_ANPR, false);
-                } else {
-                    item.setChecked(true);
-                    item.setIcon(R.drawable.ic_anpr_white_24dp);
-                    setItemVisible(Item.TYPE_ANPR, true);
-                }
-                return true;
+//            case R.id.vms_item:
+//                if (item.isChecked()) {
+//                    item.setChecked(false);
+//                    item.setIcon(R.drawable.ic_vms_white_off_24dp);
+//                    setItemVisible(Item.TYPE_VMS, false);
+//                } else {
+//                    item.setChecked(true);
+//                    item.setIcon(R.drawable.ic_vms_white_24dp);
+//                    setItemVisible(Item.TYPE_VMS, true);
+//                }
+//                return true;
+//            case R.id.car_park_item:
+//                if (item.isChecked()) {
+//                    item.setChecked(false);
+//                    item.setIcon(R.drawable.ic_car_park_white_off_24dp);
+//                    setItemVisible(Item.TYPE_CAR_PARK, false);
+//                } else {
+//                    item.setChecked(true);
+//                    item.setIcon(R.drawable.ic_car_park_white_24dp);
+//                    setItemVisible(Item.TYPE_CAR_PARK, true);
+//                }
+//                return true;
+//            case R.id.traffic_camera_item:
+//                if (item.isChecked()) {
+//                    item.setChecked(false);
+//                    item.setIcon(R.drawable.ic_anpr_white_off_24dp);
+//                    setItemVisible(Item.TYPE_ANPR, false);
+//                } else {
+//                    item.setChecked(true);
+//                    item.setIcon(R.drawable.ic_anpr_white_24dp);
+//                    setItemVisible(Item.TYPE_ANPR, true);
+//                }
+//                return true;
             case R.id.settings_item:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
@@ -155,6 +204,49 @@ public class MapsActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.vms_item:
+                if (item.isChecked()) {
+                    item.setIcon(R.drawable.ic_vms_white_off_24dp);
+                    setItemVisible(Item.TYPE_VMS, false);
+//                    item.setChecked(false);
+                } else {
+                    item.setIcon(R.drawable.ic_vms_white_24dp);
+                    setItemVisible(Item.TYPE_VMS, true);
+//                    item.setChecked(true);
+                }
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.car_park_item:
+                if (item.isChecked()) {
+                    item.setIcon(R.drawable.ic_car_park_white_off_24dp);
+                    setItemVisible(Item.TYPE_CAR_PARK, false);
+//                    item.setChecked(false);
+                } else {
+                    item.setIcon(R.drawable.ic_car_park_white_24dp);
+                    setItemVisible(Item.TYPE_CAR_PARK, true);
+//                    item.setChecked(true);
+                }
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.traffic_camera_item:
+                if (item.isChecked()) {
+                    item.setIcon(R.drawable.ic_anpr_white_off_24dp);
+                    setItemVisible(Item.TYPE_ANPR, false);
+//                    item.setChecked(false);
+                } else {
+                    item.setIcon(R.drawable.ic_anpr_white_24dp);
+                    setItemVisible(Item.TYPE_ANPR, true);
+//                    item.setChecked(true);
+                }
+                drawerLayout.closeDrawers();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     protected void onPause() {
         handler.removeMessages(MSG_SET_PLEASE_UPDATE);
         super.onPause();
@@ -196,5 +288,6 @@ public class MapsActivity extends AppCompatActivity
             }
         }
     }
+
 }
 
