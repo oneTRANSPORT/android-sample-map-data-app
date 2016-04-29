@@ -27,8 +27,8 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MapsActivity">
-        </activity>
+            android:parentActivityName=".MapsActivity"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

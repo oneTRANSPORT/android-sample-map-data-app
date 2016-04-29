@@ -2,6 +2,7 @@ package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.view.GravityCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -80,10 +81,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
     public void getResponse(Resource resource, Throwable throwable) {
         if (resource == null) {
             Log.e(TAG, "Worldsensing content instance not retrieved.");
-            full = false;
-            if (Math.random() > 0.7) {
-                full = true;
-            }
+            full = Math.random() > 0.7;
         } else {
             try {
                 String jsonContent = ((ContentInstance) resource).getContent();
@@ -111,17 +109,17 @@ public class WorldsensingItem extends Item implements DougalCallback {
         signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
         if (!full) {
-            signTextView.setText("SPACE");
+            signTextView.setText(R.string.space);
         } else {
-            signTextView.setText("FULL");
+            signTextView.setText(R.string.full);
         }
         linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView nameTextView = new TextView(context);
-        nameTextView.setText("Worldsensing");
+        nameTextView.setText(R.string.worldsensing);
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        nameTextView.setGravity(Gravity.RIGHT);
+        nameTextView.setGravity(GravityCompat.END);
         linearLayout.addView(nameTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return linearLayout;

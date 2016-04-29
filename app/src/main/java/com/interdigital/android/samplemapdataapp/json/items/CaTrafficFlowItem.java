@@ -48,11 +48,8 @@ public class CaTrafficFlowItem extends Item {
         if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
             return false;
         }
-        if (!TextUtils.isEmpty(vehicleFlow.trim())
-                && !TextUtils.isEmpty(averageVehicleSpeed.trim())) {
-            return true;
-        }
-        return false;
+        return !TextUtils.isEmpty(vehicleFlow.trim())
+                && !TextUtils.isEmpty(averageVehicleSpeed.trim());
     }
 
     @Override
@@ -60,14 +57,14 @@ public class CaTrafficFlowItem extends Item {
         if (predefinedLocationMap.containsKey(locationReference)) {
             PredefinedLocation predefinedLocation = predefinedLocationMap.get(locationReference);
             setLatLng(new LatLng(
-                    Double.valueOf(predefinedLocation.fromLatitude),
-                    Double.valueOf(predefinedLocation.fromLongitude)));
-            if (!TextUtils.isEmpty(predefinedLocation.descriptor)) {
-                locationReference = predefinedLocation.descriptor;
-            } else if (!TextUtils.isEmpty(predefinedLocation.toDescriptor)) {
-                locationReference = predefinedLocation.toDescriptor;
-            } else if (!TextUtils.isEmpty(predefinedLocation.fromDescriptor)) {
-                locationReference = predefinedLocation.fromDescriptor;
+                    Double.valueOf(predefinedLocation.getFromLatitude()),
+                    Double.valueOf(predefinedLocation.getFromLongitude())));
+            if (!TextUtils.isEmpty(predefinedLocation.getDescriptor())) {
+                locationReference = predefinedLocation.getDescriptor();
+            } else if (!TextUtils.isEmpty(predefinedLocation.getToDescriptor())) {
+                locationReference = predefinedLocation.getToDescriptor();
+            } else if (!TextUtils.isEmpty(predefinedLocation.getFromDescriptor())) {
+                locationReference = predefinedLocation.getFromDescriptor();
             }
         } else {
             setLatLng(new LatLng(0, 0));
@@ -76,10 +73,6 @@ public class CaTrafficFlowItem extends Item {
 
     public String getLocationReference() {
         return locationReference;
-    }
-
-    public void setLocationReference(String locationReference) {
-        this.locationReference = locationReference;
     }
 
     public String getVehicleFlow() {
@@ -138,11 +131,11 @@ public class CaTrafficFlowItem extends Item {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
-        ((TextView) view.findViewById(R.id.cars_text_view)).setText(vehicleFlow + " cars/min");
-        ((TextView) view.findViewById(R.id.speed_text_view)).setText(
-                averageVehicleSpeed.replaceFirst("\\.[0-9]*", "") + "kph");
-        // TODO Looks like we don't have this data available.
-//        ((TextView) view.findViewById(R.id.timer_text_view)).setText(travelTime+" secs");
+        ((TextView) view.findViewById(R.id.cars_text_view))
+                .setText(String.format(context.getString(R.string.cars_per_min), vehicleFlow));
+        ((TextView) view.findViewById(R.id.speed_text_view))
+                .setText(String.format(context.getString(R.string.kph),
+                        averageVehicleSpeed.replaceFirst("\\.[0-9]*", "")));
         ((TextView) view.findViewById(R.id.location_text_view)).setText(locationReference);
         return view;
     }

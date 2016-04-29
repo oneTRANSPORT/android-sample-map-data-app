@@ -22,9 +22,9 @@ public class SettingsFragment extends PreferenceFragment
     public void onResume() {
         super.onResume();
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
-        onSharedPreferenceChanged(sharedPreferences, "pref_host_name");
-        onSharedPreferenceChanged(sharedPreferences, "pref_cse_name");
-        onSharedPreferenceChanged(sharedPreferences, "pref_user_name");
+        onSharedPreferenceChanged(sharedPreferences, Storage.KEY_HOST_NAME);
+        onSharedPreferenceChanged(sharedPreferences, Storage.KEY_CSE_NAME);
+        onSharedPreferenceChanged(sharedPreferences, Storage.KEY_USER_NAME);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -36,15 +36,19 @@ public class SettingsFragment extends PreferenceFragment
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("pref_host_name")) {
-            Preference hostNamePref = findPreference(key);
-            hostNamePref.setSummary(sharedPreferences.getString(key, ""));
-        } else if (key.equals("pref_cse_name")) {
-            Preference cseNamePref = findPreference(key);
-            cseNamePref.setSummary(sharedPreferences.getString(key, ""));
-        } else if (key.equals("pref_user_name")) {
-            Preference userNamePref = findPreference(key);
-            userNamePref.setSummary(sharedPreferences.getString(key, ""));
+        switch (key) {
+            case Storage.KEY_HOST_NAME:
+                Preference hostNamePref = findPreference(key);
+                hostNamePref.setSummary(sharedPreferences.getString(key, ""));
+                break;
+            case Storage.KEY_CSE_NAME:
+                Preference cseNamePref = findPreference(key);
+                cseNamePref.setSummary(sharedPreferences.getString(key, ""));
+                break;
+            case Storage.KEY_USER_NAME:
+                Preference userNamePref = findPreference(key);
+                userNamePref.setSummary(sharedPreferences.getString(key, ""));
+                break;
         }
         CseDetails.initialiseFromPrefs(getActivity().getApplicationContext());
     }

@@ -7,38 +7,82 @@ public class PredefinedLocation {
 
     @Expose
     @SerializedName("locationId")
-    public String locationId;
+    private String locationId;
     @Expose
     @SerializedName("latitude")
-    public String latitude;
+    private String latitude;
     @Expose
     @SerializedName("longitude")
-    public String longitude;
+    private String longitude;
     @Expose
     @SerializedName("fromLatitude")
-    public String fromLatitude;
+    private String fromLatitude;
     @Expose
     @SerializedName("fromLongitude")
-    public String fromLongitude;
+    private String fromLongitude;
     @Expose
     @SerializedName("toLatitude")
-    public String toLatitude;
+    private String toLatitude;
     @Expose
     @SerializedName("toLongitude")
-    public String toLongitude;
+    private String toLongitude;
     @Expose
     @SerializedName("name")
-    public String name;
+    private String name;
     @Expose
     @SerializedName("descriptor")
-    public String descriptor;
+    private String descriptor;
     @Expose
     @SerializedName("fromDescriptor")
-    public String fromDescriptor;
+    private String fromDescriptor;
     @Expose
     @SerializedName("toDescriptor")
-    public String toDescriptor;
+    private String toDescriptor;
     @Expose
     @SerializedName("tpegDirection")
-    public String tpegDirection;
+    private String tpegDirection;
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public String getFromLatitude() {
+        return fromLatitude;
+    }
+
+    public String getFromLongitude() {
+        return fromLongitude;
+    }
+
+    public String getToLatitude() {
+        return toLatitude;
+    }
+
+    public String getToLongitude() {
+        return toLongitude;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescriptor() {
+        return descriptor;
+    }
+
+    public String getFromDescriptor() {
+        return fromDescriptor;
+    }
+
+    public String getToDescriptor() {
+        return toDescriptor;
+    }
 }

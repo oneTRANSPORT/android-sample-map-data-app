@@ -2,6 +2,7 @@ package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.view.GravityCompat;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -76,14 +77,14 @@ public class CaVmsItem extends Item {
         if (predefinedLocationMap.containsKey(locationReference)) {
             PredefinedLocation predefinedLocation = predefinedLocationMap.get(locationReference);
             setLatLng(new LatLng(
-                    Double.valueOf(predefinedLocation.latitude),
-                    Double.valueOf(predefinedLocation.longitude)));
-            if (!TextUtils.isEmpty(predefinedLocation.descriptor)) {
-                locationReference = predefinedLocation.descriptor;
-            } else if (!TextUtils.isEmpty(predefinedLocation.toDescriptor)) {
-                locationReference = predefinedLocation.toDescriptor;
-            } else if (!TextUtils.isEmpty(predefinedLocation.fromDescriptor)) {
-                locationReference = predefinedLocation.fromDescriptor;
+                    Double.valueOf(predefinedLocation.getLatitude()),
+                    Double.valueOf(predefinedLocation.getLongitude())));
+            if (!TextUtils.isEmpty(predefinedLocation.getDescriptor())) {
+                locationReference = predefinedLocation.getDescriptor();
+            } else if (!TextUtils.isEmpty(predefinedLocation.getToDescriptor())) {
+                locationReference = predefinedLocation.getToDescriptor();
+            } else if (!TextUtils.isEmpty(predefinedLocation.getFromDescriptor())) {
+                locationReference = predefinedLocation.getFromDescriptor();
             }
         } else {
             setLatLng(new LatLng(0, 0));
@@ -112,7 +113,7 @@ public class CaVmsItem extends Item {
         nameTextView.setText(locationReference);
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        nameTextView.setGravity(Gravity.RIGHT);
+        nameTextView.setGravity(GravityCompat.END);
         linearLayout.addView(nameTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return linearLayout;

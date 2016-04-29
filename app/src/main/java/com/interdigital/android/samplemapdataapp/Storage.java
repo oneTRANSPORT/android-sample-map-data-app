@@ -2,7 +2,6 @@ package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 public class Storage {
 
@@ -25,32 +24,16 @@ public class Storage {
         return getString(context, KEY_HOST_NAME);
     }
 
-    public static void putHostName(Context context, String hostName) {
-        putString(context, KEY_HOST_NAME, hostName);
-    }
-
     public static String getCseName(Context context) {
         return getString(context, KEY_CSE_NAME);
-    }
-
-    public static void putCseName(Context context, String cseName) {
-        putString(context, KEY_CSE_NAME, cseName);
     }
 
     public static String getUserName(Context context) {
         return getString(context, KEY_USER_NAME);
     }
 
-    public static void putUserName(Context context, String userName) {
-        putString(context, KEY_USER_NAME, userName);
-    }
-
     public static String getPassword(Context context) {
         return getString(context, KEY_PASSWORD);
-    }
-
-    public static void putPassword(Context context, String password) {
-        putString(context, KEY_PASSWORD, password);
     }
 
     private static String getString(Context context, String key) {

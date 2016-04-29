@@ -34,7 +34,6 @@ import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -108,9 +107,9 @@ public class MapsActivity extends AppCompatActivity
             case R.id.refresh_item:
                 googleMap.clear();
                 markerMap.clear();
-                ((CheckBox) findViewById(R.id.vms_checkbox)).setChecked(true);
-                ((CheckBox) findViewById(R.id.car_park_checkbox)).setChecked(true);
-                ((CheckBox) findViewById(R.id.traffic_flow_checkbox)).setChecked(true);
+                vmsCheckbox.setChecked(true);
+                carParkCheckbox.setChecked(true);
+                trafficFlowCheckBox.setChecked(true);
                 new LoadMarkerTask(googleMap, markerMap,
                         (ProgressBar) findViewById(R.id.progress_bar), false).execute();
                 return true;
@@ -255,9 +254,7 @@ public class MapsActivity extends AppCompatActivity
     }
 
     private void setItemVisible(@Item.Type int type, boolean visible) {
-        Iterator<Map.Entry<Marker, Item>> iterator = markerMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Marker, Item> entry = iterator.next();
+        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
             if (entry.getValue().getType() == type) {
                 entry.getKey().setVisible(visible);
             }

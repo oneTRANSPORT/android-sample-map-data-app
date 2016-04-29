@@ -10,4 +10,10 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
 
+    <string name="cars_per_min">%1$s cars/min</string>
+    <string name="kph">%1$skph</string>
+
+    <string name="space">SPACE</string>
+    <string name="full">FULL</string>
+    <string name="worldsensing">Worldsensing</string>
 </resources>

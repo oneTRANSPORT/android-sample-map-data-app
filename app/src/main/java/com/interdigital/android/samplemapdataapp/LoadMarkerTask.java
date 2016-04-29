@@ -113,7 +113,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         publishProgress(56);
         for (int i = 0; i < predefinedLocations.length; i++) {
             for (int j = 0; j < predefinedLocations[i].length; j++) {
-                predefinedLocationMap.put(predefinedLocations[i][j].locationId, predefinedLocations[i][j]);
+                predefinedLocationMap.put(predefinedLocations[i][j].getLocationId(), predefinedLocations[i][j]);
             }
         }
     }
