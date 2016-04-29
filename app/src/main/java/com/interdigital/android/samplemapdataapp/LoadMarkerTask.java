@@ -45,9 +45,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             addWorldSensing();
             loadPredefinedLocations();
             loadCaVms();
-            publishProgress(77);
+            publishProgress(70);
             loadCaCarParks();
-            publishProgress(88);
+            publishProgress(84);
             loadCaTrafficFlow();
             publishProgress(100);
         } catch (Exception e) {
@@ -72,17 +72,15 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         // Zoom out for VMS.
         if (moveMap) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(51.8128587, -0.8086542), 15));
+                    new LatLng(51.8128587, -0.8239542), 13));
         }
     }
 
     private void addWorldSensing() {
-        itemList.add(new WorldsensingItem(0));
-        publishProgress(11);
-        itemList.add(new WorldsensingItem(1));
-        publishProgress(22);
-        itemList.add(new WorldsensingItem(2));
-        publishProgress(33);
+        for (int i = 0; i < 6; i++) {
+            itemList.add(new WorldsensingItem(i));
+            publishProgress(14);
+        }
     }
 
     private void loadPredefinedLocations() throws Exception {
@@ -92,7 +90,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 CseDetails.userName, CseDetails.password);
         predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        publishProgress(44);
+        publishProgress(28);
         // TODO This feed is currently broken.
         // TODO But we don't think there is much in it that we need.
 //        contentInstance = Container.retrieveLatest(CseDetails.aeId,
@@ -106,13 +104,13 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 CseDetails.userName, CseDetails.password);
         predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        publishProgress(55);
+        publishProgress(42);
         contentInstance = Container.retrieveLatest(CseDetails.aeId,
                 CseDetails.baseUrl, "BCCFeedImportPredefinedLinkLocation/All",
                 CseDetails.userName, CseDetails.password);
         predefinedLocations[2] = gson.fromJson(contentInstance.getContent(),
                 PredefinedLocation[].class);
-        publishProgress(66);
+        publishProgress(56);
         for (int i = 0; i < predefinedLocations.length; i++) {
             for (int j = 0; j < predefinedLocations[i].length; j++) {
                 predefinedLocationMap.put(predefinedLocations[i][j].locationId, predefinedLocations[i][j]);

@@ -38,7 +38,10 @@ public class WorldsensingItem extends Item implements DougalCallback {
     private static final String[] CONTAINERS_UPDATING = {
             "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b11dbcb9b3277b782e708",
             "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b15b0cb9b3277b782ec0d",
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b12b4cb9b3277b782e821"
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b12b4cb9b3277b782e821",
+            "/FastPrk/v1.0/InterdigitalDemo/InterDigital/SensorOccupation/s572148d51170d00d9c6fa697",
+            "/FastPrk/v1.0/InterdigitalDemo/InterDigital/SensorOccupation/s572148d71170e2d79da0df12",
+            "/FastPrk/v1.0/InterdigitalDemo/InterDigital/SensorOccupation/s572212491170e2d79da0fc9f"
     };
     private int offset;
     private LatLng latLng;
@@ -69,7 +72,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
                         .title(getTitle())
                         .position(latLng)
                         .anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_icon))));
+                        .icon(BitmapDescriptorFactory.fromResource(getMarkerIcon()))));
         markerMap.put(getMarker(), this);
     }
 
@@ -91,9 +94,9 @@ public class WorldsensingItem extends Item implements DougalCallback {
             }
         }
         if (full) {
-            getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_full));
+            getMarker().setIcon(BitmapDescriptorFactory.fromResource(getMarkerIconFull()));
         } else {
-            getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_updated));
+            getMarker().setIcon(BitmapDescriptorFactory.fromResource(getMarkerIconUpdated()));
         }
         updating = false;
     }
@@ -127,7 +130,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
     public void update() {
         if (!updating) {
             updating = true;
-            getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.worldsensing_updating));
+            getMarker().setIcon(BitmapDescriptorFactory.fromResource(getMarkerIconUpdating()));
             Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.baseUrl,
                     APP_NAME + CONTAINERS_UPDATING[offset],
                     CseDetails.userName, CseDetails.password, this);
@@ -151,6 +154,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
 //        } catch (Exception e) {
         // Generate a nearby location if no response from the CSE.
         switch (offset) {
+            // UK demo.
             case 0:
                 latLng = new LatLng(51.807744, -0.811782);
                 break;
@@ -160,8 +164,46 @@ public class WorldsensingItem extends Item implements DougalCallback {
             case 2:
                 latLng = new LatLng(51.814096, -0.802537);
                 break;
+            // US demo.
+            case 3:
+                latLng = new LatLng(51.807744, -0.841782);
+                break;
+            case 4:
+                latLng = new LatLng(51.811396, -0.844565);
+                break;
+            case 5:
+                latLng = new LatLng(51.814096, -0.832537);
+                break;
         }
 //        }
+    }
+
+    private int getMarkerIcon() {
+        if (offset < 3) {
+            return R.drawable.worldsensing_icon;
+        }
+        return R.drawable.worldsensing_icon_us;
+    }
+
+    private int getMarkerIconUpdating() {
+        if (offset < 3) {
+            return R.drawable.worldsensing_updating;
+        }
+        return R.drawable.worldsensing_updating_us;
+    }
+
+    private int getMarkerIconUpdated() {
+        if (offset < 3) {
+            return R.drawable.worldsensing_updated;
+        }
+        return R.drawable.worldsensing_updated_us;
+    }
+
+    private int getMarkerIconFull() {
+        if (offset < 3) {
+            return R.drawable.worldsensing_full;
+        }
+        return R.drawable.worldsensing_full_us;
     }
 
 }
