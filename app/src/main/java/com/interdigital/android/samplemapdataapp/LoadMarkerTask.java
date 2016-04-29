@@ -79,8 +79,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private void addWorldSensing() {
         for (int i = 0; i < 6; i++) {
             itemList.add(new WorldsensingItem(i));
-            publishProgress(14);
         }
+        publishProgress(14);
     }
 
     private void loadPredefinedLocations() throws Exception {

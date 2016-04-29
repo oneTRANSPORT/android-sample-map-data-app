@@ -34,7 +34,10 @@ public class WorldsensingItem extends Item implements DougalCallback {
     private static final String[] CONTAINERS_STATIC = {
             "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b11dbcb9b3277b782e708",
             "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b15b0cb9b3277b782ec0d",
-            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b12b4cb9b3277b782e821"
+            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b12b4cb9b3277b782e821",
+            "/FastPrk/v1.0/InterdigitalDemo/InterDigital/Sensor/s572148d51170d00d9c6fa697",
+            "/FastPrk/v1.0/InterdigitalDemo/InterDigital/Sensor/s572148d71170e2d79da0df12",
+            "/FastPrk/v1.0/InterdigitalDemo/InterDigital/Sensor/s572212491170e2d79da0fc9f"
     };
     private static final String[] CONTAINERS_UPDATING = {
             "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b11dbcb9b3277b782e708",
@@ -136,20 +139,20 @@ public class WorldsensingItem extends Item implements DougalCallback {
     }
 
     private void loadPosition() {
-//        try {
-//            // TODO Waiting for David to put these on CSE-02.
-//            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-//                    CseDetails.METHOD + CseDetails.HOST,
-//                    CseDetails.CSE_NAME + "/" + APP_NAME + CONTAINERS_STATIC[offset],
-//                    CseDetails.USER_NAME, CseDetails.PASSWORD);
-//            String jsonContent = contentInstance.getContent();
-//            JSONObject jsonObject = new JSONObject(jsonContent);
-//            if (jsonObject.optJSONObject("position") != null) {
-//                double lat = jsonObject.getJSONObject("position").getDouble("lat");
-//                double lon = jsonObject.getJSONObject("position").getDouble("lon");
-//                latLng = new LatLng(lat, lon);
-//            }
-//        } catch (Exception e) {
+        try {
+            // TODO Waiting for David to put these on CSE-02.
+            ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
+                    CseDetails.METHOD + CseDetails.hostName,
+                    CseDetails.cseName + "/" + APP_NAME + CONTAINERS_STATIC[offset],
+                    CseDetails.userName, CseDetails.password);
+            String jsonContent = contentInstance.getContent();
+            JSONObject jsonObject = new JSONObject(jsonContent);
+            if (jsonObject.optJSONObject("position") != null) {
+                double lat = jsonObject.getJSONObject("position").getDouble("lat");
+                double lon = jsonObject.getJSONObject("position").getDouble("lon");
+                latLng = new LatLng(lat, lon);
+            }
+        } catch (Exception e) {
         // Generate a nearby location if no response from the CSE.
         switch (offset) {
             // UK demo.
@@ -173,7 +176,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
                 latLng = new LatLng(51.814096, -0.832537);
                 break;
         }
-//        }
+        }
     }
 
     private int getMarkerIcon() {
