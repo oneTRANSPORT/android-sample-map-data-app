@@ -18,13 +18,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.dougal.resource.Container;
 import com.interdigital.android.dougal.resource.ContentInstance;
-import com.interdigital.android.dougal.resource.DougalCallback;
+import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 public class WorldsensingItem extends Item implements DougalCallback {
@@ -51,10 +52,12 @@ public class WorldsensingItem extends Item implements DougalCallback {
     private LatLng latLng;
     private boolean full = false;
     private boolean updating = false;
+    private WeakReference<MapsActivity> mapsActivityWeakReference;
 
-    public WorldsensingItem(int offset) {
+    public WorldsensingItem(int offset, MapsActivity mapsActivity) {
         super("Worldsensing " + String.valueOf(offset));
         this.offset = offset;
+        mapsActivityWeakReference = new WeakReference<>(mapsActivity);
         setType(TYPE_CAR_PARK);
         loadPosition();
     }
@@ -100,6 +103,10 @@ public class WorldsensingItem extends Item implements DougalCallback {
             getMarker().setIcon(BitmapDescriptorFactory.fromResource(getMarkerIconUpdated()));
         }
         updating = false;
+        MapsActivity mapsActivity = mapsActivityWeakReference.get();
+        if (mapsActivity != null) {
+            mapsActivity.updateCompleted();
+        }
     }
 
     @Override
@@ -153,29 +160,29 @@ public class WorldsensingItem extends Item implements DougalCallback {
                 latLng = new LatLng(lat, lon);
             }
         } catch (Exception e) {
-        // Generate a nearby location if no response from the CSE.
-        switch (offset) {
-            // UK demo.
-            case 0:
-                latLng = new LatLng(51.807744, -0.811782);
-                break;
-            case 1:
-                latLng = new LatLng(51.811396, -0.814565);
-                break;
-            case 2:
-                latLng = new LatLng(51.814096, -0.802537);
-                break;
-            // US demo.
-            case 3:
-                latLng = new LatLng(51.807744, -0.841782);
-                break;
-            case 4:
-                latLng = new LatLng(51.811396, -0.844565);
-                break;
-            case 5:
-                latLng = new LatLng(51.814096, -0.832537);
-                break;
-        }
+            // Generate a nearby location if no response from the CSE.
+            switch (offset) {
+                // UK demo.
+                case 0:
+                    latLng = new LatLng(51.807744, -0.811782);
+                    break;
+                case 1:
+                    latLng = new LatLng(51.811396, -0.814565);
+                    break;
+                case 2:
+                    latLng = new LatLng(51.814096, -0.802537);
+                    break;
+                // US demo.
+                case 3:
+                    latLng = new LatLng(51.807744, -0.841782);
+                    break;
+                case 4:
+                    latLng = new LatLng(51.811396, -0.844565);
+                    break;
+                case 5:
+                    latLng = new LatLng(51.814096, -0.832537);
+                    break;
+            }
         }
     }
 

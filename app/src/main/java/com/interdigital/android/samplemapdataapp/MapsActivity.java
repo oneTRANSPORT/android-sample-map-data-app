@@ -29,8 +29,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.interdigital.android.dougal.Types;
 import com.interdigital.android.dougal.exception.DougalException;
 import com.interdigital.android.dougal.resource.ApplicationEntity;
-import com.interdigital.android.dougal.resource.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
+import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import java.util.HashMap;
@@ -57,6 +57,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox vmsCheckbox;
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
+    private int numberUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class MapsActivity extends AppCompatActivity
                 carParkCheckbox.setChecked(true);
                 trafficFlowCheckBox.setChecked(true);
                 new LoadMarkerTask(googleMap, markerMap,
-                        (ProgressBar) findViewById(R.id.progress_bar), false).execute();
+                        (ProgressBar) findViewById(R.id.progress_bar), false, this).execute();
                 return true;
             case R.id.settings_item:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -128,8 +129,8 @@ public class MapsActivity extends AppCompatActivity
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(this);
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
-                true).execute();
-        handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+                true, this).execute();
+        startUpdateTimer();
     }
 
     @Override
@@ -137,7 +138,6 @@ public class MapsActivity extends AppCompatActivity
         switch (message.what) {
             case MSG_SET_PLEASE_UPDATE:
                 updateAll();
-                handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
                 break;
         }
         return false;
@@ -194,9 +194,22 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
+    public void updateCompleted() {
+        numberUpdated++;
+        if (numberUpdated == 6) {
+            startUpdateTimer();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startUpdateTimer();
+    }
+
     @Override
     protected void onPause() {
-        handler.removeMessages(MSG_SET_PLEASE_UPDATE);
+        stopUpdateTimer();
         super.onPause();
     }
 
@@ -220,9 +233,9 @@ public class MapsActivity extends AppCompatActivity
         CseDetails.appName = "SampleMapDataApp-" + installationId;
         String applicationId = "App-id-" + installationId;
         ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
-                CseDetails.appName, applicationId);
-        applicationEntity.createAsync(CseDetails.METHOD + CseDetails.hostName, CseDetails.cseName,
-                CseDetails.userName, CseDetails.password, this);
+                CseDetails.appName, applicationId, CseDetails.METHOD + CseDetails.hostName,
+                CseDetails.cseName, false);
+        applicationEntity.createAsync(CseDetails.userName, CseDetails.password, this);
     }
 
     private void initialisePreferences() {
@@ -245,6 +258,7 @@ public class MapsActivity extends AppCompatActivity
     }
 
     private void updateAll() {
+        numberUpdated = 0;
         for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
             Item item = entry.getValue();
             if (item instanceof WorldsensingItem) {
@@ -261,5 +275,14 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
+    private void startUpdateTimer() {
+        if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
+            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+        }
+    }
+
+    private void stopUpdateTimer() {
+        handler.removeMessages(MSG_SET_PLEASE_UPDATE);
+    }
 }
 

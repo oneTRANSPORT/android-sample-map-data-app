@@ -30,13 +30,15 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private HashMap<String, PredefinedLocation> predefinedLocationMap = new HashMap<>();
     private boolean moveMap;
+    private MapsActivity mapsActivity;
 
     public LoadMarkerTask(GoogleMap googleMap, HashMap<Marker, Item> markerMap,
-                          ProgressBar progressBar, boolean moveMap) {
+                          ProgressBar progressBar, boolean moveMap, MapsActivity mapsActivity) {
         this.googleMap = googleMap;
         this.markerMap = markerMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
+        this.mapsActivity = mapsActivity;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private void addWorldSensing() {
         for (int i = 0; i < 6; i++) {
-            itemList.add(new WorldsensingItem(i));
+            itemList.add(new WorldsensingItem(i, mapsActivity));
         }
         publishProgress(14);
     }
