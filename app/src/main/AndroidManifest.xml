@@ -3,6 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
+        android:name=".SmdApplication"
         android:allowBackup="true"
         android:icon="@drawable/carpark_icon"
         android:label="@string/title_activity_maps"

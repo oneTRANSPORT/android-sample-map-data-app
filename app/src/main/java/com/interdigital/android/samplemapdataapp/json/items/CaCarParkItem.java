@@ -74,15 +74,19 @@ public class CaCarParkItem extends Item {
 
     @Override
     public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
-        setMarker(googleMap.addMarker(
-                new MarkerOptions()
-                        .title(getTitle())
-                        .position(new LatLng(
-                                Double.valueOf(latitude),
-                                Double.valueOf(longitude)))
-                        .anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.carpark_icon))));
-        markerMap.put(getMarker(), this);
+        try {
+            setMarker(googleMap.addMarker(
+                    new MarkerOptions()
+                            .title(getTitle())
+                            .position(new LatLng(
+                                    Double.valueOf(latitude),
+                                    Double.valueOf(longitude)))
+                            .anchor(0.5f, 0.5f)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.carpark_icon))));
+            markerMap.put(getMarker(), this);
+        } catch (NumberFormatException nfe){
+            // Oh well.  TODO Use properly-typed JSON and this class.
+        }
     }
 
     @Override
