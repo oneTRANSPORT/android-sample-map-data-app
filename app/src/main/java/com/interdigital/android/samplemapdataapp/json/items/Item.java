@@ -70,8 +70,6 @@ public abstract class Item {
         this.latLng = latLng;
     }
 
-    public abstract void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap);
-
     public abstract void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap);
 
     public abstract View getInfoContents(Context context);

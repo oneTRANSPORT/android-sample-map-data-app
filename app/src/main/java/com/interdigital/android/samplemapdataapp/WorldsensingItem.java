@@ -68,11 +68,6 @@ public class WorldsensingItem extends Item implements DougalCallback {
     }
 
     @Override
-    public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
-        // WS does not need this.  TODO Refactor?
-    }
-
-    @Override
     public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
         setMarker(googleMap.addMarker(
                 new MarkerOptions()

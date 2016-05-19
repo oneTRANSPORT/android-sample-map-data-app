@@ -1,22 +1,27 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.interdigital.android.dougal.resource.Container;
-import com.interdigital.android.dougal.resource.ContentInstance;
-import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
 import com.interdigital.android.samplemapdataapp.json.items.CaCarParkItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaVmsItem;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
+
+import net.uk.onetransport.android.county.bucks.carparks.CarPark;
+import net.uk.onetransport.android.county.bucks.carparks.CarParkArray;
+import net.uk.onetransport.android.county.bucks.locations.PredefinedVmsLocation;
+import net.uk.onetransport.android.county.bucks.locations.PredefinedVmsLocationArray;
+import net.uk.onetransport.android.county.bucks.locations.SegmentLocation;
+import net.uk.onetransport.android.county.bucks.locations.SegmentLocationArray;
+import net.uk.onetransport.android.county.bucks.trafficflow.TrafficFlow;
+import net.uk.onetransport.android.county.bucks.trafficflow.TrafficFlowArray;
+import net.uk.onetransport.android.county.bucks.variablemessagesigns.VariableMessageSign;
+import net.uk.onetransport.android.county.bucks.variablemessagesigns.VariableMessageSignArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,8 +32,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private ArrayList<Item> itemList = new ArrayList<>();
     private HashMap<Marker, Item> markerMap = new HashMap<>();
     private ProgressBar progressBar;
-    private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-    private HashMap<String, PredefinedLocation> predefinedLocationMap = new HashMap<>();
+    private HashMap<String, SegmentLocation> segmentLocationMap = new HashMap<>();
     private boolean moveMap;
     private MapsActivity mapsActivity;
 
@@ -45,16 +49,16 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected Void doInBackground(Void... voids) {
         try {
             addWorldSensing();
-            loadPredefinedLocations();
+            publishProgress(50);
             loadCaVms();
             publishProgress(70);
             loadCaCarParks();
             publishProgress(84);
             loadCaTrafficFlow();
-            publishProgress(100);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        publishProgress(100);
         return null;
     }
 
@@ -85,48 +89,23 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         publishProgress(14);
     }
 
-    private void loadPredefinedLocations() throws Exception {
-        PredefinedLocation[][] predefinedLocations = new PredefinedLocation[3][];
-        ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.baseUrl, "BCCFeedImportPredefinedSectionLocation/All",
-                CseDetails.userName, CseDetails.password);
-        predefinedLocations[0] = gson.fromJson(contentInstance.getContent(),
-                PredefinedLocation[].class);
-        publishProgress(28);
-        // TODO This feed is currently broken.
-        // TODO But we don't think there is much in it that we need.
-//        contentInstance = Container.retrieveLatest(CseDetails.aeId,
-//                CseDetails.BASE_URL, "BCCFeedImportPredefinedTrLocation/All",
-//                CseDetails.USER_NAME, CseDetails.PASSWORD);
-//        predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
-//                PredefinedLocation[].class);
-//        publishProgress(--);
-        contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.baseUrl, "BCCFeedImportPredefinedVmsLocation/All",
-                CseDetails.userName, CseDetails.password);
-        predefinedLocations[1] = gson.fromJson(contentInstance.getContent(),
-                PredefinedLocation[].class);
-        publishProgress(42);
-        contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.baseUrl, "BCCFeedImportPredefinedLinkLocation/All",
-                CseDetails.userName, CseDetails.password);
-        predefinedLocations[2] = gson.fromJson(contentInstance.getContent(),
-                PredefinedLocation[].class);
-        publishProgress(56);
-        for (int i = 0; i < predefinedLocations.length; i++) {
-            for (int j = 0; j < predefinedLocations[i].length; j++) {
-                predefinedLocationMap.put(predefinedLocations[i][j].getLocationId(), predefinedLocations[i][j]);
-            }
-        }
-    }
-
     private void loadCaVms() throws Exception {
-        ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.baseUrl, "BCCSignSettingFeedImport/All",
-                CseDetails.userName, CseDetails.password);
-        CaVmsItem[] caVmsItems = gson.fromJson(contentInstance.getContent(), CaVmsItem[].class);
-        for (CaVmsItem caVmsItem : caVmsItems) {
-            caVmsItem.updateLocation(predefinedLocationMap);
+        PredefinedVmsLocationArray predefinedVmsLocationArray = PredefinedVmsLocationArray
+                .getPredefinedVmsLocationArray(CseDetails.aeId, CseDetails.baseUrl,
+                        CseDetails.userName, CseDetails.password);
+
+        HashMap<String, PredefinedVmsLocation> vmsLocationMap = new HashMap<>();
+        for (PredefinedVmsLocation predefinedVmsLocation : predefinedVmsLocationArray
+                .getPredefinedVmsLocations()) {
+            vmsLocationMap.put(predefinedVmsLocation.getLocationId(), predefinedVmsLocation);
+        }
+
+        VariableMessageSignArray variableMessageSignArray = VariableMessageSignArray
+                .getVariableMessageSignArray(CseDetails.aeId, CseDetails.baseUrl,
+                        CseDetails.userName, CseDetails.password);
+
+        for (VariableMessageSign variableMessageSign : variableMessageSignArray.getVariableMessageSigns()) {
+            CaVmsItem caVmsItem = new CaVmsItem(variableMessageSign, vmsLocationMap);
             if (caVmsItem.shouldAdd()) {
                 itemList.add(caVmsItem);
             }
@@ -134,12 +113,11 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     }
 
     private void loadCaCarParks() throws Exception {
-        ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.baseUrl, "BCCCarPark2FeedImport/All",
+        CarParkArray carParkArray = CarParkArray.getCarParkArray(CseDetails.aeId, CseDetails.baseUrl,
                 CseDetails.userName, CseDetails.password);
-        String content = contentInstance.getContent();
-        CaCarParkItem[] caCarParkItems = gson.fromJson(content, CaCarParkItem[].class);
-        for (CaCarParkItem caCarParkItem : caCarParkItems) {
+
+        for (CarPark carPark : carParkArray.getCarParks()) {
+            CaCarParkItem caCarParkItem = new CaCarParkItem(carPark);
             if (caCarParkItem.shouldAdd()) {
                 itemList.add(caCarParkItem);
             }
@@ -147,41 +125,65 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     }
 
     private void loadCaTrafficFlow() throws Exception {
-        ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-                CseDetails.baseUrl, "BCCTrafficFlowFeedImport/All",
-                CseDetails.userName, CseDetails.password);
-        String content = contentInstance.getContent();
-        CaTrafficFlowItem[] caTrafficFlowItems = gson.fromJson(content, CaTrafficFlowItem[].class);
-        HashMap<String, CaTrafficFlowItem> flowMap = new HashMap<>();
-        for (CaTrafficFlowItem caTrafficFlowItem : caTrafficFlowItems) {
-            String locationReference = caTrafficFlowItem.getLocationReference();
-            if (!flowMap.containsKey(locationReference)) {
-                flowMap.put(locationReference, caTrafficFlowItem);
-            } else {
-                CaTrafficFlowItem existingCaTrafficFlowItem = flowMap.get(locationReference);
-                if (!TextUtils.isEmpty(caTrafficFlowItem.getAverageVehicleSpeed())) {
-                    existingCaTrafficFlowItem.setAverageVehicleSpeed(caTrafficFlowItem.getAverageVehicleSpeed());
-                }
-                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowSpeed())) {
-                    existingCaTrafficFlowItem.setFreeFlowSpeed(caTrafficFlowItem.getFreeFlowSpeed());
-                }
-                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowTravelTime())) {
-                    existingCaTrafficFlowItem.setFreeFlowTravelTime(caTrafficFlowItem.getFreeFlowTravelTime());
-                }
-                if (!TextUtils.isEmpty(caTrafficFlowItem.getTravelTime())) {
-                    existingCaTrafficFlowItem.setTravelTime(caTrafficFlowItem.getTravelTime());
-                }
-                if (!TextUtils.isEmpty(caTrafficFlowItem.getVehicleFlow())) {
-                    existingCaTrafficFlowItem.setVehicleFlow(caTrafficFlowItem.getVehicleFlow());
-                }
-            }
+        // TODO Currently not getting any latitude or longitude coordinates.
+
+        SegmentLocationArray segmentLocationArray = SegmentLocationArray.getSegmentLocationArray(
+                CseDetails.aeId, CseDetails.baseUrl, CseDetails.userName, CseDetails.password);
+
+        HashMap<String, SegmentLocation> segmentLocationMap = new HashMap<>();
+        for (SegmentLocation segmentLocation : segmentLocationArray.getSegmentLocations()) {
+            segmentLocationMap.put(segmentLocation.getLocationId(), segmentLocation);
         }
-        for (String key : flowMap.keySet()) {
-            CaTrafficFlowItem caTrafficFlowItem = flowMap.get(key);
-            caTrafficFlowItem.updateLocation(predefinedLocationMap);
+
+        TrafficFlowArray trafficFlowArray = TrafficFlowArray.getTrafficFlowArray(CseDetails.aeId,
+                CseDetails.baseUrl, CseDetails.userName, CseDetails.password);
+
+        for (TrafficFlow trafficFlow : trafficFlowArray.getTrafficFlows()) {
+            CaTrafficFlowItem caTrafficFlowItem = new CaTrafficFlowItem(trafficFlow,
+                    segmentLocationMap);
             if (caTrafficFlowItem.shouldAdd()) {
                 itemList.add(caTrafficFlowItem);
             }
         }
+
+        // TODO    Hopefully we don't need any of this once the Bucks oneTransport library
+        // TODO    is doing it.
+
+//        ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
+//                CseDetails.baseUrl, "BCCTrafficFlowFeedImport/All",
+//                CseDetails.userName, CseDetails.password);
+//        String content = contentInstance.getContent();
+//        CaTrafficFlowItem[] caTrafficFlowItems = gson.fromJson(content, CaTrafficFlowItem[].class);
+//        HashMap<String, CaTrafficFlowItem> flowMap = new HashMap<>();
+//        for (CaTrafficFlowItem caTrafficFlowItem : caTrafficFlowItems) {
+//            String locationReference = caTrafficFlowItem.getLocationReference();
+//            if (!flowMap.containsKey(locationReference)) {
+//                flowMap.put(locationReference, caTrafficFlowItem);
+//            } else {
+//                CaTrafficFlowItem existingCaTrafficFlowItem = flowMap.get(locationReference);
+//                if (!TextUtils.isEmpty(caTrafficFlowItem.getAverageVehicleSpeed())) {
+//                    existingCaTrafficFlowItem.setAverageVehicleSpeed(caTrafficFlowItem.getAverageVehicleSpeed());
+//                }
+//                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowSpeed())) {
+//                    existingCaTrafficFlowItem.setFreeFlowSpeed(caTrafficFlowItem.getFreeFlowSpeed());
+//                }
+//                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowTravelTime())) {
+//                    existingCaTrafficFlowItem.setFreeFlowTravelTime(caTrafficFlowItem.getFreeFlowTravelTime());
+//                }
+//                if (!TextUtils.isEmpty(caTrafficFlowItem.getTravelTime())) {
+//                    existingCaTrafficFlowItem.setTravelTime(caTrafficFlowItem.getTravelTime());
+//                }
+//                if (!TextUtils.isEmpty(caTrafficFlowItem.getVehicleFlow())) {
+//                    existingCaTrafficFlowItem.setVehicleFlow(caTrafficFlowItem.getVehicleFlow());
+//                }
+//            }
+//        }
+//        for (String key : flowMap.keySet()) {
+//            CaTrafficFlowItem caTrafficFlowItem = flowMap.get(key);
+//            caTrafficFlowItem.updateLocation(predefinedLocationMap);
+//            if (caTrafficFlowItem.shouldAdd()) {
+//                itemList.add(caTrafficFlowItem);
+//            }
+//        }
     }
 }

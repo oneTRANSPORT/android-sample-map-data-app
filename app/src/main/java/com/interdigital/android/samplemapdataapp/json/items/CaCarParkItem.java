@@ -15,10 +15,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.interdigital.android.samplemapdataapp.R;
-import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
+
+import net.uk.onetransport.android.county.bucks.carparks.CarPark;
 
 import java.util.HashMap;
 
@@ -27,39 +26,11 @@ public class CaCarParkItem extends Item {
     private static final String ZERO = "0";
     private static final String BUCK_PREFIX = "BUCK-";
 
-    @Expose
-    @SerializedName("carParkIdentity")
-    private String carParkIdentity;
-    @Expose
-    @SerializedName("totalParkingCapacity")
-    private String totalParkingCapacity;
-    @Expose
-    @SerializedName("almostFullIncreasing")
-    private String almostFullIncreasing;
-    @Expose
-    @SerializedName("almostFullDecreasing")
-    private String almostFullDecreasing;
-    @Expose
-    @SerializedName("fullDecreasing")
-    private String fullDecreasing;
-    @Expose
-    @SerializedName("fullIncreasing")
-    private String fullIncreasing;
-    @Expose
-    @SerializedName("entranceFull")
-    private String entranceFull;
-    @Expose
-    @SerializedName("radius")
-    private String radius;
-    @Expose
-    @SerializedName("latitude")
-    private String latitude;
-    @Expose
-    @SerializedName("longitude")
-    private String longitude;
+    private CarPark carPark;
 
-    public CaCarParkItem() {
+    public CaCarParkItem(CarPark carPark) {
         setType(TYPE_CAR_PARK);
+        this.carPark = carPark;
     }
 
     @Override
@@ -68,25 +39,16 @@ public class CaCarParkItem extends Item {
     }
 
     @Override
-    public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
-        // No updates currently available.
-    }
-
-    @Override
     public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
-        try {
-            setMarker(googleMap.addMarker(
-                    new MarkerOptions()
-                            .title(getTitle())
-                            .position(new LatLng(
-                                    Double.valueOf(latitude),
-                                    Double.valueOf(longitude)))
-                            .anchor(0.5f, 0.5f)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.carpark_icon))));
-            markerMap.put(getMarker(), this);
-        } catch (NumberFormatException nfe){
-            // Oh well.  TODO Use properly-typed JSON and this class.
-        }
+        setMarker(googleMap.addMarker(
+                new MarkerOptions()
+                        .title(getTitle())
+                        .position(new LatLng(
+                                carPark.getLatitude(),
+                                carPark.getLongitude()))
+                        .anchor(0.5f, 0.5f)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.carpark_icon))));
+        markerMap.put(getMarker(), this);
     }
 
     @Override
@@ -97,7 +59,7 @@ public class CaCarParkItem extends Item {
         sizeTextView.setTextColor(0xff808080);
         sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         sizeTextView.setGravity(GravityCompat.START);
-        sizeTextView.setText(totalParkingCapacity);
+        sizeTextView.setText(carPark.getTotalParkingCapacity());
         linearLayout.addView(sizeTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView signTextView = new TextView(context);
@@ -105,7 +67,7 @@ public class CaCarParkItem extends Item {
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if (entranceFull.equals(ZERO)) {
+        if (carPark.getEntranceFull().equals(ZERO)) {
             signTextView.setText(R.string.space);
         } else {
             signTextView.setText(R.string.full);
@@ -114,7 +76,7 @@ public class CaCarParkItem extends Item {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView nameTextView = new TextView(context);
         // TODO Decide what we want in the feed.
-        nameTextView.setText(carParkIdentity.replace(BUCK_PREFIX, "").replaceAll("_", " "));
+        nameTextView.setText(carPark.getCarParkIdentity().replace(BUCK_PREFIX, "").replaceAll("_", " "));
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         nameTextView.setGravity(GravityCompat.END);

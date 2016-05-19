@@ -11,36 +11,22 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.interdigital.android.samplemapdataapp.R;
-import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
+
+import net.uk.onetransport.android.county.bucks.locations.SegmentLocation;
+import net.uk.onetransport.android.county.bucks.trafficflow.TrafficFlow;
 
 import java.util.HashMap;
 
 public class CaTrafficFlowItem extends Item {
 
-    @Expose
-    @SerializedName("locationReference")
-    private String locationReference;
-    @Expose
-    @SerializedName("vehicleFlow")
-    private String vehicleFlow;
-    @Expose
-    @SerializedName("averageVehicleSpeed")
-    private String averageVehicleSpeed;
-    @Expose
-    @SerializedName("travelTime")
-    private String travelTime;
-    @Expose
-    @SerializedName("freeFlowSpeed")
-    private String freeFlowSpeed;
-    @Expose
-    @SerializedName("freeFlowTravelTime")
-    private String freeFlowTravelTime;
+    private TrafficFlow trafficFlow;
 
-    public CaTrafficFlowItem() {
+    public CaTrafficFlowItem(TrafficFlow trafficFlow,
+                             HashMap<String, SegmentLocation> segmentLocationMap) {
         setType(TYPE_ANPR);
+        this.trafficFlow = trafficFlow;
+        updateLocation(segmentLocationMap);
     }
 
     @Override
@@ -48,71 +34,27 @@ public class CaTrafficFlowItem extends Item {
         if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
             return false;
         }
-        return !TextUtils.isEmpty(vehicleFlow.trim())
-                && !TextUtils.isEmpty(averageVehicleSpeed.trim());
+        return trafficFlow.getVehicleFlow() != 0 || trafficFlow.getAverageVehicleSpeed() != 0;
     }
 
-    @Override
-    public void updateLocation(HashMap<String, PredefinedLocation> predefinedLocationMap) {
-        if (predefinedLocationMap.containsKey(locationReference)) {
-            PredefinedLocation predefinedLocation = predefinedLocationMap.get(locationReference);
+    public void updateLocation(HashMap<String, SegmentLocation> segmentLocationMap) {
+        if (segmentLocationMap.containsKey(trafficFlow.getLocationReference())) {
+            SegmentLocation segmentLocation = segmentLocationMap.get(trafficFlow.getLocationReference());
             setLatLng(new LatLng(
-                    Double.valueOf(predefinedLocation.getFromLatitude()),
-                    Double.valueOf(predefinedLocation.getFromLongitude())));
-            if (!TextUtils.isEmpty(predefinedLocation.getDescriptor())) {
-                locationReference = predefinedLocation.getDescriptor();
-            } else if (!TextUtils.isEmpty(predefinedLocation.getToDescriptor())) {
-                locationReference = predefinedLocation.getToDescriptor();
-            } else if (!TextUtils.isEmpty(predefinedLocation.getFromDescriptor())) {
-                locationReference = predefinedLocation.getFromDescriptor();
+                    segmentLocation.getFromLatitude(),
+                    segmentLocation.getFromLongitude()));
+            if (!TextUtils.isEmpty(segmentLocation.getToDescriptor())) {
+                trafficFlow.setLocationReference(segmentLocation.getToDescriptor());
+            } else if (!TextUtils.isEmpty(segmentLocation.getFromDescriptor())) {
+                trafficFlow.setLocationReference(segmentLocation.getFromDescriptor());
             }
         } else {
             setLatLng(new LatLng(0, 0));
         }
     }
 
-    public String getLocationReference() {
-        return locationReference;
-    }
-
-    public String getVehicleFlow() {
-        return vehicleFlow;
-    }
-
-    public void setVehicleFlow(String vehicleFlow) {
-        this.vehicleFlow = vehicleFlow;
-    }
-
-    public String getAverageVehicleSpeed() {
-        return averageVehicleSpeed;
-    }
-
-    public void setAverageVehicleSpeed(String averageVehicleSpeed) {
-        this.averageVehicleSpeed = averageVehicleSpeed;
-    }
-
-    public String getTravelTime() {
-        return travelTime;
-    }
-
-    public void setTravelTime(String travelTime) {
-        this.travelTime = travelTime;
-    }
-
-    public String getFreeFlowSpeed() {
-        return freeFlowSpeed;
-    }
-
-    public void setFreeFlowSpeed(String freeFlowSpeed) {
-        this.freeFlowSpeed = freeFlowSpeed;
-    }
-
-    public String getFreeFlowTravelTime() {
-        return freeFlowTravelTime;
-    }
-
-    public void setFreeFlowTravelTime(String freeFlowTravelTime) {
-        this.freeFlowTravelTime = freeFlowTravelTime;
+    public TrafficFlow getTrafficFlow() {
+        return trafficFlow;
     }
 
     @Override
@@ -132,11 +74,11 @@ public class CaTrafficFlowItem extends Item {
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
         ((TextView) view.findViewById(R.id.cars_text_view))
-                .setText(String.format(context.getString(R.string.cars_per_min), vehicleFlow));
+                .setText(String.format(context.getString(R.string.cars_per_min), trafficFlow.getVehicleFlow()));
         ((TextView) view.findViewById(R.id.speed_text_view))
                 .setText(String.format(context.getString(R.string.kph),
-                        averageVehicleSpeed.replaceFirst("\\.[0-9]*", "")));
-        ((TextView) view.findViewById(R.id.location_text_view)).setText(locationReference);
+                        Math.round(trafficFlow.getAverageVehicleSpeed())));
+        ((TextView) view.findViewById(R.id.location_text_view)).setText(trafficFlow.getLocationReference());
         return view;
     }
 
