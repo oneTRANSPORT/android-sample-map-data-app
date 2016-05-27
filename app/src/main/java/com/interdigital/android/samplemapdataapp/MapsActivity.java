@@ -33,6 +33,9 @@ import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
+import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
+import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -128,9 +131,12 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(this);
+        CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                getString(R.string.pref_default_password), installationId);
+        BucksSyncAdapter.refresh(context);
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
                 true, this).execute();
-        startUpdateTimer();
+//        startUpdateTimer();
     }
 
     @Override
@@ -229,9 +235,9 @@ public class MapsActivity extends AppCompatActivity
     }
 
     private void maybeCreateAe() {
-        CseDetails.aeId = "C-samplemapdataapp-" + installationId;
-        CseDetails.appName = "SampleMapDataApp-" + installationId;
-        String applicationId = "App-id-" + installationId;
+        CseDetails.aeId = "C-" + getString(R.string.pref_default_user_name);
+        CseDetails.appName = "SampleMapDataApp";
+        String applicationId = "SampleMapDataApp-Id";
         ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
                 CseDetails.appName, applicationId, CseDetails.METHOD + CseDetails.hostName,
                 CseDetails.cseName, false);

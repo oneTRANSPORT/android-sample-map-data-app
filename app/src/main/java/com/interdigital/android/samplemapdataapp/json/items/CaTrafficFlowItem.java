@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,20 +14,33 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.samplemapdataapp.R;
 
-import net.uk.onetransport.android.county.bucks.locations.SegmentLocation;
-import net.uk.onetransport.android.county.bucks.trafficflow.TrafficFlow;
+import net.uk.onetransport.android.county.bucks.provider.BucksContract;
 
 import java.util.HashMap;
 
 public class CaTrafficFlowItem extends Item {
 
-    private TrafficFlow trafficFlow;
+    private int vehicleFlow;
+    private double averageVehicleSpeed;
+    private String locationReference;
 
-    public CaTrafficFlowItem(TrafficFlow trafficFlow,
-                             HashMap<String, SegmentLocation> segmentLocationMap) {
+    public CaTrafficFlowItem(Cursor cursor) {
         setType(TYPE_ANPR);
-        this.trafficFlow = trafficFlow;
-        updateLocation(segmentLocationMap);
+        vehicleFlow = cursor.getInt(cursor.getColumnIndex(
+                BucksContract.TrafficFlowJoinLocation.COLUMN_VEHICLE_FLOW));
+        averageVehicleSpeed = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.TrafficFlowJoinLocation.COLUMN_AVERAGE_VEHICLE_SPEED));
+        locationReference = cursor.getString(cursor.getColumnIndex(
+                BucksContract.TrafficFlowJoinLocation.COLUMN_FROM_DESCRIPTOR));
+        if (TextUtils.isEmpty(locationReference)) {
+            locationReference = cursor.getString(cursor.getColumnIndex(
+                    BucksContract.TrafficFlowJoinLocation.COLUMN_TO_DESCRIPTOR));
+        }
+        double latitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.TrafficFlowJoinLocation.COLUMN_FROM_LATITUDE));
+        double longitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.TrafficFlowJoinLocation.COLUMN_FROM_LONGITUDE));
+        setLatLng(new LatLng(latitude, longitude));
     }
 
     @Override
@@ -34,27 +48,10 @@ public class CaTrafficFlowItem extends Item {
         if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
             return false;
         }
-        return trafficFlow.getVehicleFlow() != 0 || trafficFlow.getAverageVehicleSpeed() != 0;
-    }
-
-    public void updateLocation(HashMap<String, SegmentLocation> segmentLocationMap) {
-        if (segmentLocationMap.containsKey(trafficFlow.getLocationReference())) {
-            SegmentLocation segmentLocation = segmentLocationMap.get(trafficFlow.getLocationReference());
-            setLatLng(new LatLng(
-                    segmentLocation.getFromLatitude(),
-                    segmentLocation.getFromLongitude()));
-            if (!TextUtils.isEmpty(segmentLocation.getToDescriptor())) {
-                trafficFlow.setLocationReference(segmentLocation.getToDescriptor());
-            } else if (!TextUtils.isEmpty(segmentLocation.getFromDescriptor())) {
-                trafficFlow.setLocationReference(segmentLocation.getFromDescriptor());
-            }
-        } else {
-            setLatLng(new LatLng(0, 0));
+        if (TextUtils.isEmpty(locationReference)) {
+            return false;
         }
-    }
-
-    public TrafficFlow getTrafficFlow() {
-        return trafficFlow;
+        return vehicleFlow != 0 || averageVehicleSpeed != 0;
     }
 
     @Override
@@ -74,11 +71,11 @@ public class CaTrafficFlowItem extends Item {
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
         ((TextView) view.findViewById(R.id.cars_text_view))
-                .setText(String.format(context.getString(R.string.cars_per_min), trafficFlow.getVehicleFlow()));
+                .setText(String.format(context.getString(R.string.cars_per_min), String.valueOf(vehicleFlow)));
         ((TextView) view.findViewById(R.id.speed_text_view))
                 .setText(String.format(context.getString(R.string.kph),
-                        Math.round(trafficFlow.getAverageVehicleSpeed())));
-        ((TextView) view.findViewById(R.id.location_text_view)).setText(trafficFlow.getLocationReference());
+                        Math.round(averageVehicleSpeed)));
+        ((TextView) view.findViewById(R.id.location_text_view)).setText(locationReference);
         return view;
     }
 

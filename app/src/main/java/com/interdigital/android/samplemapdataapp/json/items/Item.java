@@ -23,6 +23,7 @@ public abstract class Item {
     public static final int TYPE_VMS = 1;
     public static final int TYPE_CAR_PARK = 2;
     public static final int TYPE_ANPR = 3;
+    public static final int TYPE_ROAD_WORKS = 4;
 
     @Type
     private int type;

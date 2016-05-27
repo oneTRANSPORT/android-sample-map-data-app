@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.support.v4.view.GravityCompat;
 import android.text.TextUtils;
@@ -19,31 +20,38 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.samplemapdataapp.R;
 
 import net.uk.onetransport.android.county.bucks.locations.PredefinedVmsLocation;
-import net.uk.onetransport.android.county.bucks.variablemessagesigns.VariableMessageSign;
+import net.uk.onetransport.android.county.bucks.provider.BucksContract;
 
 import java.util.HashMap;
 
 public class CaVmsItem extends Item {
 
-    private VariableMessageSign variableMessageSign;
+    private String[] vmsLegends;
+    private String locationReference;
 
-    public CaVmsItem(VariableMessageSign variableMessageSign,
-                     HashMap<String, PredefinedVmsLocation> vmsLocationMap) {
+    public CaVmsItem(Cursor cursor) {
         setType(TYPE_VMS);
-        this.variableMessageSign = variableMessageSign;
-        updateLocation(vmsLocationMap);
+        String legendStr = cursor.getString(cursor.getColumnIndex(
+                BucksContract.VmsJoinLocation.COLUMN_VMS_LEGENDS));
+        vmsLegends = legendStr.split("\\|");
+        locationReference = cursor.getString(cursor.getColumnIndex(
+                BucksContract.VmsJoinLocation.COLUMN_DESCRIPTOR));
+        double latitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.VmsJoinLocation.COLUMN_LATITUDE));
+        double longitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.VmsJoinLocation.COLUMN_LONGITUDE));
+        setLatLng(new LatLng(latitude, longitude));
     }
 
     @Override
     public boolean shouldAdd() {
-        if (variableMessageSign.getVmsLegends() == null
-                || variableMessageSign.getVmsLegends().length == 0) {
-            return false;
-        }
         if (getLatLng() == null || (getLatLng().latitude == 0 && getLatLng().longitude == 0)) {
             return false;
         }
-        for (String line : variableMessageSign.getVmsLegends()) {
+        if (vmsLegends == null || vmsLegends.length == 0) {
+            return false;
+        }
+        for (String line : vmsLegends) {
             if (line.trim().length() > 0) {
                 return true;
             }
@@ -62,21 +70,6 @@ public class CaVmsItem extends Item {
         markerMap.put(getMarker(), this);
     }
 
-    public void updateLocation(HashMap<String, PredefinedVmsLocation> vmsLocationMap) {
-        String locationReference = variableMessageSign.getLocationReference();
-        if (vmsLocationMap.containsKey(locationReference)) {
-            PredefinedVmsLocation predefinedVmsLocation = vmsLocationMap.get(locationReference);
-            setLatLng(new LatLng(
-                    predefinedVmsLocation.getLatitude(),
-                    predefinedVmsLocation.getLongitude()));
-            if (!TextUtils.isEmpty(predefinedVmsLocation.getDescriptor())) {
-                predefinedVmsLocation.setLocationId(predefinedVmsLocation.getDescriptor());
-            }
-        } else {
-            setLatLng(new LatLng(0, 0));
-        }
-    }
-
     @Override
     public View getInfoContents(Context context) {
         LinearLayout linearLayout = new LinearLayout(context);
@@ -86,7 +79,7 @@ public class CaVmsItem extends Item {
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
         StringBuilder buf = new StringBuilder();
-        for (String line : variableMessageSign.getVmsLegends()) {
+        for (String line : vmsLegends) {
             buf.append(line.trim());
             if (line.trim().length() > 0) {
                 buf.append("\n");
@@ -96,7 +89,7 @@ public class CaVmsItem extends Item {
         linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView nameTextView = new TextView(context);
-        nameTextView.setText(variableMessageSign.getLocationReference());
+        nameTextView.setText(locationReference);
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         nameTextView.setGravity(GravityCompat.END);
