@@ -55,13 +55,16 @@ public class CaCarParkItem extends Item {
     public View getInfoContents(Context context) {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        TextView sizeTextView = new TextView(context);
-        sizeTextView.setTextColor(0xff808080);
-        sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        sizeTextView.setGravity(GravityCompat.START);
-        sizeTextView.setText(carPark.getTotalParkingCapacity());
-        linearLayout.addView(sizeTextView, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        if (null != carPark.getTotalParkingCapacity()) {
+            TextView sizeTextView = new TextView(context);
+            sizeTextView.setTextColor(0xff808080);
+            sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+            sizeTextView.setGravity(GravityCompat.START);
+            // This causes a string not found resource exception..
+            //sizeTextView.setText(carPark.getTotalParkingCapacity());
+            linearLayout.addView(sizeTextView, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
         TextView signTextView = new TextView(context);
         signTextView.setTextColor(0xff000000);
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);

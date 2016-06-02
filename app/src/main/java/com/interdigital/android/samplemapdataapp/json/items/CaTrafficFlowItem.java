@@ -34,7 +34,7 @@ public class CaTrafficFlowItem extends Item {
         if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
             return false;
         }
-        return trafficFlow.getVehicleFlow() != 0 || trafficFlow.getAverageVehicleSpeed() != 0;
+        return trafficFlow != null || trafficFlow.getVehicleFlow() != 0 || trafficFlow.getAverageVehicleSpeed() != 0;
     }
 
     public void updateLocation(HashMap<String, SegmentLocation> segmentLocationMap) {
@@ -73,12 +73,28 @@ public class CaTrafficFlowItem extends Item {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
-        ((TextView) view.findViewById(R.id.cars_text_view))
-                .setText(String.format(context.getString(R.string.cars_per_min), trafficFlow.getVehicleFlow()));
-        ((TextView) view.findViewById(R.id.speed_text_view))
-                .setText(String.format(context.getString(R.string.kph),
-                        Math.round(trafficFlow.getAverageVehicleSpeed())));
-        ((TextView) view.findViewById(R.id.location_text_view)).setText(trafficFlow.getLocationReference());
+        if (null != trafficFlow.getVehicleFlow()) {
+            ((TextView) view.findViewById(R.id.cars_text_view))
+                    .setText(String.format(context.getString(R.string.cars_per_min), trafficFlow.getVehicleFlow()));
+            view.findViewById(R.id.cars_image_view).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.cars_text_view).setVisibility(View.VISIBLE);
+        } else {
+            view.findViewById(R.id.cars_image_view).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.cars_text_view).setVisibility(View.INVISIBLE);
+        }
+        if (null != trafficFlow.getAverageVehicleSpeed()) {
+            ((TextView) view.findViewById(R.id.speed_text_view))
+                    .setText(String.format(context.getString(R.string.kph),
+                            Math.round(trafficFlow.getAverageVehicleSpeed())));
+            view.findViewById(R.id.speed_image_view).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.speed_text_view).setVisibility(View.VISIBLE);
+        } else {
+            view.findViewById(R.id.speed_image_view).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.speed_text_view).setVisibility(View.INVISIBLE);
+        }
+        if (null != trafficFlow.getLocationReference()) {
+            ((TextView) view.findViewById(R.id.location_text_view)).setText(trafficFlow.getLocationReference());
+        }
         return view;
     }
 
