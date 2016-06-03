@@ -10,7 +10,7 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
 
-    <string name="cars_per_min">%1$s cars/min</string>
+    <string name="cars_per_min">%1$d cars/min</string>
     <string name="kph">%1$dkph</string>
 
     <string name="space">SPACE</string>

@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 public class CaCarParkItem extends Item {
 
-    private static final String ZERO = "0";
     private static final String BUCK_PREFIX = "BUCK-";
 
     private CarPark carPark;
@@ -59,7 +58,7 @@ public class CaCarParkItem extends Item {
         sizeTextView.setTextColor(0xff808080);
         sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         sizeTextView.setGravity(GravityCompat.START);
-        sizeTextView.setText(carPark.getTotalParkingCapacity());
+        sizeTextView.setText(String.valueOf(carPark.getTotalParkingCapacity()));
         linearLayout.addView(sizeTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView signTextView = new TextView(context);
@@ -67,7 +66,7 @@ public class CaCarParkItem extends Item {
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if (carPark.getEntranceFull().equals(ZERO)) {
+        if (carPark.getEntranceFull() == 0) {
             signTextView.setText(R.string.space);
         } else {
             signTextView.setText(R.string.full);

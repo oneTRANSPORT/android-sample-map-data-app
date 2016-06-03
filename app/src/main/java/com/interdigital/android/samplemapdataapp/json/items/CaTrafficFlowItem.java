@@ -34,7 +34,13 @@ public class CaTrafficFlowItem extends Item {
         if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
             return false;
         }
-        return trafficFlow.getVehicleFlow() != 0 || trafficFlow.getAverageVehicleSpeed() != 0;
+        if (trafficFlow.getVehicleFlow() == null && trafficFlow.getAverageVehicleSpeed() == null) {
+            return false;
+        }
+        if (trafficFlow.getVehicleFlow() == 0 && trafficFlow.getAverageVehicleSpeed() == 0) {
+            return false;
+        }
+        return true;
     }
 
     public void updateLocation(HashMap<String, SegmentLocation> segmentLocationMap) {
@@ -73,11 +79,20 @@ public class CaTrafficFlowItem extends Item {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
+        Integer vehicleFlow = trafficFlow.getVehicleFlow();
+        if (vehicleFlow == null) {
+            vehicleFlow = 0;
+        }
         ((TextView) view.findViewById(R.id.cars_text_view))
-                .setText(String.format(context.getString(R.string.cars_per_min), trafficFlow.getVehicleFlow()));
+                .setText(String.format(context.getString(R.string.cars_per_min), vehicleFlow));
+
+        Double averageVehicleSpeed = trafficFlow.getAverageVehicleSpeed();
+        if (averageVehicleSpeed == null) {
+            averageVehicleSpeed = 0.0;
+        }
         ((TextView) view.findViewById(R.id.speed_text_view))
                 .setText(String.format(context.getString(R.string.kph),
-                        Math.round(trafficFlow.getAverageVehicleSpeed())));
+                        Math.round(averageVehicleSpeed)));
         ((TextView) view.findViewById(R.id.location_text_view)).setText(trafficFlow.getLocationReference());
         return view;
     }
