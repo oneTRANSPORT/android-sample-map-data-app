@@ -3,6 +3,7 @@ package com.interdigital.android.samplemapdataapp;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +29,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private ProgressBar progressBar;
     private HashMap<String, SegmentLocation> segmentLocationMap = new HashMap<>();
     private boolean moveMap;
+    // TODO    Weak reference.
     private MapsActivity mapsActivity;
     private Context context;
 
@@ -39,12 +41,13 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         this.moveMap = moveMap;
         this.mapsActivity = mapsActivity;
         context = mapsActivity.getApplicationContext();
+        Log.i("LoadMarkerTask", "Invoking load markers");
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            addWorldSensing();
+//            addWorldSensing(); TODO    Put this back in.
             publishProgress(50);
             loadCaVms();
             publishProgress(70);
@@ -67,6 +70,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        googleMap.clear();
+        markerMap.clear();
         for (Item item : itemList) {
             item.addMarker(googleMap, markerMap);
         }
@@ -125,7 +130,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             }
         }
         cursor.close();
-
 
 
         // TODO Currently not getting any latitude or longitude coordinates.

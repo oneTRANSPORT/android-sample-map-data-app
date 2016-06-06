@@ -34,6 +34,7 @@ import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
+import net.uk.onetransport.android.county.bucks.provider.BucksProvider;
 import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
 
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class MapsActivity extends AppCompatActivity
     private GoogleMap googleMap;
     // Needed for quick look-up.
     private HashMap<Marker, Item> markerMap = new HashMap<>();
-    private Handler handler = new Handler(this);
+//    private Handler handler = new Handler(this);
     private String installationId;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -61,6 +62,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
     private int numberUpdated;
+    private ItemObserver itemObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class MapsActivity extends AppCompatActivity
         maybeCreateInstallationId();
         maybeCreateAe();
         initialiseDrawer();
+        itemObserver = new ItemObserver(null, this);
     }
 
     @Override
@@ -114,6 +117,7 @@ public class MapsActivity extends AppCompatActivity
                 vmsCheckbox.setChecked(true);
                 carParkCheckbox.setChecked(true);
                 trafficFlowCheckBox.setChecked(true);
+                // TODO Refresh content provider with sync adapter.
                 new LoadMarkerTask(googleMap, markerMap,
                         (ProgressBar) findViewById(R.id.progress_bar), false, this).execute();
                 return true;
@@ -134,9 +138,12 @@ public class MapsActivity extends AppCompatActivity
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
         BucksSyncAdapter.refresh(context);
+//        startUpdateTimer();
+    }
+
+    public void loadMarkers() {
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
                 true, this).execute();
-//        startUpdateTimer();
     }
 
     @Override
@@ -210,12 +217,15 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        startUpdateTimer();
+//        startUpdateTimer();
+        getContentResolver().registerContentObserver(BucksProvider.LAST_UPDATED_URI, true,
+                itemObserver);
     }
 
     @Override
     protected void onPause() {
-        stopUpdateTimer();
+        getContentResolver().unregisterContentObserver(itemObserver);
+//        stopUpdateTimer();
         super.onPause();
     }
 
@@ -282,13 +292,13 @@ public class MapsActivity extends AppCompatActivity
     }
 
     private void startUpdateTimer() {
-        if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
-            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
-        }
+//        if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
+//            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+//        }
     }
 
     private void stopUpdateTimer() {
-        handler.removeMessages(MSG_SET_PLEASE_UPDATE);
+//        handler.removeMessages(MSG_SET_PLEASE_UPDATE);
     }
 }
 
