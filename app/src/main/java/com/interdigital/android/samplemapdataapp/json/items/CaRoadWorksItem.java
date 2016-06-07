@@ -2,6 +2,7 @@ package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class CaRoadWorksItem extends Item {
     private String overallEndTime;
     private String periods;
     private String locationDescription;
+    private String guid;
 
     public CaRoadWorksItem(Cursor cursor) {
         setType(TYPE_ROAD_WORKS);
@@ -47,11 +49,14 @@ public class CaRoadWorksItem extends Item {
                 BucksContract.RoadWorks.COLUMN_OVERALL_END_TIME));
         periods = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_PERIODS));
 
+        guid = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_ID));
+
         double latitude = cursor.getDouble(cursor.getColumnIndex(
                 BucksContract.RoadWorks.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
                 BucksContract.RoadWorks.COLUMN_LONGITUDE));
         setLatLng(new LatLng(latitude, longitude));
+        Log.i("CaRoadWorksItem", "guid, pos = " + guid + " " + latitude + " " + longitude);
     }
 
     @Override
@@ -69,7 +74,7 @@ public class CaRoadWorksItem extends Item {
     public View getInfoContents(Context context) {
         TextView textView = new TextView(context);
         textView.setTextColor(0xff000000);
-        textView.setText(comment);
+        textView.setText(guid + " " + comment);
         return textView;
     }
 

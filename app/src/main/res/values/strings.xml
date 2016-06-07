@@ -2,12 +2,12 @@
     <string name="title_activity_maps">oneTRANSPORT</string>
     <string name="title_activity_settings">Settings</string>
 
-    <string name="pref_default_host_name">cse-05.onetransport.uk.net</string>
-    <string name="pref_default_cse_name">ONETCSE05</string>
-    <string name="pref_default_user_name">android</string>
-    <string name="pref_default_password">DompAdtem9</string>
-    <!--<string name="pref_default_user_name">pthomas</string>-->
-    <!--<string name="pref_default_password">EKFYGUCC</string>-->
+    <string name="pref_default_host_name">cse-01.onetransport.uk.net</string>
+    <string name="pref_default_cse_name">ONETCSE01</string>
+    <!--<string name="pref_default_user_name">android</string>-->
+    <!--<string name="pref_default_password">DompAdtem9</string>-->
+    <string name="pref_default_user_name">pthomas</string>
+    <string name="pref_default_password">EKFYGUCC</string>
 
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>

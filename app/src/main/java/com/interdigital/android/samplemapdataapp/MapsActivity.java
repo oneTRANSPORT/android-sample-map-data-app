@@ -113,10 +113,6 @@ public class MapsActivity extends AppCompatActivity
         actionBarDrawerToggle.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.refresh_item:
-//                vmsCheckbox.setChecked(true);
-//                carParkCheckbox.setChecked(true);
-//                trafficFlowCheckBox.setChecked(true);
-//                roadWorksCheckBox.setChecked(true);
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
                 BucksSyncAdapter.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
                         trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
