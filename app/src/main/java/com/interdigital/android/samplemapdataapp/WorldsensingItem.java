@@ -18,8 +18,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.dougal.resource.Container;
 import com.interdigital.android.dougal.resource.ContentInstance;
-import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
+import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import org.json.JSONObject;

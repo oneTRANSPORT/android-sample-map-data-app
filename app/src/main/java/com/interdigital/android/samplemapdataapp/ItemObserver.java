@@ -31,9 +31,14 @@ public class ItemObserver extends ContentObserver {
     }
 
     private void updateMap() {
-        MapsActivity mapsActivity = weakMapsActivity.get();
+        final MapsActivity mapsActivity = weakMapsActivity.get();
         if (mapsActivity != null) {
-            mapsActivity.loadMarkers();
+            mapsActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mapsActivity.loadMarkers();
+                }
+            });
         }
     }
 }

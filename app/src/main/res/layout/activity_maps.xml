@@ -33,7 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
-            android:layout_marginTop="-8dp"/><!-- TODO Fix. -->
+            android:layout_marginTop="-8dp"
+            android:indeterminate="true"
+            android:visibility="invisible"/>
     </RelativeLayout>
 
     <LinearLayout

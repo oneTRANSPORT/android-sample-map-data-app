@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,6 +21,7 @@ import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
@@ -47,17 +49,13 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-//            addWorldSensing(); TODO    Put this back in.
-            publishProgress(50);
+            addWorldSensing();
             loadCaVms();
-            publishProgress(70);
             loadCaCarParks();
-            publishProgress(84);
             loadCaTrafficFlow();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        publishProgress(100);
         return null;
     }
 
@@ -70,10 +68,24 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        googleMap.clear();
-        markerMap.clear();
+        boolean worldsensingPresent = false;
+        ArrayList<Marker> deletedEntries = new ArrayList<>();
+        // Do not remove Worldsensing items as they may be mid-download.
+        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
+            if (!(entry.getValue() instanceof WorldsensingItem)) {
+                deletedEntries.add(entry.getKey());
+            } else {
+                worldsensingPresent = true;
+            }
+        }
+        for (Marker marker:deletedEntries){
+            markerMap.remove(marker);
+            marker.remove();
+        }
         for (Item item : itemList) {
-            item.addMarker(googleMap, markerMap);
+            if (!(item instanceof WorldsensingItem && worldsensingPresent)) {
+                item.addMarker(googleMap, markerMap);
+            }
         }
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
@@ -81,13 +93,15 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(51.8128587, -0.8239542), 13));
         }
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void addWorldSensing() {
-        for (int i = 0; i < 6; i++) {
-            itemList.add(new WorldsensingItem(i, mapsActivity));
+        if (markerMap.size() == 0) {
+            for (int i = 0; i < 6; i++) {
+                itemList.add(new WorldsensingItem(i, mapsActivity));
+            }
         }
-        publishProgress(14);
     }
 
     private void loadCaVms() throws Exception {

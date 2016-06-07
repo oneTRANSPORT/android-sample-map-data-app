@@ -71,7 +71,7 @@ public class CaTrafficFlowItem extends Item {
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
         ((TextView) view.findViewById(R.id.cars_text_view))
-                .setText(String.format(context.getString(R.string.cars_per_min), String.valueOf(vehicleFlow)));
+                .setText(String.format(context.getString(R.string.cars_per_min), vehicleFlow));
         ((TextView) view.findViewById(R.id.speed_text_view))
                 .setText(String.format(context.getString(R.string.kph),
                         Math.round(averageVehicleSpeed)));
