@@ -25,7 +25,7 @@ public class CaTrafficFlowItem extends Item {
     private String locationReference;
 
     public CaTrafficFlowItem(Cursor cursor) {
-        setType(TYPE_ANPR);
+        setType(TYPE_TRAFFIC_FLOW);
         vehicleFlow = cursor.getInt(cursor.getColumnIndex(
                 BucksContract.TrafficFlowJoinLocation.COLUMN_VEHICLE_FLOW));
         averageVehicleSpeed = cursor.getDouble(cursor.getColumnIndex(

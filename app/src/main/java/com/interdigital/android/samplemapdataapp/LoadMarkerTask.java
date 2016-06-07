@@ -22,6 +22,7 @@ import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
@@ -35,14 +36,17 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     // TODO    Weak reference.
     private MapsActivity mapsActivity;
     private Context context;
+    private HashSet<Integer> visibleTypes;
 
     public LoadMarkerTask(GoogleMap googleMap, HashMap<Marker, Item> markerMap,
-                          ProgressBar progressBar, boolean moveMap, MapsActivity mapsActivity) {
+                          ProgressBar progressBar, boolean moveMap, MapsActivity mapsActivity,
+                          HashSet<Integer> visibleTypes) {
         this.googleMap = googleMap;
         this.markerMap = markerMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
         this.mapsActivity = mapsActivity;
+        this.visibleTypes = visibleTypes;
         context = mapsActivity.getApplicationContext();
         Log.i("LoadMarkerTask", "Invoking load markers");
     }
@@ -87,6 +91,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         for (Item item : itemList) {
             if (!(item instanceof WorldsensingItem && worldsensingPresent)) {
                 item.addMarker(googleMap, markerMap);
+                if (!visibleTypes.contains(item.getType())) {
+                    item.getMarker().setVisible(false);
+                }
             }
         }
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.

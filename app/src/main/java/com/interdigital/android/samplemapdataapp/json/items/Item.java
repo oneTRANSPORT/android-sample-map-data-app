@@ -15,13 +15,13 @@ import java.util.HashMap;
 public abstract class Item {
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({TYPE_VMS, TYPE_CAR_PARK, TYPE_ANPR, TYPE_ROAD_WORKS})
+    @IntDef({TYPE_VMS, TYPE_CAR_PARK, TYPE_TRAFFIC_FLOW, TYPE_ROAD_WORKS})
     public @interface Type {
     }
 
     public static final int TYPE_VMS = 1;
     public static final int TYPE_CAR_PARK = 2;
-    public static final int TYPE_ANPR = 3;
+    public static final int TYPE_TRAFFIC_FLOW = 3;
     public static final int TYPE_ROAD_WORKS = 4;
 
     @Type

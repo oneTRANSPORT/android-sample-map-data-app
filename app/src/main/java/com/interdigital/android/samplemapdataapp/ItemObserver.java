@@ -36,7 +36,7 @@ public class ItemObserver extends ContentObserver {
             mapsActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mapsActivity.loadMarkers();
+                    mapsActivity.loadMarkers(false);
                 }
             });
         }

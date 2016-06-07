@@ -37,6 +37,7 @@ import net.uk.onetransport.android.county.bucks.provider.BucksProvider;
 import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -112,12 +113,13 @@ public class MapsActivity extends AppCompatActivity
         actionBarDrawerToggle.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.refresh_item:
-                vmsCheckbox.setChecked(true);
-                carParkCheckbox.setChecked(true);
-                trafficFlowCheckBox.setChecked(true);
-                roadWorksCheckBox.setChecked(true);
+//                vmsCheckbox.setChecked(true);
+//                carParkCheckbox.setChecked(true);
+//                trafficFlowCheckBox.setChecked(true);
+//                roadWorksCheckBox.setChecked(true);
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
-                BucksSyncAdapter.refresh(context);
+                BucksSyncAdapter.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
+                        trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -132,12 +134,25 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setInfoWindowAdapter(this);
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
-        loadMarkers();
+        loadMarkers(true);
     }
 
-    public void loadMarkers() {
+    public void loadMarkers(boolean moveMap) {
+        HashSet<Integer> visibleTypes = new HashSet<>();
+        if (vmsCheckbox.isChecked()) {
+            visibleTypes.add(Item.TYPE_VMS);
+        }
+        if (carParkCheckbox.isChecked()) {
+            visibleTypes.add(Item.TYPE_CAR_PARK);
+        }
+        if (trafficFlowCheckBox.isChecked()) {
+            visibleTypes.add(Item.TYPE_TRAFFIC_FLOW);
+        }
+        if (roadWorksCheckBox.isChecked()) {
+            visibleTypes.add(Item.TYPE_ROAD_WORKS);
+        }
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
-                true, this).execute();
+                moveMap, this, visibleTypes).execute();
     }
 
     @Override
@@ -193,9 +208,9 @@ public class MapsActivity extends AppCompatActivity
                 break;
             case R.id.traffic_flow_checkbox:
                 if (checked) {
-                    setItemVisible(Item.TYPE_ANPR, true);
+                    setItemVisible(Item.TYPE_TRAFFIC_FLOW, true);
                 } else {
-                    setItemVisible(Item.TYPE_ANPR, false);
+                    setItemVisible(Item.TYPE_TRAFFIC_FLOW, false);
                 }
                 break;
             case R.id.road_works_checkbox:
