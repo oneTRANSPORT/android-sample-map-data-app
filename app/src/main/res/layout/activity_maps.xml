@@ -75,7 +75,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Variable Message Signs"
+                android:text="@string/variable_message_signs"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"/>
 
@@ -103,7 +103,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Car parks"
+                android:text="@string/car_parks"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"/>
 
@@ -131,7 +131,35 @@
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Traffic flow"
+                android:text="@string/traffic_flow"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/road_works_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:checked="true"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:layout_marginRight="16dp"
+                android:alpha="222"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/road_works"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"/>
 

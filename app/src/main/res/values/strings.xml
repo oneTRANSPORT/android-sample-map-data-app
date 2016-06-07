@@ -21,4 +21,9 @@
 
     <string name="provider_authority">com.interdigital.android.samplemapdataapp.provider</string>
     <string name="sync_account_type">samplemapdataapp.android.interdigital.com</string>
+
+    <string name="road_works">Road works</string>
+    <string name="traffic_flow">Traffic flow</string>
+    <string name="car_parks">Car parks</string>
+    <string name="variable_message_signs">Variable Message Signs</string>
 </resources>

@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.interdigital.android.samplemapdataapp.json.items.CaCarParkItem;
+import com.interdigital.android.samplemapdataapp.json.items.CaRoadWorksItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaVmsItem;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
@@ -53,6 +54,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             loadCaVms();
             loadCaCarParks();
             loadCaTrafficFlow();
+            loadCaRoadWorks();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,7 +80,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 worldsensingPresent = true;
             }
         }
-        for (Marker marker:deletedEntries){
+        for (Marker marker : deletedEntries) {
             markerMap.remove(marker);
             marker.remove();
         }
@@ -206,5 +208,19 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 //                itemList.add(caTrafficFlowItem);
 //            }
 //        }
+    }
+
+    private void loadCaRoadWorks() throws Exception {
+        Cursor cursor = BucksContentHelper.getRoadWorks(context);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                CaRoadWorksItem caRoadWorksItem = new CaRoadWorksItem(cursor);
+                if (caRoadWorksItem.shouldAdd()) {
+                    itemList.add(caRoadWorksItem);
+                }
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
     }
 }

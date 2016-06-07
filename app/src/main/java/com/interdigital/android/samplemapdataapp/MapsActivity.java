@@ -60,6 +60,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox vmsCheckbox;
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
+    private CheckBox roadWorksCheckBox;
     private int numberUpdated;
     private ItemObserver itemObserver;
 
@@ -114,6 +115,7 @@ public class MapsActivity extends AppCompatActivity
                 vmsCheckbox.setChecked(true);
                 carParkCheckbox.setChecked(true);
                 trafficFlowCheckBox.setChecked(true);
+                roadWorksCheckBox.setChecked(true);
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
                 BucksSyncAdapter.refresh(context);
                 return true;
@@ -196,6 +198,13 @@ public class MapsActivity extends AppCompatActivity
                     setItemVisible(Item.TYPE_ANPR, false);
                 }
                 break;
+            case R.id.road_works_checkbox:
+                if (checked) {
+                    setItemVisible(Item.TYPE_ROAD_WORKS, true);
+                } else {
+                    setItemVisible(Item.TYPE_ROAD_WORKS, false);
+                }
+                break;
         }
     }
 
@@ -260,9 +269,11 @@ public class MapsActivity extends AppCompatActivity
         vmsCheckbox = (CheckBox) findViewById(R.id.vms_checkbox);
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
+        roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
+        roadWorksCheckBox.setOnCheckedChangeListener(this);
     }
 
     private void updateAll() {
