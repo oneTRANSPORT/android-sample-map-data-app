@@ -7,7 +7,6 @@ import android.view.View;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,13 +15,14 @@ import java.util.HashMap;
 public abstract class Item {
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({TYPE_VMS, TYPE_CAR_PARK, TYPE_ANPR})
+    @IntDef({TYPE_VMS, TYPE_CAR_PARK, TYPE_TRAFFIC_FLOW, TYPE_ROAD_WORKS})
     public @interface Type {
     }
 
     public static final int TYPE_VMS = 1;
     public static final int TYPE_CAR_PARK = 2;
-    public static final int TYPE_ANPR = 3;
+    public static final int TYPE_TRAFFIC_FLOW = 3;
+    public static final int TYPE_ROAD_WORKS = 4;
 
     @Type
     private int type;
@@ -30,7 +30,7 @@ public abstract class Item {
     private Marker marker;
     private LatLng latLng;
 
-    public Item(){
+    public Item() {
     }
 
     public Item(String title) {

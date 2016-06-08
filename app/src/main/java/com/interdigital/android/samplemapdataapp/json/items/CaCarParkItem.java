@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.support.v4.view.GravityCompat;
 import android.util.TypedValue;
@@ -17,20 +18,32 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.samplemapdataapp.R;
 
-import net.uk.onetransport.android.county.bucks.carparks.CarPark;
+import net.uk.onetransport.android.county.bucks.provider.BucksContract;
 
 import java.util.HashMap;
 
 public class CaCarParkItem extends Item {
 
-    private static final String ZERO = "0";
     private static final String BUCK_PREFIX = "BUCK-";
 
-    private CarPark carPark;
+    private String identity;
+    private int totalParkingCapacity;
+    private int entranceFull;
 
-    public CaCarParkItem(CarPark carPark) {
+    public CaCarParkItem(Cursor cursor) {
         setType(TYPE_CAR_PARK);
-        this.carPark = carPark;
+        identity = cursor.getString(cursor.getColumnIndex(
+                BucksContract.CarPark.COLUMN_CAR_PARK_IDENTITY))
+                .replace(BUCK_PREFIX, "").replaceAll("_", " ");
+        totalParkingCapacity = cursor.getInt(cursor.getColumnIndex(
+                BucksContract.CarPark.COLUMN_TOTAL_PARKING_CAPACITY));
+        entranceFull = cursor.getInt(cursor.getColumnIndex(
+                BucksContract.CarPark.COLUMN_ENTRANCE_FULL));
+        double latitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.VmsJoinLocation.COLUMN_LATITUDE));
+        double longitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.VmsJoinLocation.COLUMN_LONGITUDE));
+        setLatLng(new LatLng(latitude, longitude));
     }
 
     @Override
@@ -43,9 +56,7 @@ public class CaCarParkItem extends Item {
         setMarker(googleMap.addMarker(
                 new MarkerOptions()
                         .title(getTitle())
-                        .position(new LatLng(
-                                carPark.getLatitude(),
-                                carPark.getLongitude()))
+                        .position(getLatLng())
                         .anchor(0.5f, 0.5f)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.carpark_icon))));
         markerMap.put(getMarker(), this);
@@ -59,7 +70,7 @@ public class CaCarParkItem extends Item {
         sizeTextView.setTextColor(0xff808080);
         sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         sizeTextView.setGravity(GravityCompat.START);
-        sizeTextView.setText(carPark.getTotalParkingCapacity());
+        sizeTextView.setText(String.valueOf(totalParkingCapacity));
         linearLayout.addView(sizeTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView signTextView = new TextView(context);
@@ -67,7 +78,7 @@ public class CaCarParkItem extends Item {
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if (carPark.getEntranceFull().equals(ZERO)) {
+        if (entranceFull == 0) {
             signTextView.setText(R.string.space);
         } else {
             signTextView.setText(R.string.full);
@@ -76,7 +87,7 @@ public class CaCarParkItem extends Item {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView nameTextView = new TextView(context);
         // TODO Decide what we want in the feed.
-        nameTextView.setText(carPark.getCarParkIdentity().replace(BUCK_PREFIX, "").replaceAll("_", " "));
+        nameTextView.setText(identity);
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         nameTextView.setGravity(GravityCompat.END);

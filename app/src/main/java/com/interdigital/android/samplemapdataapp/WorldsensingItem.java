@@ -18,9 +18,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.dougal.resource.Container;
 import com.interdigital.android.dougal.resource.ContentInstance;
-import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.dougal.resource.Resource;
-import com.interdigital.android.samplemapdataapp.json.PredefinedLocation;
+import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import org.json.JSONObject;
@@ -52,12 +51,12 @@ public class WorldsensingItem extends Item implements DougalCallback {
     private LatLng latLng;
     private boolean full = false;
     private boolean updating = false;
-    private WeakReference<MapsActivity> mapsActivityWeakReference;
+    private WeakReference<MapsActivity> weakMapsActivity;
 
     public WorldsensingItem(int offset, MapsActivity mapsActivity) {
         super("Worldsensing " + String.valueOf(offset));
         this.offset = offset;
-        mapsActivityWeakReference = new WeakReference<>(mapsActivity);
+        weakMapsActivity = new WeakReference<>(mapsActivity);
         setType(TYPE_CAR_PARK);
         loadPosition();
     }
@@ -98,7 +97,7 @@ public class WorldsensingItem extends Item implements DougalCallback {
             getMarker().setIcon(BitmapDescriptorFactory.fromResource(getMarkerIconUpdated()));
         }
         updating = false;
-        MapsActivity mapsActivity = mapsActivityWeakReference.get();
+        MapsActivity mapsActivity = weakMapsActivity.get();
         if (mapsActivity != null) {
             mapsActivity.updateCompleted();
         }
@@ -142,7 +141,6 @@ public class WorldsensingItem extends Item implements DougalCallback {
 
     private void loadPosition() {
         try {
-            // TODO Waiting for David to put these on CSE-02.
             ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                     CseDetails.METHOD + CseDetails.hostName,
                     CseDetails.cseName + "/" + APP_NAME + CONTAINERS_STATIC[offset],

@@ -1,7 +1,6 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +32,12 @@ import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
+import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
+import net.uk.onetransport.android.county.bucks.provider.BucksProvider;
+import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,7 +61,9 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox vmsCheckbox;
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
+    private CheckBox roadWorksCheckBox;
     private int numberUpdated;
+    private ItemObserver itemObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,7 @@ public class MapsActivity extends AppCompatActivity
         maybeCreateInstallationId();
         maybeCreateAe();
         initialiseDrawer();
+        itemObserver = new ItemObserver(null, this);
     }
 
     @Override
@@ -106,16 +113,9 @@ public class MapsActivity extends AppCompatActivity
         actionBarDrawerToggle.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.refresh_item:
-                googleMap.clear();
-                markerMap.clear();
-                vmsCheckbox.setChecked(true);
-                carParkCheckbox.setChecked(true);
-                trafficFlowCheckBox.setChecked(true);
-                new LoadMarkerTask(googleMap, markerMap,
-                        (ProgressBar) findViewById(R.id.progress_bar), false, this).execute();
-                return true;
-            case R.id.settings_item:
-                startActivity(new Intent(this, SettingsActivity.class));
+                findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+                BucksSyncAdapter.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
+                        trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -128,9 +128,27 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(this);
+        CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                getString(R.string.pref_default_password), installationId);
+        loadMarkers(true);
+    }
+
+    public void loadMarkers(boolean moveMap) {
+        HashSet<Integer> visibleTypes = new HashSet<>();
+        if (vmsCheckbox.isChecked()) {
+            visibleTypes.add(Item.TYPE_VMS);
+        }
+        if (carParkCheckbox.isChecked()) {
+            visibleTypes.add(Item.TYPE_CAR_PARK);
+        }
+        if (trafficFlowCheckBox.isChecked()) {
+            visibleTypes.add(Item.TYPE_TRAFFIC_FLOW);
+        }
+        if (roadWorksCheckBox.isChecked()) {
+            visibleTypes.add(Item.TYPE_ROAD_WORKS);
+        }
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
-                true, this).execute();
-        startUpdateTimer();
+                moveMap, this, visibleTypes).execute();
     }
 
     @Override
@@ -186,9 +204,16 @@ public class MapsActivity extends AppCompatActivity
                 break;
             case R.id.traffic_flow_checkbox:
                 if (checked) {
-                    setItemVisible(Item.TYPE_ANPR, true);
+                    setItemVisible(Item.TYPE_TRAFFIC_FLOW, true);
                 } else {
-                    setItemVisible(Item.TYPE_ANPR, false);
+                    setItemVisible(Item.TYPE_TRAFFIC_FLOW, false);
+                }
+                break;
+            case R.id.road_works_checkbox:
+                if (checked) {
+                    setItemVisible(Item.TYPE_ROAD_WORKS, true);
+                } else {
+                    setItemVisible(Item.TYPE_ROAD_WORKS, false);
                 }
                 break;
         }
@@ -205,10 +230,13 @@ public class MapsActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         startUpdateTimer();
+        getContentResolver().registerContentObserver(BucksProvider.LAST_UPDATED_URI, false,
+                itemObserver);
     }
 
     @Override
     protected void onPause() {
+        getContentResolver().unregisterContentObserver(itemObserver);
         stopUpdateTimer();
         super.onPause();
     }
@@ -229,9 +257,9 @@ public class MapsActivity extends AppCompatActivity
     }
 
     private void maybeCreateAe() {
-        CseDetails.aeId = "C-samplemapdataapp-" + installationId;
-        CseDetails.appName = "SampleMapDataApp-" + installationId;
-        String applicationId = "App-id-" + installationId;
+        CseDetails.aeId = "C-" + getString(R.string.pref_default_user_name);
+        CseDetails.appName = "SampleMapDataApp";
+        String applicationId = "SampleMapDataApp-Id";
         ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
                 CseDetails.appName, applicationId, CseDetails.METHOD + CseDetails.hostName,
                 CseDetails.cseName, false);
@@ -252,9 +280,11 @@ public class MapsActivity extends AppCompatActivity
         vmsCheckbox = (CheckBox) findViewById(R.id.vms_checkbox);
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
+        roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
+        roadWorksCheckBox.setOnCheckedChangeListener(this);
     }
 
     private void updateAll() {
