@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.support.v4.view.GravityCompat;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.interdigital.android.samplemapdataapp.R;
 
-import net.uk.onetransport.android.county.bucks.locations.PredefinedVmsLocation;
 import net.uk.onetransport.android.county.bucks.provider.BucksContract;
 
 import java.util.HashMap;
@@ -32,14 +30,14 @@ public class CaVmsItem extends Item {
     public CaVmsItem(Cursor cursor) {
         setType(TYPE_VMS);
         String legendStr = cursor.getString(cursor.getColumnIndex(
-                BucksContract.VmsJoinLocation.COLUMN_VMS_LEGENDS));
+                BucksContract.VariableMessageSign.COLUMN_VMS_LEGENDS));
         vmsLegends = legendStr.split("\\|");
         locationReference = cursor.getString(cursor.getColumnIndex(
-                BucksContract.VmsJoinLocation.COLUMN_DESCRIPTOR));
+                BucksContract.VariableMessageSign.COLUMN_DESCRIPTOR));
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.VmsJoinLocation.COLUMN_LATITUDE));
+                BucksContract.VariableMessageSign.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.VmsJoinLocation.COLUMN_LONGITUDE));
+                BucksContract.VariableMessageSign.COLUMN_LONGITUDE));
         setLatLng(new LatLng(latitude, longitude));
     }
 

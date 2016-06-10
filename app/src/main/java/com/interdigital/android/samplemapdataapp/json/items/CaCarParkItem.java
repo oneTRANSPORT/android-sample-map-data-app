@@ -40,9 +40,9 @@ public class CaCarParkItem extends Item {
         entranceFull = cursor.getInt(cursor.getColumnIndex(
                 BucksContract.CarPark.COLUMN_ENTRANCE_FULL));
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.VmsJoinLocation.COLUMN_LATITUDE));
+                BucksContract.CarPark.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.VmsJoinLocation.COLUMN_LONGITUDE));
+                BucksContract.CarPark.COLUMN_LONGITUDE));
         setLatLng(new LatLng(latitude, longitude));
     }
 

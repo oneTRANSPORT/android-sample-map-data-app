@@ -114,7 +114,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     }
 
     private void loadCaVms() throws Exception {
-        Cursor cursor = BucksContentHelper.getVmsJoinLocations(context);
+        Cursor cursor = BucksContentHelper.getVariableMessageSigns(context);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 CaVmsItem caVmsItem = new CaVmsItem(cursor);
