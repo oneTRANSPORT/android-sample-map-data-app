@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 public class CaTrafficFlowItem extends Item {
 
+    // TODO    Add more parameters from the data?
     private int vehicleFlow;
     private double averageVehicleSpeed;
     private String locationReference;
@@ -27,19 +28,19 @@ public class CaTrafficFlowItem extends Item {
     public CaTrafficFlowItem(Cursor cursor) {
         setType(TYPE_TRAFFIC_FLOW);
         vehicleFlow = cursor.getInt(cursor.getColumnIndex(
-                BucksContract.TrafficFlowJoinLocation.COLUMN_VEHICLE_FLOW));
+                BucksContract.TrafficFlow.COLUMN_VEHICLE_FLOW));
         averageVehicleSpeed = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.TrafficFlowJoinLocation.COLUMN_AVERAGE_VEHICLE_SPEED));
+                BucksContract.TrafficFlow.COLUMN_AVERAGE_VEHICLE_SPEED));
         locationReference = cursor.getString(cursor.getColumnIndex(
-                BucksContract.TrafficFlowJoinLocation.COLUMN_FROM_DESCRIPTOR));
+                BucksContract.TrafficFlow.COLUMN_FROM_DESCRIPTOR));
         if (TextUtils.isEmpty(locationReference)) {
             locationReference = cursor.getString(cursor.getColumnIndex(
-                    BucksContract.TrafficFlowJoinLocation.COLUMN_TO_DESCRIPTOR));
+                    BucksContract.TrafficFlow.COLUMN_TO_DESCRIPTOR));
         }
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.TrafficFlowJoinLocation.COLUMN_FROM_LATITUDE));
+                BucksContract.TrafficFlow.COLUMN_FROM_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.TrafficFlowJoinLocation.COLUMN_FROM_LONGITUDE));
+                BucksContract.TrafficFlow.COLUMN_FROM_LONGITUDE));
         setLatLng(new LatLng(latitude, longitude));
     }
 

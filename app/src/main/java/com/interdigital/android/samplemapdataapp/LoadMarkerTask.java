@@ -17,7 +17,6 @@ import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaVmsItem;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
-import net.uk.onetransport.android.county.bucks.locations.SegmentLocation;
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private ArrayList<Item> itemList = new ArrayList<>();
     private HashMap<Marker, Item> markerMap = new HashMap<>();
     private ProgressBar progressBar;
-    private HashMap<String, SegmentLocation> segmentLocationMap = new HashMap<>();
     private boolean moveMap;
     // TODO    Weak reference.
     private MapsActivity mapsActivity;
@@ -142,7 +140,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     }
 
     private void loadCaTrafficFlow() throws Exception {
-        Cursor cursor = BucksContentHelper.getTrafficFlowJoinLocations(context);
+        Cursor cursor = BucksContentHelper.getTrafficFlows(context);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 CaTrafficFlowItem caTrafficFlowItem = new CaTrafficFlowItem(cursor);
