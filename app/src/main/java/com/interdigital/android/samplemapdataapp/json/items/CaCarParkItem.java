@@ -2,13 +2,8 @@ package com.interdigital.android.samplemapdataapp.json.items;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
-import android.support.v4.view.GravityCompat;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -64,35 +59,19 @@ public class CaCarParkItem extends Item {
 
     @Override
     public View getInfoContents(Context context) {
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        TextView sizeTextView = new TextView(context);
-        sizeTextView.setTextColor(0xff808080);
-        sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        sizeTextView.setGravity(GravityCompat.START);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.pop_up_car_park, null, false);
+        TextView sizeTextView = (TextView) view.findViewById(R.id.size_text_view);
+        TextView signTextView = (TextView) view.findViewById(R.id.sign_text_view);
+        TextView nameTextView = (TextView) view.findViewById(R.id.name_text_view);
         sizeTextView.setText(String.valueOf(totalParkingCapacity));
-        linearLayout.addView(sizeTextView, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        TextView signTextView = new TextView(context);
-        signTextView.setTextColor(0xff000000);
-        signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        signTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-        signTextView.setTypeface(Typeface.DEFAULT_BOLD);
         if (entranceFull == 0) {
             signTextView.setText(R.string.space);
         } else {
             signTextView.setText(R.string.full);
         }
-        linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        TextView nameTextView = new TextView(context);
-        // TODO Decide what we want in the feed.
         nameTextView.setText(identity);
-        nameTextView.setTextColor(0xff808080);
-        nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        nameTextView.setGravity(GravityCompat.END);
-        linearLayout.addView(nameTextView, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        return linearLayout;
+        return view;
     }
 }

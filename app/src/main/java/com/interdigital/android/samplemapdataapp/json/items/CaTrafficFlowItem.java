@@ -24,6 +24,7 @@ public class CaTrafficFlowItem extends Item {
     private int vehicleFlow;
     private double averageVehicleSpeed;
     private String locationReference;
+    private LatLng fromLatLng;
 
     public CaTrafficFlowItem(Cursor cursor) {
         setType(TYPE_TRAFFIC_FLOW);
@@ -32,21 +33,27 @@ public class CaTrafficFlowItem extends Item {
         averageVehicleSpeed = cursor.getDouble(cursor.getColumnIndex(
                 BucksContract.TrafficFlow.COLUMN_AVERAGE_VEHICLE_SPEED));
         locationReference = cursor.getString(cursor.getColumnIndex(
-                BucksContract.TrafficFlow.COLUMN_FROM_DESCRIPTOR));
+                BucksContract.TrafficFlow.COLUMN_TO_DESCRIPTOR));
         if (TextUtils.isEmpty(locationReference)) {
             locationReference = cursor.getString(cursor.getColumnIndex(
-                    BucksContract.TrafficFlow.COLUMN_TO_DESCRIPTOR));
+                    BucksContract.TrafficFlow.COLUMN_FROM_DESCRIPTOR));
         }
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.TrafficFlow.COLUMN_FROM_LATITUDE));
+                BucksContract.TrafficFlow.COLUMN_TO_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.TrafficFlow.COLUMN_FROM_LONGITUDE));
+                BucksContract.TrafficFlow.COLUMN_TO_LONGITUDE));
         setLatLng(new LatLng(latitude, longitude));
+        latitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.TrafficFlow.COLUMN_FROM_LATITUDE));
+        longitude = cursor.getDouble(cursor.getColumnIndex(
+                BucksContract.TrafficFlow.COLUMN_FROM_LONGITUDE));
+        fromLatLng = new LatLng(latitude, longitude);
     }
 
     @Override
     public boolean shouldAdd() {
-        if (getLatLng().latitude == 0 && getLatLng().longitude == 0) {
+        if ((getLatLng().latitude == 0 && getLatLng().longitude == 0)
+                || (fromLatLng.latitude == 0 && fromLatLng.longitude == 0)) {
             return false;
         }
         if (TextUtils.isEmpty(locationReference)) {
@@ -70,7 +77,7 @@ public class CaTrafficFlowItem extends Item {
     public View getInfoContents(Context context) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.pop_up_flow, null, false);
+        View view = layoutInflater.inflate(R.layout.pop_up_traffic_flow, null, false);
         ((TextView) view.findViewById(R.id.cars_text_view))
                 .setText(String.format(context.getString(R.string.cars_per_min), vehicleFlow));
         ((TextView) view.findViewById(R.id.speed_text_view))
