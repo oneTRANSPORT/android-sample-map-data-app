@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.interdigital.android.samplemapdataapp.json.items.CaCarParkItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaRoadWorksItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
-import com.interdigital.android.samplemapdataapp.json.items.CaVmsItem;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
@@ -35,16 +34,22 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private MapsActivity mapsActivity;
     private Context context;
     private HashSet<Integer> visibleTypes;
+    private VmsClusterManager vmsClusterManager;
+    private VmsClusterRenderer vmsClusterRenderer;
+    private ArrayList<VmsClusterItem> vmsClusterItems = new ArrayList<>();
 
     public LoadMarkerTask(GoogleMap googleMap, HashMap<Marker, Item> markerMap,
                           ProgressBar progressBar, boolean moveMap, MapsActivity mapsActivity,
-                          HashSet<Integer> visibleTypes) {
+                          HashSet<Integer> visibleTypes, VmsClusterManager vmsClusterManager,
+                          VmsClusterRenderer vmsClusterRenderer) {
         this.googleMap = googleMap;
         this.markerMap = markerMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
         this.mapsActivity = mapsActivity;
         this.visibleTypes = visibleTypes;
+        this.vmsClusterManager = vmsClusterManager;
+        this.vmsClusterRenderer = vmsClusterRenderer;
         context = mapsActivity.getApplicationContext();
         Log.i("LoadMarkerTask", "Invoking load markers");
     }
@@ -94,6 +99,12 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 }
             }
         }
+
+        for (VmsClusterItem vmsClusterItem : vmsClusterItems) {
+            vmsClusterManager.addItem(vmsClusterItem);  // Must be on UI thread?
+        }
+
+        googleMap.setInfoWindowAdapter(vmsClusterManager.getMarkerManager());
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {
@@ -115,9 +126,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         Cursor cursor = BucksContentHelper.getVariableMessageSigns(context);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                CaVmsItem caVmsItem = new CaVmsItem(cursor);
-                if (caVmsItem.shouldAdd()) {
-                    itemList.add(caVmsItem);
+                VmsClusterItem vmsClusterItem = new VmsClusterItem(cursor);
+                if (vmsClusterItem.shouldAdd()) {
+                    vmsClusterItems.add(vmsClusterItem);
                 }
                 cursor.moveToNext();
             }
@@ -151,68 +162,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
             }
         }
         cursor.close();
-
-
-        // TODO Currently not getting any latitude or longitude coordinates.
-
-//        SegmentLocationArray segmentLocationArray = SegmentLocationArray.getSegmentLocationArray(
-//                CseDetails.aeId, CseDetails.baseUrl, CseDetails.userName, CseDetails.password);
-//
-//        HashMap<String, SegmentLocation> segmentLocationMap = new HashMap<>();
-//        for (SegmentLocation segmentLocation : segmentLocationArray.getSegmentLocations()) {
-//            segmentLocationMap.put(segmentLocation.getLocationId(), segmentLocation);
-//        }
-//
-//        TrafficFlowArray trafficFlowArray = TrafficFlowArray.getTrafficFlowArray(CseDetails.aeId,
-//                CseDetails.baseUrl, CseDetails.userName, CseDetails.password);
-//
-//        for (TrafficFlow trafficFlow : trafficFlowArray.getTrafficFlows()) {
-//            CaTrafficFlowItem caTrafficFlowItem = new CaTrafficFlowItem(trafficFlow,
-//                    segmentLocationMap);
-//            if (caTrafficFlowItem.shouldAdd()) {
-//                itemList.add(caTrafficFlowItem);
-//            }
-//        }
-
-        // TODO    Hopefully we don't need any of this once the Bucks oneTransport library
-        // TODO    is doing it.
-
-//        ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
-//                CseDetails.baseUrl, "BCCTrafficFlowFeedImport/All",
-//                CseDetails.userName, CseDetails.password);
-//        String content = contentInstance.getContent();
-//        CaTrafficFlowItem[] caTrafficFlowItems = gson.fromJson(content, CaTrafficFlowItem[].class);
-//        HashMap<String, CaTrafficFlowItem> flowMap = new HashMap<>();
-//        for (CaTrafficFlowItem caTrafficFlowItem : caTrafficFlowItems) {
-//            String locationReference = caTrafficFlowItem.getLocationReference();
-//            if (!flowMap.containsKey(locationReference)) {
-//                flowMap.put(locationReference, caTrafficFlowItem);
-//            } else {
-//                CaTrafficFlowItem existingCaTrafficFlowItem = flowMap.get(locationReference);
-//                if (!TextUtils.isEmpty(caTrafficFlowItem.getAverageVehicleSpeed())) {
-//                    existingCaTrafficFlowItem.setAverageVehicleSpeed(caTrafficFlowItem.getAverageVehicleSpeed());
-//                }
-//                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowSpeed())) {
-//                    existingCaTrafficFlowItem.setFreeFlowSpeed(caTrafficFlowItem.getFreeFlowSpeed());
-//                }
-//                if (!TextUtils.isEmpty(caTrafficFlowItem.getFreeFlowTravelTime())) {
-//                    existingCaTrafficFlowItem.setFreeFlowTravelTime(caTrafficFlowItem.getFreeFlowTravelTime());
-//                }
-//                if (!TextUtils.isEmpty(caTrafficFlowItem.getTravelTime())) {
-//                    existingCaTrafficFlowItem.setTravelTime(caTrafficFlowItem.getTravelTime());
-//                }
-//                if (!TextUtils.isEmpty(caTrafficFlowItem.getVehicleFlow())) {
-//                    existingCaTrafficFlowItem.setVehicleFlow(caTrafficFlowItem.getVehicleFlow());
-//                }
-//            }
-//        }
-//        for (String key : flowMap.keySet()) {
-//            CaTrafficFlowItem caTrafficFlowItem = flowMap.get(key);
-//            caTrafficFlowItem.updateLocation(predefinedLocationMap);
-//            if (caTrafficFlowItem.shouldAdd()) {
-//                itemList.add(caTrafficFlowItem);
-//            }
-//        }
     }
 
     private void loadCaRoadWorks() throws Exception {
