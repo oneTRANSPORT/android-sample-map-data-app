@@ -197,6 +197,7 @@ public class MapsActivity extends AppCompatActivity
         switch (compoundButton.getId()) {
             case R.id.vms_checkbox:
                 if (checked) {
+                    vmsClusterManager.getMarkerCollection().
                     setItemVisible(Item.TYPE_VMS, true);
                 } else {
                     setItemVisible(Item.TYPE_VMS, false);
