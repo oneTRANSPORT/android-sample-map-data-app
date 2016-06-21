@@ -64,6 +64,8 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox roadWorksCheckBox;
     private int numberUpdated;
     private ItemObserver itemObserver;
+    private VmsClusterManager vmsClusterManager;
+    private VmsClusterRenderer vmsClusterRenderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +129,14 @@ public class MapsActivity extends AppCompatActivity
         this.googleMap = googleMap;
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        googleMap.setInfoWindowAdapter(this);
+//        googleMap.setInfoWindowAdapter(this);
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
+        vmsClusterManager = new VmsClusterManager(context, googleMap);
+        vmsClusterRenderer = new VmsClusterRenderer(context, googleMap, vmsClusterManager);
+        vmsClusterManager.setRenderer(vmsClusterRenderer);
+        googleMap.setOnCameraChangeListener(vmsClusterManager);
+        googleMap.setOnMarkerClickListener(vmsClusterManager);
         loadMarkers(true);
     }
 
@@ -148,7 +155,7 @@ public class MapsActivity extends AppCompatActivity
             visibleTypes.add(Item.TYPE_ROAD_WORKS);
         }
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
-                moveMap, this, visibleTypes).execute();
+                moveMap, this, visibleTypes, vmsClusterManager, vmsClusterRenderer).execute();
     }
 
     @Override
