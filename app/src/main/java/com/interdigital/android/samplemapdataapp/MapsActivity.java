@@ -24,26 +24,30 @@ import android.widget.ProgressBar;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
 import com.interdigital.android.dougal.Types;
 import com.interdigital.android.dougal.exception.DougalException;
 import com.interdigital.android.dougal.resource.ApplicationEntity;
 import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
+import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
 import net.uk.onetransport.android.county.bucks.provider.BucksProvider;
 import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.UUID;
 
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, Handler.Callback,
-        DougalCallback, CompoundButton.OnCheckedChangeListener {
+        DougalCallback, CompoundButton.OnCheckedChangeListener, GoogleMap.OnCameraChangeListener,
+        GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapsActivity";
     private static final int MSG_SET_PLEASE_UPDATE = 1;
@@ -52,7 +56,7 @@ public class MapsActivity extends AppCompatActivity
     private SupportMapFragment mapFragment;
     private GoogleMap googleMap;
     // Needed for quick look-up.
-    private HashMap<Marker, Item> markerMap = new HashMap<>();
+//    private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Handler handler = new Handler(this);
     private String installationId;
     private Toolbar toolbar;
@@ -66,6 +70,8 @@ public class MapsActivity extends AppCompatActivity
     private ItemObserver itemObserver;
     private VmsClusterManager vmsClusterManager;
     private VmsClusterRenderer vmsClusterRenderer;
+    private RoadWorksClusterManager roadWorksClusterManager;
+    private RoadWorksClusterRenderer roadWorksClusterRenderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +136,8 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(this);
+        googleMap.setOnCameraChangeListener(this);
+        googleMap.setOnMarkerClickListener(this);
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
         loadMarkers(true);
@@ -150,8 +158,6 @@ public class MapsActivity extends AppCompatActivity
             visibleTypes.add(Item.TYPE_ROAD_WORKS);
         }
         // The cluster manager doesn't seem to like being cleared and restarted.
-        googleMap.setOnCameraChangeListener(null);
-        googleMap.setOnMarkerClickListener(null);
         if (vmsClusterManager != null) {
             for (Marker marker : vmsClusterManager.getMarkerCollection().getMarkers()) {
                 marker.remove();
@@ -163,8 +169,23 @@ public class MapsActivity extends AppCompatActivity
         }
         vmsClusterManager = new VmsClusterManager(context, googleMap);
         vmsClusterRenderer = new VmsClusterRenderer(context, googleMap, vmsClusterManager);
-        new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
-                moveMap, this, visibleTypes, vmsClusterManager, vmsClusterRenderer).execute();
+
+        if (roadWorksClusterManager != null) {
+            for (Marker marker : roadWorksClusterManager.getMarkerCollection().getMarkers()) {
+                marker.remove();
+            }
+            for (Marker marker : roadWorksClusterManager.getClusterMarkerCollection().getMarkers()) {
+                marker.remove();
+            }
+            roadWorksClusterManager.clearItems();
+        }
+        roadWorksClusterManager = new RoadWorksClusterManager(context, googleMap);
+        roadWorksClusterRenderer = new RoadWorksClusterRenderer(context, googleMap,
+                roadWorksClusterManager);
+
+        new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
+                moveMap, this, visibleTypes, vmsClusterManager, vmsClusterRenderer,
+                roadWorksClusterManager, roadWorksClusterRenderer).execute();
     }
 
     @Override
@@ -195,6 +216,9 @@ public class MapsActivity extends AppCompatActivity
         if (vmsClusterRenderer.getClusterItem(marker) != null) {
             return vmsClusterManager.getMarkerManager().getInfoWindow(marker);
         }
+        if (roadWorksClusterRenderer.getClusterItem(marker) != null) {
+            return roadWorksClusterManager.getMarkerManager().getInfoWindow(marker);
+        }
         return null;
     }
 
@@ -203,7 +227,10 @@ public class MapsActivity extends AppCompatActivity
         if (vmsClusterRenderer.getClusterItem(marker) != null) {
             return vmsClusterManager.getMarkerManager().getInfoContents(marker);
         }
-        return markerMap.get(marker).getInfoContents(context);
+        if (roadWorksClusterRenderer.getClusterItem(marker) != null) {
+            return roadWorksClusterManager.getMarkerManager().getInfoContents(marker);
+        }
+        return null;
     }
 
 
@@ -211,10 +238,8 @@ public class MapsActivity extends AppCompatActivity
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         switch (compoundButton.getId()) {
             case R.id.vms_checkbox:
-                if (checked) {
-                    setItemVisible(Item.TYPE_VMS, true);
-                } else {
-                    setItemVisible(Item.TYPE_VMS, false);
+                for (Marker marker : vmsClusterManager.getMarkerCollection().getMarkers()) {
+                    marker.setVisible(checked);
                 }
                 break;
             case R.id.car_park_checkbox:
@@ -232,10 +257,9 @@ public class MapsActivity extends AppCompatActivity
                 }
                 break;
             case R.id.road_works_checkbox:
-                if (checked) {
-                    setItemVisible(Item.TYPE_ROAD_WORKS, true);
-                } else {
-                    setItemVisible(Item.TYPE_ROAD_WORKS, false);
+                roadWorksClusterRenderer.setVisible(checked);
+                for (Marker marker : roadWorksClusterManager.getMarkerCollection().getMarkers()) {
+                    marker.setVisible(checked);
                 }
                 break;
         }
@@ -246,6 +270,30 @@ public class MapsActivity extends AppCompatActivity
         if (numberUpdated == 6) {
             startUpdateTimer();
         }
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (vmsClusterManager != null) {
+            vmsClusterManager.onCameraChange(cameraPosition);
+        }
+        if (roadWorksClusterManager != null) {
+            roadWorksClusterManager.onCameraChange(cameraPosition);
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (vmsClusterManager != null && (vmsClusterRenderer.getClusterItem(marker) != null
+                || vmsClusterRenderer.getCluster(marker) != null)) {
+            return vmsClusterManager.onMarkerClick(marker);
+        }
+        if (roadWorksClusterManager != null
+                && (roadWorksClusterRenderer.getClusterItem(marker) != null
+                || roadWorksClusterRenderer.getCluster(marker) != null)) {
+            return roadWorksClusterManager.onMarkerClick(marker);
+        }
+        return true;
     }
 
     @Override
@@ -311,20 +359,21 @@ public class MapsActivity extends AppCompatActivity
 
     private void updateAll() {
         numberUpdated = 0;
-        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
-            Item item = entry.getValue();
-            if (item instanceof WorldsensingItem) {
-                ((WorldsensingItem) item).update();
-            }
-        }
+        // TODO    Get a new plan for Worldsensing updates.
+//        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
+//            Item item = entry.getValue();
+//            if (item instanceof WorldsensingItem) {
+//                ((WorldsensingItem) item).update();
+//            }
+//        }
     }
 
     private void setItemVisible(@Item.Type int type, boolean visible) {
-        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
-            if (entry.getValue().getType() == type) {
-                entry.getKey().setVisible(visible);
-            }
-        }
+//        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
+//            if (entry.getValue().getType() == type) {
+//                entry.getKey().setVisible(visible);
+//            }
+//        }
     }
 
     private void startUpdateTimer() {
@@ -336,5 +385,6 @@ public class MapsActivity extends AppCompatActivity
     private void stopUpdateTimer() {
         handler.removeMessages(MSG_SET_PLEASE_UPDATE);
     }
+
 }
 

@@ -1,78 +1,58 @@
-package com.interdigital.android.samplemapdataapp.json.items;
+package com.interdigital.android.samplemapdataapp.cluster;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.interdigital.android.samplemapdataapp.R;
 
-import net.uk.onetransport.android.county.bucks.provider.BucksContract;
+public class RoadWorksClusterRenderer extends DefaultClusterRenderer<RoadWorksClusterItem>
+        implements GoogleMap.InfoWindowAdapter {
 
-import java.util.HashMap;
+    private Context context;
+    private boolean visible = true;
 
-public class CaRoadWorksItem extends Item {
-
-    private String comment;
-    private String effectOnRoadLayout;
-    private String roadMaintenanceType;
-    private String impactOnTraffic;
-    private String type;
-    private String status;
-    private String overallStartTime;
-    private String overallEndTime;
-    private String periods;
-    private String locationDescription;
-    private String guid;
-
-    public CaRoadWorksItem(Cursor cursor) {
-        setType(TYPE_ROAD_WORKS);
-        comment = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_COMMENT));
-        effectOnRoadLayout = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_EFFECT_ON_ROAD_LAYOUT));
-        roadMaintenanceType = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_ROAD_MAINTENANCE_TYPE));
-        impactOnTraffic = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_IMPACT_ON_TRAFFIC));
-        type = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_TYPE));
-        status = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_STATUS));
-        overallStartTime = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_OVERALL_START_TIME));
-        overallEndTime = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_OVERALL_END_TIME));
-        periods = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_PERIODS));
-
-        guid = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_ID));
-
-        double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_LATITUDE));
-        double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_LONGITUDE));
-        setLatLng(new LatLng(latitude, longitude));
-        Log.i("CaRoadWorksItem", "guid, pos = " + guid + " " + latitude + " " + longitude);
+    public RoadWorksClusterRenderer(Context context, GoogleMap googleMap,
+                                    ClusterManager<RoadWorksClusterItem> clusterManager) {
+        super(context, googleMap, clusterManager);
+        this.context = context;
     }
 
     @Override
-    public void addMarker(GoogleMap googleMap, HashMap<Marker, Item> markerMap) {
-        setMarker(googleMap.addMarker(
-                new MarkerOptions()
-                        .title(getTitle())
-                        .position(getLatLng())
-                        .anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.roadworks_icon))));
-        markerMap.put(getMarker(), this);
+    protected void onBeforeClusterItemRendered(RoadWorksClusterItem roadWorksClusterItem,
+                                               MarkerOptions markerOptions) {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.roadworks_icon);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap)).visible(visible);
     }
 
     @Override
-    public View getInfoContents(Context context) {
+    protected void onBeforeClusterRendered(Cluster<RoadWorksClusterItem> cluster,
+                                           MarkerOptions markerOptions) {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.roadworks_cluster_icon);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap)).visible(visible);
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        RoadWorksClusterItem roadWorksClusterItem = getClusterItem(marker);
+        String comment = roadWorksClusterItem.getComment();
         if (!comment.contains(": Event Location :") && !comment.contains(": Location :")) {
             // Unformatted text, very difficult to do anything else here.
             TextView textView = new TextView(context);
@@ -119,8 +99,11 @@ public class CaRoadWorksItem extends Item {
         }
     }
 
-    @Override
-    public boolean shouldAdd() {
-        return true;
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

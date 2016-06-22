@@ -1,4 +1,4 @@
-package com.interdigital.android.samplemapdataapp;
+package com.interdigital.android.samplemapdataapp.cluster;
 
 import android.database.Cursor;
 

@@ -1,4 +1,4 @@
-package com.interdigital.android.samplemapdataapp;
+package com.interdigital.android.samplemapdataapp.cluster;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.interdigital.android.samplemapdataapp.R;
 
 public class VmsClusterRenderer extends DefaultClusterRenderer<VmsClusterItem>
         implements GoogleMap.InfoWindowAdapter {
