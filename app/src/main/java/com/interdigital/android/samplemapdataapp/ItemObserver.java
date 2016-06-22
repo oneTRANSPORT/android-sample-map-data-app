@@ -17,13 +17,6 @@ public class ItemObserver extends ContentObserver {
     }
 
     @Override
-    public void onChange(boolean selfChange) {
-        super.onChange(selfChange);
-        Log.i("ItemObserver", "CO uri = self change");
-        updateMap();
-    }
-
-    @Override
     public void onChange(boolean selfChange, Uri uri) {
         super.onChange(selfChange, uri);
         Log.i("ItemObserver", "CO uri = " + uri);

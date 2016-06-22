@@ -129,14 +129,9 @@ public class MapsActivity extends AppCompatActivity
         this.googleMap = googleMap;
         googleMap.setIndoorEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-//        googleMap.setInfoWindowAdapter(this);
+        googleMap.setInfoWindowAdapter(this);
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
-        vmsClusterManager = new VmsClusterManager(context, googleMap);
-        vmsClusterRenderer = new VmsClusterRenderer(context, googleMap, vmsClusterManager);
-        vmsClusterManager.setRenderer(vmsClusterRenderer);
-        googleMap.setOnCameraChangeListener(vmsClusterManager);
-        googleMap.setOnMarkerClickListener(vmsClusterManager);
         loadMarkers(true);
     }
 
@@ -154,6 +149,20 @@ public class MapsActivity extends AppCompatActivity
         if (roadWorksCheckBox.isChecked()) {
             visibleTypes.add(Item.TYPE_ROAD_WORKS);
         }
+        // The cluster manager doesn't seem to like being cleared and restarted.
+        googleMap.setOnCameraChangeListener(null);
+        googleMap.setOnMarkerClickListener(null);
+        if (vmsClusterManager != null) {
+            for (Marker marker : vmsClusterManager.getMarkerCollection().getMarkers()) {
+                marker.remove();
+            }
+            for (Marker marker : vmsClusterManager.getClusterMarkerCollection().getMarkers()) {
+                marker.remove();
+            }
+            vmsClusterManager.clearItems();
+        }
+        vmsClusterManager = new VmsClusterManager(context, googleMap);
+        vmsClusterRenderer = new VmsClusterRenderer(context, googleMap, vmsClusterManager);
         new LoadMarkerTask(googleMap, markerMap, (ProgressBar) findViewById(R.id.progress_bar),
                 moveMap, this, visibleTypes, vmsClusterManager, vmsClusterRenderer).execute();
     }
@@ -183,11 +192,17 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public View getInfoWindow(Marker marker) {
+        if (vmsClusterRenderer.getClusterItem(marker) != null) {
+            return vmsClusterManager.getMarkerManager().getInfoWindow(marker);
+        }
         return null;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
+        if (vmsClusterRenderer.getClusterItem(marker) != null) {
+            return vmsClusterManager.getMarkerManager().getInfoContents(marker);
+        }
         return markerMap.get(marker).getInfoContents(context);
     }
 

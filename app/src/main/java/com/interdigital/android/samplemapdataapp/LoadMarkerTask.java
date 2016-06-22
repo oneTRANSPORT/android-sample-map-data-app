@@ -99,12 +99,11 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                 }
             }
         }
-
-        for (VmsClusterItem vmsClusterItem : vmsClusterItems) {
-            vmsClusterManager.addItem(vmsClusterItem);  // Must be on UI thread?
-        }
-
-        googleMap.setInfoWindowAdapter(vmsClusterManager.getMarkerManager());
+        // Has to be on UI thread?
+        vmsClusterManager.addItems(vmsClusterItems);
+        vmsClusterManager.setRenderer(vmsClusterRenderer);
+        googleMap.setOnCameraChangeListener(vmsClusterManager);
+        googleMap.setOnMarkerClickListener(vmsClusterManager);
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {

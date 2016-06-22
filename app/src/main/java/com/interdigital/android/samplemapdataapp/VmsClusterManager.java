@@ -38,4 +38,5 @@ public class VmsClusterManager extends ClusterManager<VmsClusterItem>
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
         return true;
     }
+
 }
