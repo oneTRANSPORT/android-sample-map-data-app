@@ -1,8 +1,6 @@
 package com.interdigital.android.samplemapdataapp.cluster;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.v4.view.GravityCompat;
 import android.util.TypedValue;
@@ -13,16 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.interdigital.android.samplemapdataapp.R;
 
-public class VmsClusterRenderer extends DefaultClusterRenderer<VmsClusterItem>
-        implements GoogleMap.InfoWindowAdapter {
+public class VmsClusterRenderer extends BaseClusterRenderer<VmsClusterItem> {
 
     private Context context;
 
@@ -33,22 +26,13 @@ public class VmsClusterRenderer extends DefaultClusterRenderer<VmsClusterItem>
     }
 
     @Override
-    protected void onBeforeClusterItemRendered(VmsClusterItem vmsClusterItem,
-                                               MarkerOptions markerOptions) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.vm_sign_icon);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+    public int getIconResource(VmsClusterItem vmsClusterItem) {
+        return R.drawable.vm_sign_icon;
     }
 
     @Override
-    protected void onBeforeClusterRendered(Cluster<VmsClusterItem> cluster,
-                                           MarkerOptions markerOptions) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.vms_cluster);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
-    }
-
-    @Override
-    public View getInfoWindow(Marker marker) {
-        return null;
+    public int getIconClusterResource() {
+        return R.drawable.vms_cluster_icon;
     }
 
     @Override
@@ -78,5 +62,10 @@ public class VmsClusterRenderer extends DefaultClusterRenderer<VmsClusterItem>
         linearLayout.addView(nameTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return linearLayout;
+    }
+
+    @Override
+    public float getAnchorY() {
+        return 0.8f;
     }
 }

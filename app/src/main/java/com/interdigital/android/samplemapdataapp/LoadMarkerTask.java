@@ -10,13 +10,15 @@ import android.widget.ProgressBar;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterItem;
+import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterItem;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterItem;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
-import com.interdigital.android.samplemapdataapp.json.items.CaCarParkItem;
 import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
@@ -42,12 +44,17 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private RoadWorksClusterManager roadWorksClusterManager;
     private RoadWorksClusterRenderer roadWorksClusterRenderer;
     private ArrayList<RoadWorksClusterItem> roadWorksClusterItems = new ArrayList<>();
+    private CarParkClusterManager carParkClusterManager;
+    private CarParkClusterRenderer carParkClusterRenderer;
+    private ArrayList<CarParkClusterItem> carParkClusterItems = new ArrayList<>();
 
     public LoadMarkerTask(GoogleMap googleMap, ProgressBar progressBar,
                           boolean moveMap, MapsActivity mapsActivity, HashSet<Integer> visibleTypes,
                           VmsClusterManager vmsClusterManager, VmsClusterRenderer vmsClusterRenderer,
                           RoadWorksClusterManager roadWorksClusterManager,
-                          RoadWorksClusterRenderer roadWorksClusterRenderer) {
+                          RoadWorksClusterRenderer roadWorksClusterRenderer,
+                          CarParkClusterManager carParkClusterManager,
+                          CarParkClusterRenderer carParkClusterRenderer) {
         this.googleMap = googleMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
@@ -57,6 +64,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         this.vmsClusterRenderer = vmsClusterRenderer;
         this.roadWorksClusterManager = roadWorksClusterManager;
         this.roadWorksClusterRenderer = roadWorksClusterRenderer;
+        this.carParkClusterManager = carParkClusterManager;
+        this.carParkClusterRenderer = carParkClusterRenderer;
         context = mapsActivity.getApplicationContext();
         Log.i("LoadMarkerTask", "Invoking load markers");
     }
@@ -66,7 +75,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         try {
 //            addWorldSensing();
             loadCaVms();
-//            loadCaCarParks();
+            loadCaCarParks();
 //            loadCaTrafficFlow();
             loadCaRoadWorks();
         } catch (Exception e) {
@@ -89,6 +98,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         vmsClusterManager.setRenderer(vmsClusterRenderer);
         roadWorksClusterManager.addItems(roadWorksClusterItems);
         roadWorksClusterManager.setRenderer(roadWorksClusterRenderer);
+        carParkClusterManager.addItems(carParkClusterItems);
+        carParkClusterManager.setRenderer(carParkClusterRenderer);
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {
@@ -122,10 +133,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         Cursor cursor = BucksContentHelper.getCarParks(context);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                CaCarParkItem caCarParkItem = new CaCarParkItem(cursor);
-                if (caCarParkItem.shouldAdd()) {
-                    itemList.add(caCarParkItem);
-                }
+                CarParkClusterItem carParkClusterItem = new CarParkClusterItem(cursor);
+                carParkClusterItems.add(carParkClusterItem);
                 cursor.moveToNext();
             }
         }

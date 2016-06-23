@@ -4,10 +4,9 @@ import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 
-public class VmsClusterManager extends BaseClusterManager<VmsClusterItem> {
+public class CarParkClusterManager extends BaseClusterManager<CarParkClusterItem>{
 
-    public VmsClusterManager(Context context, GoogleMap googleMap) {
+    public CarParkClusterManager(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
-
 }
