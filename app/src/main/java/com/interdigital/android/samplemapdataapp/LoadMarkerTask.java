@@ -16,10 +16,12 @@ import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterItem;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterItem;
+import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterItem;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
-import com.interdigital.android.samplemapdataapp.json.items.CaTrafficFlowItem;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
@@ -31,13 +33,12 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private GoogleMap googleMap;
     private ArrayList<Item> itemList = new ArrayList<>();
-    //    private HashMap<Marker, Item> markerMap = new HashMap<>();
     private ProgressBar progressBar;
     private boolean moveMap;
     // TODO    Weak reference.
     private MapsActivity mapsActivity;
     private Context context;
-    private HashSet<Integer> visibleTypes;
+    // TODO    Simplify this stuff.
     private VmsClusterManager vmsClusterManager;
     private VmsClusterRenderer vmsClusterRenderer;
     private ArrayList<VmsClusterItem> vmsClusterItems = new ArrayList<>();
@@ -47,25 +48,31 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     private CarParkClusterManager carParkClusterManager;
     private CarParkClusterRenderer carParkClusterRenderer;
     private ArrayList<CarParkClusterItem> carParkClusterItems = new ArrayList<>();
+    private TrafficFlowClusterManager trafficFlowClusterManager;
+    private TrafficFlowClusterRenderer trafficFlowClusterRenderer;
+    private ArrayList<TrafficFlowClusterItem> trafficFlowClusterItems = new ArrayList<>();
 
     public LoadMarkerTask(GoogleMap googleMap, ProgressBar progressBar,
-                          boolean moveMap, MapsActivity mapsActivity, HashSet<Integer> visibleTypes,
-                          VmsClusterManager vmsClusterManager, VmsClusterRenderer vmsClusterRenderer,
+                          boolean moveMap, MapsActivity mapsActivity, VmsClusterManager vmsClusterManager,
+                          VmsClusterRenderer vmsClusterRenderer,
                           RoadWorksClusterManager roadWorksClusterManager,
                           RoadWorksClusterRenderer roadWorksClusterRenderer,
                           CarParkClusterManager carParkClusterManager,
-                          CarParkClusterRenderer carParkClusterRenderer) {
+                          CarParkClusterRenderer carParkClusterRenderer,
+                          TrafficFlowClusterManager trafficFlowClusterManager,
+                          TrafficFlowClusterRenderer trafficFlowClusterRenderer) {
         this.googleMap = googleMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
         this.mapsActivity = mapsActivity;
-        this.visibleTypes = visibleTypes;
         this.vmsClusterManager = vmsClusterManager;
         this.vmsClusterRenderer = vmsClusterRenderer;
         this.roadWorksClusterManager = roadWorksClusterManager;
         this.roadWorksClusterRenderer = roadWorksClusterRenderer;
         this.carParkClusterManager = carParkClusterManager;
         this.carParkClusterRenderer = carParkClusterRenderer;
+        this.trafficFlowClusterManager = trafficFlowClusterManager;
+        this.trafficFlowClusterRenderer = trafficFlowClusterRenderer;
         context = mapsActivity.getApplicationContext();
         Log.i("LoadMarkerTask", "Invoking load markers");
     }
@@ -76,7 +83,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 //            addWorldSensing();
             loadCaVms();
             loadCaCarParks();
-//            loadCaTrafficFlow();
+            loadCaTrafficFlow();
             loadCaRoadWorks();
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,6 +107,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         roadWorksClusterManager.setRenderer(roadWorksClusterRenderer);
         carParkClusterManager.addItems(carParkClusterItems);
         carParkClusterManager.setRenderer(carParkClusterRenderer);
+        trafficFlowClusterManager.addItems(trafficFlowClusterItems);
+        trafficFlowClusterManager.setRenderer(trafficFlowClusterRenderer);
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {
@@ -145,9 +154,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         Cursor cursor = BucksContentHelper.getTrafficFlows(context);
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                CaTrafficFlowItem caTrafficFlowItem = new CaTrafficFlowItem(cursor);
-                if (caTrafficFlowItem.shouldAdd()) {
-                    itemList.add(caTrafficFlowItem);
+                TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(cursor);
+                if (trafficFlowClusterItem.shouldAdd()) {
+                    trafficFlowClusterItems.add(trafficFlowClusterItem);
                 }
                 cursor.moveToNext();
             }

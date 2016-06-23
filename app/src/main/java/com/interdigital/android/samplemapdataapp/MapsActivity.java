@@ -35,6 +35,8 @@ import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
@@ -57,8 +59,6 @@ public class MapsActivity extends AppCompatActivity
     private Context context;
     private SupportMapFragment mapFragment;
     private GoogleMap googleMap;
-    // Needed for quick look-up.
-//    private HashMap<Marker, Item> markerMap = new HashMap<>();
     private Handler handler = new Handler(this);
     private String installationId;
     private Toolbar toolbar;
@@ -76,6 +76,8 @@ public class MapsActivity extends AppCompatActivity
     private RoadWorksClusterRenderer roadWorksClusterRenderer;
     private CarParkClusterManager carParkClusterManager;
     private CarParkClusterRenderer carParkClusterRenderer;
+    private TrafficFlowClusterManager trafficFlowClusterManager;
+    private TrafficFlowClusterRenderer trafficFlowClusterRenderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,19 +150,7 @@ public class MapsActivity extends AppCompatActivity
     }
 
     public void loadMarkers(boolean moveMap) {
-        HashSet<Integer> visibleTypes = new HashSet<>();
-        if (vmsCheckbox.isChecked()) {
-            visibleTypes.add(Item.TYPE_VMS);
-        }
-        if (carParkCheckbox.isChecked()) {
-            visibleTypes.add(Item.TYPE_CAR_PARK);
-        }
-        if (trafficFlowCheckBox.isChecked()) {
-            visibleTypes.add(Item.TYPE_TRAFFIC_FLOW);
-        }
-        if (roadWorksCheckBox.isChecked()) {
-            visibleTypes.add(Item.TYPE_ROAD_WORKS);
-        }
+        // TODO    Simplify all this lot.
         // The cluster manager doesn't seem to like being cleared and restarted.
         if (vmsClusterManager != null) {
             for (Marker marker : vmsClusterManager.getMarkerCollection().getMarkers()) {
@@ -199,11 +189,25 @@ public class MapsActivity extends AppCompatActivity
         carParkClusterManager = new CarParkClusterManager(context, googleMap);
         carParkClusterRenderer = new CarParkClusterRenderer(context, googleMap,
                 carParkClusterManager);
+
+        if (trafficFlowClusterManager != null) {
+            for (Marker marker : trafficFlowClusterManager.getMarkerCollection().getMarkers()) {
+                marker.remove();
+            }
+            for (Marker marker : trafficFlowClusterManager.getClusterMarkerCollection().getMarkers()) {
+                marker.remove();
+            }
+            trafficFlowClusterManager.clearItems();
+        }
+        trafficFlowClusterManager = new TrafficFlowClusterManager(context, googleMap);
+        trafficFlowClusterRenderer = new TrafficFlowClusterRenderer(context, googleMap,
+                trafficFlowClusterManager);
         // TODO
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
-                moveMap, this, visibleTypes, vmsClusterManager, vmsClusterRenderer,
+                moveMap, this, vmsClusterManager, vmsClusterRenderer,
                 roadWorksClusterManager, roadWorksClusterRenderer,
-                carParkClusterManager, carParkClusterRenderer).execute();
+                carParkClusterManager, carParkClusterRenderer,
+                trafficFlowClusterManager, trafficFlowClusterRenderer).execute();
     }
 
     @Override
@@ -240,6 +244,9 @@ public class MapsActivity extends AppCompatActivity
         if (carParkClusterRenderer.getClusterItem(marker) != null) {
             return carParkClusterManager.getMarkerManager().getInfoWindow(marker);
         }
+        if (trafficFlowClusterRenderer.getClusterItem(marker) != null) {
+            return trafficFlowClusterManager.getMarkerManager().getInfoWindow(marker);
+        }
         return null;
     }
 
@@ -254,6 +261,9 @@ public class MapsActivity extends AppCompatActivity
         if (carParkClusterRenderer.getClusterItem(marker) != null) {
             return carParkClusterManager.getMarkerManager().getInfoContents(marker);
         }
+        if (trafficFlowClusterRenderer.getClusterItem(marker) != null) {
+            return trafficFlowClusterManager.getMarkerManager().getInfoContents(marker);
+        }
         return null;
     }
 
@@ -262,23 +272,13 @@ public class MapsActivity extends AppCompatActivity
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         switch (compoundButton.getId()) {
             case R.id.vms_checkbox:
-                for (Marker marker : vmsClusterManager.getMarkerCollection().getMarkers()) {
-                    marker.setVisible(checked);
-                }
+                vmsClusterRenderer.setVisible(checked);
                 break;
             case R.id.car_park_checkbox:
-                if (checked) {
-                    setItemVisible(Item.TYPE_CAR_PARK, true);
-                } else {
-                    setItemVisible(Item.TYPE_CAR_PARK, false);
-                }
+                carParkClusterRenderer.setVisible(checked);
                 break;
             case R.id.traffic_flow_checkbox:
-                if (checked) {
-                    setItemVisible(Item.TYPE_TRAFFIC_FLOW, true);
-                } else {
-                    setItemVisible(Item.TYPE_TRAFFIC_FLOW, false);
-                }
+                trafficFlowClusterRenderer.setVisible(checked);
                 break;
             case R.id.road_works_checkbox:
                 roadWorksClusterRenderer.setVisible(checked);
@@ -304,6 +304,9 @@ public class MapsActivity extends AppCompatActivity
         if (carParkClusterManager != null) {
             carParkClusterManager.onCameraChange(cameraPosition);
         }
+        if (trafficFlowClusterManager != null) {
+            trafficFlowClusterManager.onCameraChange(cameraPosition);
+        }
     }
 
     @Override
@@ -321,6 +324,11 @@ public class MapsActivity extends AppCompatActivity
                 && (carParkClusterRenderer.getClusterItem(marker) != null
                 || carParkClusterRenderer.getCluster(marker) != null)) {
             return carParkClusterManager.onMarkerClick(marker);
+        }
+        if (trafficFlowClusterManager != null
+                && (trafficFlowClusterRenderer.getClusterItem(marker) != null
+                || trafficFlowClusterRenderer.getCluster(marker) != null)) {
+            return trafficFlowClusterManager.onMarkerClick(marker);
         }
         return true;
     }
