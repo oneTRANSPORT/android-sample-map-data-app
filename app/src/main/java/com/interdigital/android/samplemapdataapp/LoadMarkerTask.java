@@ -1,7 +1,6 @@
 package com.interdigital.android.samplemapdataapp;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -10,24 +9,10 @@ import android.widget.ProgressBar;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.VmsClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
-
-import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
+import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
@@ -38,41 +23,16 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     // TODO    Weak reference.
     private MapsActivity mapsActivity;
     private Context context;
-    // TODO    Simplify this stuff.
-    private VmsClusterManager vmsClusterManager;
-    private VmsClusterRenderer vmsClusterRenderer;
-    private ArrayList<VmsClusterItem> vmsClusterItems = new ArrayList<>();
-    private RoadWorksClusterManager roadWorksClusterManager;
-    private RoadWorksClusterRenderer roadWorksClusterRenderer;
-    private ArrayList<RoadWorksClusterItem> roadWorksClusterItems = new ArrayList<>();
-    private CarParkClusterManager carParkClusterManager;
-    private CarParkClusterRenderer carParkClusterRenderer;
-    private ArrayList<CarParkClusterItem> carParkClusterItems = new ArrayList<>();
-    private TrafficFlowClusterManager trafficFlowClusterManager;
-    private TrafficFlowClusterRenderer trafficFlowClusterRenderer;
-    private ArrayList<TrafficFlowClusterItem> trafficFlowClusterItems = new ArrayList<>();
+    private BaseLayer[] layers;
 
     public LoadMarkerTask(GoogleMap googleMap, ProgressBar progressBar,
-                          boolean moveMap, MapsActivity mapsActivity, VmsClusterManager vmsClusterManager,
-                          VmsClusterRenderer vmsClusterRenderer,
-                          RoadWorksClusterManager roadWorksClusterManager,
-                          RoadWorksClusterRenderer roadWorksClusterRenderer,
-                          CarParkClusterManager carParkClusterManager,
-                          CarParkClusterRenderer carParkClusterRenderer,
-                          TrafficFlowClusterManager trafficFlowClusterManager,
-                          TrafficFlowClusterRenderer trafficFlowClusterRenderer) {
+                          boolean moveMap, MapsActivity mapsActivity, BaseLayer[] layers) {
         this.googleMap = googleMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
         this.mapsActivity = mapsActivity;
-        this.vmsClusterManager = vmsClusterManager;
-        this.vmsClusterRenderer = vmsClusterRenderer;
-        this.roadWorksClusterManager = roadWorksClusterManager;
-        this.roadWorksClusterRenderer = roadWorksClusterRenderer;
-        this.carParkClusterManager = carParkClusterManager;
-        this.carParkClusterRenderer = carParkClusterRenderer;
-        this.trafficFlowClusterManager = trafficFlowClusterManager;
-        this.trafficFlowClusterRenderer = trafficFlowClusterRenderer;
+        this.layers = layers;
+        BaseLayer.initialiseClusterItems(layers);
         context = mapsActivity.getApplicationContext();
         Log.i("LoadMarkerTask", "Invoking load markers");
     }
@@ -81,10 +41,11 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected Void doInBackground(Void... voids) {
         try {
 //            addWorldSensing();
-            loadCaVms();
-            loadCaCarParks();
-            loadCaTrafficFlow();
-            loadCaRoadWorks();
+//            loadCaVms();
+            layers[0].loadClusterItems();
+//            loadCaCarParks();
+//            loadCaTrafficFlow();
+//            loadCaRoadWorks();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,14 +62,15 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         // Has to be on UI thread?
-        vmsClusterManager.addItems(vmsClusterItems);
-        vmsClusterManager.setRenderer(vmsClusterRenderer);
-        roadWorksClusterManager.addItems(roadWorksClusterItems);
-        roadWorksClusterManager.setRenderer(roadWorksClusterRenderer);
-        carParkClusterManager.addItems(carParkClusterItems);
-        carParkClusterManager.setRenderer(carParkClusterRenderer);
-        trafficFlowClusterManager.addItems(trafficFlowClusterItems);
-        trafficFlowClusterManager.setRenderer(trafficFlowClusterRenderer);
+        layers[0].showNewClusterItems();
+//        vmsClusterManager.addItems(vmsClusterItems);
+//        vmsClusterManager.setRenderer(vmsClusterRenderer);
+//        roadWorksClusterManager.addItems(roadWorksClusterItems);
+//        roadWorksClusterManager.setRenderer(roadWorksClusterRenderer);
+//        carParkClusterManager.addItems(carParkClusterItems);
+//        carParkClusterManager.setRenderer(carParkClusterRenderer);
+//        trafficFlowClusterManager.addItems(trafficFlowClusterItems);
+//        trafficFlowClusterManager.setRenderer(trafficFlowClusterRenderer);
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {
@@ -124,55 +86,55 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         }
     }
 
-    private void loadCaVms() throws Exception {
-        Cursor cursor = BucksContentHelper.getVariableMessageSigns(context);
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                VmsClusterItem vmsClusterItem = new VmsClusterItem(cursor);
-                if (vmsClusterItem.shouldAdd()) {
-                    vmsClusterItems.add(vmsClusterItem);
-                }
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-    }
+//    private void loadCaVms() throws Exception {
+//        Cursor cursor = BucksContentHelper.getVariableMessageSigns(context);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                VmsClusterItem vmsClusterItem = new VmsClusterItem(cursor);
+//                if (vmsClusterItem.shouldAdd()) {
+//                    vmsClusterItems.add(vmsClusterItem);
+//                }
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close();
+//    }
 
-    private void loadCaCarParks() throws Exception {
-        Cursor cursor = BucksContentHelper.getCarParks(context);
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                CarParkClusterItem carParkClusterItem = new CarParkClusterItem(cursor);
-                carParkClusterItems.add(carParkClusterItem);
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-    }
+//    private void loadCaCarParks() throws Exception {
+//        Cursor cursor = BucksContentHelper.getCarParks(context);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                CarParkClusterItem carParkClusterItem = new CarParkClusterItem(cursor);
+//                carParkClusterItems.add(carParkClusterItem);
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close();
+//    }
 
-    private void loadCaTrafficFlow() throws Exception {
-        Cursor cursor = BucksContentHelper.getTrafficFlows(context);
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(cursor);
-                if (trafficFlowClusterItem.shouldAdd()) {
-                    trafficFlowClusterItems.add(trafficFlowClusterItem);
-                }
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-    }
+//    private void loadCaTrafficFlow() throws Exception {
+//        Cursor cursor = BucksContentHelper.getTrafficFlows(context);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(cursor);
+//                if (trafficFlowClusterItem.shouldAdd()) {
+//                    trafficFlowClusterItems.add(trafficFlowClusterItem);
+//                }
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close();
+//    }
 
-    private void loadCaRoadWorks() throws Exception {
-        Cursor cursor = BucksContentHelper.getRoadWorks(context);
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                RoadWorksClusterItem roadWorksClusterItem = new RoadWorksClusterItem(cursor);
-                roadWorksClusterItems.add(roadWorksClusterItem);
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-    }
+//    private void loadCaRoadWorks() throws Exception {
+//        Cursor cursor = BucksContentHelper.getRoadWorks(context);
+//        if (cursor.moveToFirst()) {
+//            while (!cursor.isAfterLast()) {
+//                RoadWorksClusterItem roadWorksClusterItem = new RoadWorksClusterItem(cursor);
+//                roadWorksClusterItems.add(roadWorksClusterItem);
+//                cursor.moveToNext();
+//            }
+//        }
+//        cursor.close();
+//    }
 }

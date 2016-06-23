@@ -26,26 +26,25 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.interdigital.android.dougal.Types;
 import com.interdigital.android.dougal.exception.DougalException;
 import com.interdigital.android.dougal.resource.ApplicationEntity;
 import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
-import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
+import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
 
 import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
 import net.uk.onetransport.android.county.bucks.provider.BucksProvider;
 import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 public class MapsActivity extends AppCompatActivity
@@ -70,14 +69,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox roadWorksCheckBox;
     private int numberUpdated;
     private ItemObserver itemObserver;
-    private VmsClusterManager vmsClusterManager;
-    private VmsClusterRenderer vmsClusterRenderer;
-    private RoadWorksClusterManager roadWorksClusterManager;
-    private RoadWorksClusterRenderer roadWorksClusterRenderer;
-    private CarParkClusterManager carParkClusterManager;
-    private CarParkClusterRenderer carParkClusterRenderer;
-    private TrafficFlowClusterManager trafficFlowClusterManager;
-    private TrafficFlowClusterRenderer trafficFlowClusterRenderer;
+    private BaseLayer[] layers = new BaseLayer[1]; // TODO    Should be 4.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,68 +138,16 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setOnMarkerClickListener(this);
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
+        layers[0] = new VariableMessageSign(context, googleMap);
         loadMarkers(true);
     }
 
     public void loadMarkers(boolean moveMap) {
-        // TODO    Simplify all this lot.
-        // The cluster manager doesn't seem to like being cleared and restarted.
-        if (vmsClusterManager != null) {
-            for (Marker marker : vmsClusterManager.getMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            for (Marker marker : vmsClusterManager.getClusterMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            vmsClusterManager.clearItems();
+        for (BaseLayer layer : layers) {
+            layer.initialiseClusterItems();
         }
-        vmsClusterManager = new VmsClusterManager(context, googleMap);
-        vmsClusterRenderer = new VmsClusterRenderer(context, googleMap, vmsClusterManager);
-
-        if (roadWorksClusterManager != null) {
-            for (Marker marker : roadWorksClusterManager.getMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            for (Marker marker : roadWorksClusterManager.getClusterMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            roadWorksClusterManager.clearItems();
-        }
-        roadWorksClusterManager = new RoadWorksClusterManager(context, googleMap);
-        roadWorksClusterRenderer = new RoadWorksClusterRenderer(context, googleMap,
-                roadWorksClusterManager);
-
-        if (carParkClusterManager != null) {
-            for (Marker marker : carParkClusterManager.getMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            for (Marker marker : carParkClusterManager.getClusterMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            carParkClusterManager.clearItems();
-        }
-        carParkClusterManager = new CarParkClusterManager(context, googleMap);
-        carParkClusterRenderer = new CarParkClusterRenderer(context, googleMap,
-                carParkClusterManager);
-
-        if (trafficFlowClusterManager != null) {
-            for (Marker marker : trafficFlowClusterManager.getMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            for (Marker marker : trafficFlowClusterManager.getClusterMarkerCollection().getMarkers()) {
-                marker.remove();
-            }
-            trafficFlowClusterManager.clearItems();
-        }
-        trafficFlowClusterManager = new TrafficFlowClusterManager(context, googleMap);
-        trafficFlowClusterRenderer = new TrafficFlowClusterRenderer(context, googleMap,
-                trafficFlowClusterManager);
-        // TODO
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
-                moveMap, this, vmsClusterManager, vmsClusterRenderer,
-                roadWorksClusterManager, roadWorksClusterRenderer,
-                carParkClusterManager, carParkClusterRenderer,
-                trafficFlowClusterManager, trafficFlowClusterRenderer).execute();
+                moveMap, this, layers).execute();
     }
 
     @Override
@@ -235,54 +175,41 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public View getInfoWindow(Marker marker) {
-        if (vmsClusterRenderer.getClusterItem(marker) != null) {
-            return vmsClusterManager.getMarkerManager().getInfoWindow(marker);
-        }
-        if (roadWorksClusterRenderer.getClusterItem(marker) != null) {
-            return roadWorksClusterManager.getMarkerManager().getInfoWindow(marker);
-        }
-        if (carParkClusterRenderer.getClusterItem(marker) != null) {
-            return carParkClusterManager.getMarkerManager().getInfoWindow(marker);
-        }
-        if (trafficFlowClusterRenderer.getClusterItem(marker) != null) {
-            return trafficFlowClusterManager.getMarkerManager().getInfoWindow(marker);
+        for (BaseLayer layer : layers) {
+            View view = layer.getInfoWindow(marker);
+            if (view != null) {
+                return view;
+            }
         }
         return null;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
-        if (vmsClusterRenderer.getClusterItem(marker) != null) {
-            return vmsClusterManager.getMarkerManager().getInfoContents(marker);
-        }
-        if (roadWorksClusterRenderer.getClusterItem(marker) != null) {
-            return roadWorksClusterManager.getMarkerManager().getInfoContents(marker);
-        }
-        if (carParkClusterRenderer.getClusterItem(marker) != null) {
-            return carParkClusterManager.getMarkerManager().getInfoContents(marker);
-        }
-        if (trafficFlowClusterRenderer.getClusterItem(marker) != null) {
-            return trafficFlowClusterManager.getMarkerManager().getInfoContents(marker);
+        for (BaseLayer layer : layers) {
+            View view = layer.getInfoContents(marker);
+            if (view != null) {
+                return view;
+            }
         }
         return null;
     }
-
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         switch (compoundButton.getId()) {
             case R.id.vms_checkbox:
-                vmsClusterRenderer.setVisible(checked);
+                layers[0].setVisible(checked);
                 break;
-            case R.id.car_park_checkbox:
-                carParkClusterRenderer.setVisible(checked);
-                break;
-            case R.id.traffic_flow_checkbox:
-                trafficFlowClusterRenderer.setVisible(checked);
-                break;
-            case R.id.road_works_checkbox:
-                roadWorksClusterRenderer.setVisible(checked);
-                break;
+//            case R.id.car_park_checkbox:
+//                carParkClusterRenderer.setVisible(checked);
+//                break;
+//            case R.id.traffic_flow_checkbox:
+//                trafficFlowClusterRenderer.setVisible(checked);
+//                break;
+//            case R.id.road_works_checkbox:
+//                roadWorksClusterRenderer.setVisible(checked);
+//                break;
         }
     }
 
@@ -295,40 +222,20 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        if (vmsClusterManager != null) {
-            vmsClusterManager.onCameraChange(cameraPosition);
-        }
-        if (roadWorksClusterManager != null) {
-            roadWorksClusterManager.onCameraChange(cameraPosition);
-        }
-        if (carParkClusterManager != null) {
-            carParkClusterManager.onCameraChange(cameraPosition);
-        }
-        if (trafficFlowClusterManager != null) {
-            trafficFlowClusterManager.onCameraChange(cameraPosition);
+        for (BaseLayer layer : layers) {
+            layer.onCameraChange(cameraPosition);
         }
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (vmsClusterManager != null && (vmsClusterRenderer.getClusterItem(marker) != null
-                || vmsClusterRenderer.getCluster(marker) != null)) {
-            return vmsClusterManager.onMarkerClick(marker);
-        }
-        if (roadWorksClusterManager != null
-                && (roadWorksClusterRenderer.getClusterItem(marker) != null
-                || roadWorksClusterRenderer.getCluster(marker) != null)) {
-            return roadWorksClusterManager.onMarkerClick(marker);
-        }
-        if (carParkClusterManager != null
-                && (carParkClusterRenderer.getClusterItem(marker) != null
-                || carParkClusterRenderer.getCluster(marker) != null)) {
-            return carParkClusterManager.onMarkerClick(marker);
-        }
-        if (trafficFlowClusterManager != null
-                && (trafficFlowClusterRenderer.getClusterItem(marker) != null
-                || trafficFlowClusterRenderer.getCluster(marker) != null)) {
-            return trafficFlowClusterManager.onMarkerClick(marker);
+        for (BaseLayer layer : layers) {
+            BaseClusterManager clusterManager = layer.getClusterManager();
+            BaseClusterRenderer clusterRenderer = layer.getClusterRenderer();
+            if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
+                    || clusterRenderer.getCluster(marker) != null)) {
+                return clusterManager.onMarkerClick(marker);
+            }
         }
         return true;
     }
