@@ -39,6 +39,9 @@ import com.interdigital.android.samplemapdataapp.cluster.VmsClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
 import com.interdigital.android.samplemapdataapp.json.items.Item;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.CarPark;
+import com.interdigital.android.samplemapdataapp.layer.RoadWorks;
+import com.interdigital.android.samplemapdataapp.layer.TrafficFlow;
 import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
 
 import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
@@ -69,7 +72,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox roadWorksCheckBox;
     private int numberUpdated;
     private ItemObserver itemObserver;
-    private BaseLayer[] layers = new BaseLayer[1]; // TODO    Should be 4.
+    private BaseLayer[] layers = new BaseLayer[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +142,9 @@ public class MapsActivity extends AppCompatActivity
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
         layers[0] = new VariableMessageSign(context, googleMap);
+        layers[1] = new CarPark(context, googleMap);
+        layers[2] = new TrafficFlow(context, googleMap);
+        layers[3] = new RoadWorks(context, googleMap);
         loadMarkers(true);
     }
 
@@ -201,15 +207,15 @@ public class MapsActivity extends AppCompatActivity
             case R.id.vms_checkbox:
                 layers[0].setVisible(checked);
                 break;
-//            case R.id.car_park_checkbox:
-//                carParkClusterRenderer.setVisible(checked);
-//                break;
-//            case R.id.traffic_flow_checkbox:
-//                trafficFlowClusterRenderer.setVisible(checked);
-//                break;
-//            case R.id.road_works_checkbox:
-//                roadWorksClusterRenderer.setVisible(checked);
-//                break;
+            case R.id.car_park_checkbox:
+                layers[1].setVisible(checked);
+                break;
+            case R.id.traffic_flow_checkbox:
+                layers[2].setVisible(checked);
+                break;
+            case R.id.road_works_checkbox:
+                layers[3].setVisible(checked);
+                break;
         }
     }
 

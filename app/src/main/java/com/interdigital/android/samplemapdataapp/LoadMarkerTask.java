@@ -41,11 +41,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected Void doInBackground(Void... voids) {
         try {
 //            addWorldSensing();
-//            loadCaVms();
-            layers[0].loadClusterItems();
-//            loadCaCarParks();
-//            loadCaTrafficFlow();
-//            loadCaRoadWorks();
+            for (BaseLayer layer : layers) {
+                layer.loadClusterItems();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,15 +60,9 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         // Has to be on UI thread?
-        layers[0].showNewClusterItems();
-//        vmsClusterManager.addItems(vmsClusterItems);
-//        vmsClusterManager.setRenderer(vmsClusterRenderer);
-//        roadWorksClusterManager.addItems(roadWorksClusterItems);
-//        roadWorksClusterManager.setRenderer(roadWorksClusterRenderer);
-//        carParkClusterManager.addItems(carParkClusterItems);
-//        carParkClusterManager.setRenderer(carParkClusterRenderer);
-//        trafficFlowClusterManager.addItems(trafficFlowClusterItems);
-//        trafficFlowClusterManager.setRenderer(trafficFlowClusterRenderer);
+        for (BaseLayer layer : layers) {
+            layer.showNewClusterItems();
+        }
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {
@@ -86,55 +78,4 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         }
     }
 
-//    private void loadCaVms() throws Exception {
-//        Cursor cursor = BucksContentHelper.getVariableMessageSigns(context);
-//        if (cursor.moveToFirst()) {
-//            while (!cursor.isAfterLast()) {
-//                VmsClusterItem vmsClusterItem = new VmsClusterItem(cursor);
-//                if (vmsClusterItem.shouldAdd()) {
-//                    vmsClusterItems.add(vmsClusterItem);
-//                }
-//                cursor.moveToNext();
-//            }
-//        }
-//        cursor.close();
-//    }
-
-//    private void loadCaCarParks() throws Exception {
-//        Cursor cursor = BucksContentHelper.getCarParks(context);
-//        if (cursor.moveToFirst()) {
-//            while (!cursor.isAfterLast()) {
-//                CarParkClusterItem carParkClusterItem = new CarParkClusterItem(cursor);
-//                carParkClusterItems.add(carParkClusterItem);
-//                cursor.moveToNext();
-//            }
-//        }
-//        cursor.close();
-//    }
-
-//    private void loadCaTrafficFlow() throws Exception {
-//        Cursor cursor = BucksContentHelper.getTrafficFlows(context);
-//        if (cursor.moveToFirst()) {
-//            while (!cursor.isAfterLast()) {
-//                TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(cursor);
-//                if (trafficFlowClusterItem.shouldAdd()) {
-//                    trafficFlowClusterItems.add(trafficFlowClusterItem);
-//                }
-//                cursor.moveToNext();
-//            }
-//        }
-//        cursor.close();
-//    }
-
-//    private void loadCaRoadWorks() throws Exception {
-//        Cursor cursor = BucksContentHelper.getRoadWorks(context);
-//        if (cursor.moveToFirst()) {
-//            while (!cursor.isAfterLast()) {
-//                RoadWorksClusterItem roadWorksClusterItem = new RoadWorksClusterItem(cursor);
-//                roadWorksClusterItems.add(roadWorksClusterItem);
-//                cursor.moveToNext();
-//            }
-//        }
-//        cursor.close();
-//    }
 }
