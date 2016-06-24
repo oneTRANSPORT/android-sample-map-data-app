@@ -1,8 +1,6 @@
 package com.interdigital.android.samplemapdataapp.cluster;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -30,18 +28,15 @@ public abstract class BaseClusterRenderer<T extends ClusterItem> extends Default
 
     @Override
     protected void onBeforeClusterItemRendered(T clusterItem, MarkerOptions markerOptions) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
-                getIconResource(clusterItem));
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap)).visible(visible)
-                .anchor(0.5f, getAnchorY());
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(getIconResource(clusterItem)))
+                .visible(visible).anchor(0.5f, getAnchorY());
     }
 
     @Override
     protected void onBeforeClusterRendered(Cluster<T> cluster,
                                            MarkerOptions markerOptions) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
-                getIconClusterResource());
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap)).visible(visible);
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(getIconClusterResource()))
+                .visible(visible);
     }
 
     @Override

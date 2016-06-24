@@ -9,15 +9,11 @@ import android.widget.ProgressBar;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.interdigital.android.samplemapdataapp.json.items.Item;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
-
-import java.util.ArrayList;
 
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private GoogleMap googleMap;
-    private ArrayList<Item> itemList = new ArrayList<>();
     private ProgressBar progressBar;
     private boolean moveMap;
     // TODO    Weak reference.
@@ -40,7 +36,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-//            addWorldSensing();
             for (BaseLayer layer : layers) {
                 layer.loadClusterItems();
             }
@@ -70,12 +65,6 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                     new LatLng(51.8128587, -0.8239542), 13));
         }
         progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    private void addWorldSensing() {
-        for (int i = 0; i < 6; i++) {
-            itemList.add(new WorldsensingItem(i, mapsActivity));
-        }
     }
 
 }
