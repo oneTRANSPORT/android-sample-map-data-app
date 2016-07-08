@@ -39,8 +39,8 @@ import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
 import com.interdigital.android.samplemapdataapp.layer.Worldsensing;
 
 import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
-import net.uk.onetransport.android.county.bucks.provider.BucksProvider;
-import net.uk.onetransport.android.county.bucks.sync.BucksSyncAdapter;
+import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
+import net.uk.onetransport.android.modules.common.provider.lastupdated.LastUpdatedProviderModule;
 
 import java.util.UUID;
 
@@ -50,7 +50,6 @@ public class MapsActivity extends AppCompatActivity
         GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapsActivity";
-    //    private static final int MSG_SET_PLEASE_UPDATE = 1;
     private static final int VMS = 0;
     private static final int CAR_PARK = 1;
     private static final int TRAFFIC_FLOW = 2;
@@ -68,7 +67,6 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
     private CheckBox roadWorksCheckBox;
-    //    private int numberUpdated;
     private ItemObserver itemObserver;
     private BaseLayer[] layers = new BaseLayer[5];
 
@@ -121,7 +119,7 @@ public class MapsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.refresh_item:
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
-                BucksSyncAdapter.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
+                BucksProviderModule.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
                         trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
                 return true;
             default:
@@ -154,16 +152,6 @@ public class MapsActivity extends AppCompatActivity
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
                 moveMap, this, layers).execute();
     }
-
-//    @Override
-//    public boolean handleMessage(Message message) {
-//        switch (message.what) {
-//            case MSG_SET_PLEASE_UPDATE:
-//                updateAll();
-//                break;
-//        }
-//        return false;
-//    }
 
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
@@ -218,13 +206,6 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-//    public void updateCompleted() {
-//        numberUpdated++;
-//        if (numberUpdated == 6) {
-//            startUpdateTimer();
-//        }
-//    }
-
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         for (BaseLayer layer : layers) {
@@ -251,8 +232,8 @@ public class MapsActivity extends AppCompatActivity
         if (layers[WORLDSENSING] != null) {
             ((Worldsensing) layers[WORLDSENSING]).startUpdateTimer();
         }
-        getContentResolver().registerContentObserver(BucksProvider.LAST_UPDATED_URI, false,
-                itemObserver);
+        getContentResolver().registerContentObserver(LastUpdatedProviderModule.LAST_UPDATED_URI,
+                false, itemObserver);
     }
 
     @Override
@@ -309,35 +290,5 @@ public class MapsActivity extends AppCompatActivity
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
         roadWorksCheckBox.setOnCheckedChangeListener(this);
     }
-
-//    private void updateAll() {
-//        numberUpdated = 0;
-    // TODO    Get a new plan for Worldsensing updates.
-//        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
-//            Item item = entry.getValue();
-//            if (item instanceof WorldsensingItem) {
-//                ((WorldsensingItem) item).update();
-//            }
-//        }
-//    }
-
-//    private void setItemVisible(@Item.Type int type, boolean visible) {
-////        for (Map.Entry<Marker, Item> entry : markerMap.entrySet()) {
-////            if (entry.getValue().getType() == type) {
-////                entry.getKey().setVisible(visible);
-////            }
-////        }
-//    }
-
-//    private void startUpdateTimer() {
-//        if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
-//            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
-//        }
-//    }
-//
-//    private void stopUpdateTimer() {
-//        handler.removeMessages(MSG_SET_PLEASE_UPDATE);
-//    }
-
 }
 
