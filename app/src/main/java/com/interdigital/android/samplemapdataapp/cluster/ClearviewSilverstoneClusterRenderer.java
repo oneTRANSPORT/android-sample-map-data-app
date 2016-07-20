@@ -37,10 +37,21 @@ public class ClearviewSilverstoneClusterRenderer
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_silverstone_car_park, null, false);
-        TextView signTextView = (TextView) view.findViewById(R.id.sign_text_view);
-        TextView changedTextView = (TextView) view.findViewById(R.id.changed_text_view);
-        signTextView.setText(description);
-        changedTextView.setText(changed);
+        ((TextView) view.findViewById(R.id.sign_text_view)).setText(description);
+        ((TextView) view.findViewById(R.id.changed_text_view)).setText(changed);
+        if (clearviewSilverstoneClusterItem.getFlowTime() != null) {
+            String entering = "Entering: " + String.valueOf(clearviewSilverstoneClusterItem.getEntering());
+            String leaving = "Leaving: " + String.valueOf(clearviewSilverstoneClusterItem.getLeaving());
+            String flowTime = "Traffic flow at " + clearviewSilverstoneClusterItem.getFlowTime().trim()
+                    .replaceFirst("^.* ", "").replaceFirst(":[^:]*$", "");
+            ((TextView) view.findViewById(R.id.flow_time_text_view)).setText(flowTime);
+            ((TextView) view.findViewById(R.id.entering_text_view)).setText(entering);
+            ((TextView) view.findViewById(R.id.leaving_text_view)).setText(leaving);
+        } else {
+            view.findViewById(R.id.sign_text_view).setVisibility(View.GONE);
+            view.findViewById(R.id.entering_text_view).setVisibility(View.GONE);
+            view.findViewById(R.id.leaving_text_view).setVisibility(View.GONE);
+        }
         return view;
     }
 

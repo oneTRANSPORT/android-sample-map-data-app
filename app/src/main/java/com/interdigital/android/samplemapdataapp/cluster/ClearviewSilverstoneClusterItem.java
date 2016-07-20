@@ -22,6 +22,9 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
     private Double longitude;
     private LatLng position;
     private ArrayList<Traffic> trafficList;
+    private int entering = 0;
+    private int leaving = 0;
+    private String flowTime = null;
 
     public ClearviewSilverstoneClusterItem(Cursor cursor,
                                            HashMap<Integer, ArrayList<Traffic>> trafficMap) {
@@ -41,6 +44,16 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
                 CvsContract.ClearviewSilverstoneDevice.COLUMN_LONGITUDE));
         position = new LatLng(latitude, longitude);
         trafficList = trafficMap.get(sensorId);
+        if (trafficList != null) {
+            for (Traffic traffic : trafficList) {
+                if (traffic.getDirection()) {
+                    leaving++;
+                } else {
+                    entering++;
+                }
+                flowTime = traffic.getTime();
+            }
+        }
     }
 
     @Override
@@ -110,5 +123,29 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
 
     public void setTrafficList(ArrayList<Traffic> trafficList) {
         this.trafficList = trafficList;
+    }
+
+    public int getEntering() {
+        return entering;
+    }
+
+    public void setEntering(int entering) {
+        this.entering = entering;
+    }
+
+    public int getLeaving() {
+        return leaving;
+    }
+
+    public void setLeaving(int leaving) {
+        this.leaving = leaving;
+    }
+
+    public String getFlowTime() {
+        return flowTime;
+    }
+
+    public void setFlowTime(String flowTime) {
+        this.flowTime = flowTime;
     }
 }
