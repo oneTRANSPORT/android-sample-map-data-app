@@ -12,7 +12,7 @@ import com.interdigital.android.samplemapdataapp.cluster.VmsClusterRenderer;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
-public class VariableMessageSign extends BaseLayer<VmsClusterItem> {
+public class VariableMessageSign extends ClusterBaseLayer<VmsClusterItem> {
 
     public VariableMessageSign(Context context, GoogleMap googleMap) {
         super(context, googleMap);

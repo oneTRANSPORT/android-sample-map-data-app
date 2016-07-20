@@ -12,7 +12,7 @@ import com.interdigital.android.samplemapdataapp.cluster.TrafficFlowClusterRende
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
-public class TrafficFlow extends BaseLayer<TrafficFlowClusterItem> {
+public class TrafficFlow extends ClusterBaseLayer<TrafficFlowClusterItem> {
 
     public TrafficFlow(Context context, GoogleMap googleMap) {
         super(context, googleMap);

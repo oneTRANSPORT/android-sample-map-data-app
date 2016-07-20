@@ -12,7 +12,7 @@ import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
-public class CarPark extends BaseLayer<CarParkClusterItem> {
+public class CarPark extends ClusterBaseLayer<CarParkClusterItem> {
 
     public CarPark(Context context, GoogleMap googleMap) {
         super(context, googleMap);

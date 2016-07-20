@@ -22,7 +22,7 @@ import com.interdigital.android.samplemapdataapp.cluster.WorldsensingClusterRend
 
 import org.json.JSONObject;
 
-public class Worldsensing extends BaseLayer<WorldsensingClusterItem>
+public class Worldsensing extends ClusterBaseLayer<WorldsensingClusterItem>
         implements Handler.Callback, DougalCallback {
 
     private static final String APP_NAME = "Worldsensing";
@@ -69,7 +69,8 @@ public class Worldsensing extends BaseLayer<WorldsensingClusterItem>
 
     public void startUpdateTimer() {
         if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
-            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+            // TODO    Turn this back on when we have finished debugging.
+//            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
         }
     }
 

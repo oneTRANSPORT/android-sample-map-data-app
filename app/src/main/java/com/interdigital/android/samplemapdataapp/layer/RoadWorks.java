@@ -12,7 +12,7 @@ import com.interdigital.android.samplemapdataapp.cluster.RoadWorksClusterRendere
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
-public class RoadWorks extends BaseLayer<RoadWorksClusterItem> {
+public class RoadWorks extends ClusterBaseLayer<RoadWorksClusterItem> {
 
     public RoadWorks(Context context, GoogleMap googleMap) {
         super(context, googleMap);

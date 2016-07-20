@@ -1,8 +1,6 @@
 package com.interdigital.android.samplemapdataapp;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -10,33 +8,30 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
+
+import java.util.ArrayList;
 
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private GoogleMap googleMap;
     private ProgressBar progressBar;
     private boolean moveMap;
-    // TODO    Weak reference.
-    private MapsActivity mapsActivity;
-    private Context context;
-    private BaseLayer[] layers;
+    private ArrayList<ClusterBaseLayer> layers = new ArrayList<>();
 
-    public LoadMarkerTask(GoogleMap googleMap, ProgressBar progressBar,
-                          boolean moveMap, MapsActivity mapsActivity, BaseLayer[] layers) {
+    public LoadMarkerTask(GoogleMap googleMap, ProgressBar progressBar, boolean moveMap,
+                          BaseLayer[] baseLayers) {
         this.googleMap = googleMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
-        this.mapsActivity = mapsActivity;
-        this.layers = layers;
-        BaseLayer.initialiseClusterItems(layers);
-        context = mapsActivity.getApplicationContext();
-        Log.i("LoadMarkerTask", "Invoking load markers");
+        extractClusterLayers(baseLayers);
+        ClusterBaseLayer.initialiseClusterItems(layers);
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            for (BaseLayer layer : layers) {
+            for (ClusterBaseLayer layer : layers) {
                 layer.loadClusterItems();
             }
         } catch (Exception e) {
@@ -55,7 +50,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         // Has to be on UI thread?
-        for (BaseLayer layer : layers) {
+        for (ClusterBaseLayer layer : layers) {
             layer.showNewClusterItems();
         }
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
@@ -67,4 +62,11 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
+    private void extractClusterLayers(BaseLayer[] baseLayers) {
+        for (BaseLayer baseLayer : baseLayers) {
+            if (baseLayer instanceof ClusterBaseLayer) {
+                layers.add((ClusterBaseLayer) baseLayer);
+            }
+        }
+    }
 }

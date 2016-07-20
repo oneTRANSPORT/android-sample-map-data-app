@@ -32,7 +32,10 @@ import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.CarPark;
+import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
+import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.RoadWorks;
 import com.interdigital.android.samplemapdataapp.layer.TrafficFlow;
 import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
@@ -40,6 +43,7 @@ import com.interdigital.android.samplemapdataapp.layer.Worldsensing;
 
 import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
+import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsProviderModule;
 import net.uk.onetransport.android.modules.common.provider.lastupdated.LastUpdatedProviderModule;
 
 import java.util.UUID;
@@ -55,6 +59,8 @@ public class MapsActivity extends AppCompatActivity
     private static final int TRAFFIC_FLOW = 2;
     private static final int ROAD_WORKS = 3;
     private static final int WORLDSENSING = 4;
+    private static final int CLEARVIEW_SILVERSTONE = 5;
+    private static final int BIT_CARRIER_SILVERSTONE = 6;
 
     private Context context;
     private SupportMapFragment mapFragment;
@@ -67,8 +73,9 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
     private CheckBox roadWorksCheckBox;
+    private CheckBox clearviewSilverstoneCheckBox;
     private ItemObserver itemObserver;
-    private BaseLayer[] layers = new BaseLayer[5];
+    private BaseLayer[] layers = new BaseLayer[7];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +128,8 @@ public class MapsActivity extends AppCompatActivity
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
                 BucksProviderModule.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
                         trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
+                CvsProviderModule.refresh(context, clearviewSilverstoneCheckBox.isChecked(),
+                        clearviewSilverstoneCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,20 +146,27 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setOnMarkerClickListener(this);
         CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
                 getString(R.string.pref_default_password), installationId);
+        net.uk.onetransport.android.modules.clearviewsilverstone.authentication.CredentialHelper
+                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                        getString(R.string.pref_default_password), installationId);
         layers[VMS] = new VariableMessageSign(context, googleMap);
         layers[CAR_PARK] = new CarPark(context, googleMap);
         layers[TRAFFIC_FLOW] = new TrafficFlow(context, googleMap);
         layers[ROAD_WORKS] = new RoadWorks(context, googleMap);
         layers[WORLDSENSING] = new Worldsensing(context, googleMap);
+        layers[CLEARVIEW_SILVERSTONE] = new ClearviewSilverstone(context, googleMap);
+        layers[BIT_CARRIER_SILVERSTONE] = new BitCarrierSilverstone();
         loadMarkers(true);
     }
 
     public void loadMarkers(boolean moveMap) {
-        for (BaseLayer layer : layers) {
-            layer.initialiseClusterItems();
+        for (BaseLayer layer : layers) { // TODO    Needs redesign for non-icon layers.
+            if (layer instanceof ClusterBaseLayer) {
+                ((ClusterBaseLayer) layer).initialiseClusterItems();
+            }
         }
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
-                moveMap, this, layers).execute();
+                moveMap, layers).execute();
     }
 
     @Override
@@ -169,9 +185,11 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoWindow(Marker marker) {
         for (BaseLayer layer : layers) {
-            View view = layer.getInfoWindow(marker);
-            if (view != null) {
-                return view;
+            if (layer instanceof ClusterBaseLayer) {
+                View view = ((ClusterBaseLayer) layer).getInfoWindow(marker);
+                if (view != null) {
+                    return view;
+                }
             }
         }
         return null;
@@ -180,9 +198,11 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoContents(Marker marker) {
         for (BaseLayer layer : layers) {
-            View view = layer.getInfoContents(marker);
-            if (view != null) {
-                return view;
+            if (layer instanceof ClusterBaseLayer) {
+                View view = ((ClusterBaseLayer) layer).getInfoContents(marker);
+                if (view != null) {
+                    return view;
+                }
             }
         }
         return null;
@@ -192,16 +212,19 @@ public class MapsActivity extends AppCompatActivity
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         switch (compoundButton.getId()) {
             case R.id.vms_checkbox:
-                layers[0].setVisible(checked);
+                layers[VMS].setVisible(checked);
                 break;
             case R.id.car_park_checkbox:
-                layers[1].setVisible(checked);
+                layers[CAR_PARK].setVisible(checked);
                 break;
             case R.id.traffic_flow_checkbox:
-                layers[2].setVisible(checked);
+                layers[TRAFFIC_FLOW].setVisible(checked);
                 break;
             case R.id.road_works_checkbox:
-                layers[3].setVisible(checked);
+                layers[ROAD_WORKS].setVisible(checked);
+                break;
+            case R.id.clearview_silverstone_checkbox:
+                layers[CLEARVIEW_SILVERSTONE].setVisible(checked);
                 break;
         }
     }
@@ -216,11 +239,14 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
         for (BaseLayer layer : layers) {
-            BaseClusterManager clusterManager = layer.getClusterManager();
-            BaseClusterRenderer clusterRenderer = layer.getClusterRenderer();
-            if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
-                    || clusterRenderer.getCluster(marker) != null)) {
-                return clusterManager.onMarkerClick(marker);
+            if (layer instanceof ClusterBaseLayer) {
+                ClusterBaseLayer clusterBaseLayer = (ClusterBaseLayer) layer;
+                BaseClusterManager clusterManager = clusterBaseLayer.getClusterManager();
+                BaseClusterRenderer clusterRenderer = clusterBaseLayer.getClusterRenderer();
+                if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
+                        || clusterRenderer.getCluster(marker) != null)) {
+                    return clusterManager.onMarkerClick(marker);
+                }
             }
         }
         return true;
@@ -285,10 +311,12 @@ public class MapsActivity extends AppCompatActivity
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
         roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
+        clearviewSilverstoneCheckBox = (CheckBox) findViewById(R.id.clearview_silverstone_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
         roadWorksCheckBox.setOnCheckedChangeListener(this);
+        clearviewSilverstoneCheckBox.setOnCheckedChangeListener(this);
     }
 }
 
