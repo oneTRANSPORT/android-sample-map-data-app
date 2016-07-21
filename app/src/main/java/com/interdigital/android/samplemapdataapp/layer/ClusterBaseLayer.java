@@ -14,19 +14,17 @@ import java.util.ArrayList;
 
 public abstract class ClusterBaseLayer<T extends ClusterItem> extends BaseLayer {
 
-    private Context context;
-    private GoogleMap googleMap;
     private BaseClusterManager<T> clusterManager;
     private BaseClusterRenderer<T> clusterRenderer;
     private ArrayList<T> clusterItems;
 
     public ClusterBaseLayer(Context context, GoogleMap googleMap) {
-        this.context = context;
-        this.googleMap = googleMap;
+        super(context, googleMap);
         this.clusterManager = newClusterManager();
         this.clusterRenderer = newClusterRenderer();
     }
 
+    @Override
     public void initialiseClusterItems() {
         clusterItems = new ArrayList<>();
         if (clusterManager != null) {
@@ -63,36 +61,29 @@ public abstract class ClusterBaseLayer<T extends ClusterItem> extends BaseLayer 
         }
     }
 
-    public void showNewClusterItems() {
+    @Override
+    public void addToMap() {
         clusterManager.addItems(clusterItems);
         clusterManager.setRenderer(clusterRenderer);
     }
 
-    public static void initialiseClusterItems(ArrayList<ClusterBaseLayer> layers) {
-        for (ClusterBaseLayer layer : layers) {
+    public static void initialiseClusterItems(BaseLayer[] layers) {
+        for (BaseLayer layer : layers) {
             layer.initialiseClusterItems();
         }
     }
-
-    public abstract void loadClusterItems() throws Exception;
 
     @Override
     public void setVisible(boolean visible) {
         clusterRenderer.setVisible(visible);
     }
 
-    public Context getContext() {
-        return context;
-    }
-
-    public GoogleMap getGoogleMap() {
-        return googleMap;
-    }
-
+    @Override
     public BaseClusterManager<T> getClusterManager() {
         return clusterManager;
     }
 
+    @Override
     public BaseClusterRenderer<T> getClusterRenderer() {
         return clusterRenderer;
     }

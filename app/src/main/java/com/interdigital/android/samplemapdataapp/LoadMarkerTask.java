@@ -10,29 +10,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 
-import java.util.ArrayList;
-
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     private GoogleMap googleMap;
     private ProgressBar progressBar;
     private boolean moveMap;
-    private ArrayList<ClusterBaseLayer> layers = new ArrayList<>();
+    private BaseLayer[] baseLayers;
 
     public LoadMarkerTask(GoogleMap googleMap, ProgressBar progressBar, boolean moveMap,
                           BaseLayer[] baseLayers) {
         this.googleMap = googleMap;
         this.progressBar = progressBar;
         this.moveMap = moveMap;
-        extractClusterLayers(baseLayers);
-        ClusterBaseLayer.initialiseClusterItems(layers);
+        this.baseLayers = baseLayers;
+        ClusterBaseLayer.initialiseClusterItems(baseLayers);
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            for (ClusterBaseLayer layer : layers) {
+            for (BaseLayer layer : baseLayers) {
                 layer.loadClusterItems();
+                layer.loadPolylines();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,8 +49,8 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         // Has to be on UI thread?
-        for (ClusterBaseLayer layer : layers) {
-            layer.showNewClusterItems();
+        for (BaseLayer layer : baseLayers) {
+            layer.addToMap();
         }
         // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
         // Zoom out for VMS.
@@ -60,13 +59,5 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
                     new LatLng(51.8128587, -0.8239542), 13));
         }
         progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    private void extractClusterLayers(BaseLayer[] baseLayers) {
-        for (BaseLayer baseLayer : baseLayers) {
-            if (baseLayer instanceof ClusterBaseLayer) {
-                layers.add((ClusterBaseLayer) baseLayer);
-            }
-        }
     }
 }

@@ -35,14 +35,13 @@ import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.CarPark;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
-import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.RoadWorks;
 import com.interdigital.android.samplemapdataapp.layer.TrafficFlow;
 import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
 import com.interdigital.android.samplemapdataapp.layer.Worldsensing;
 
-import net.uk.onetransport.android.county.bucks.authentication.CredentialHelper;
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
+import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsProviderModule;
 import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsProviderModule;
 import net.uk.onetransport.android.modules.common.provider.lastupdated.LastUpdatedProviderModule;
 
@@ -126,10 +125,13 @@ public class MapsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.refresh_item:
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+                // TODO    Find a way to merge these sync adapter calls.
                 BucksProviderModule.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
                         trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
                 CvsProviderModule.refresh(context, clearviewSilverstoneCheckBox.isChecked(),
                         clearviewSilverstoneCheckBox.isChecked());
+                BcsProviderModule.refresh(context, clearviewSilverstoneCheckBox.isChecked(),
+                        clearviewSilverstoneCheckBox.isChecked(), clearviewSilverstoneCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -144,9 +146,13 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setInfoWindowAdapter(this);
         googleMap.setOnCameraChangeListener(this);
         googleMap.setOnMarkerClickListener(this);
-        CredentialHelper.initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                getString(R.string.pref_default_password), installationId);
+        net.uk.onetransport.android.county.bucks.authentication.CredentialHelper
+                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                        getString(R.string.pref_default_password), installationId);
         net.uk.onetransport.android.modules.clearviewsilverstone.authentication.CredentialHelper
+                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                        getString(R.string.pref_default_password), installationId);
+        net.uk.onetransport.android.modules.bitcarriersilverstone.authentication.CredentialHelper
                 .initialiseCredentials(context, getString(R.string.pref_default_user_name),
                         getString(R.string.pref_default_password), installationId);
         layers[VMS] = new VariableMessageSign(context, googleMap);
@@ -155,15 +161,13 @@ public class MapsActivity extends AppCompatActivity
         layers[ROAD_WORKS] = new RoadWorks(context, googleMap);
         layers[WORLDSENSING] = new Worldsensing(context, googleMap);
         layers[CLEARVIEW_SILVERSTONE] = new ClearviewSilverstone(context, googleMap);
-        layers[BIT_CARRIER_SILVERSTONE] = new BitCarrierSilverstone();
+        layers[BIT_CARRIER_SILVERSTONE] = new BitCarrierSilverstone(context, googleMap);
         loadMarkers(true);
     }
 
     public void loadMarkers(boolean moveMap) {
-        for (BaseLayer layer : layers) { // TODO    Needs redesign for non-icon layers.
-            if (layer instanceof ClusterBaseLayer) {
-                ((ClusterBaseLayer) layer).initialiseClusterItems();
-            }
+        for (BaseLayer layer : layers) {
+            layer.initialiseClusterItems();
         }
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
                 moveMap, layers).execute();
@@ -185,11 +189,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoWindow(Marker marker) {
         for (BaseLayer layer : layers) {
-            if (layer instanceof ClusterBaseLayer) {
-                View view = ((ClusterBaseLayer) layer).getInfoWindow(marker);
-                if (view != null) {
-                    return view;
-                }
+            View view = layer.getInfoWindow(marker);
+            if (view != null) {
+                return view;
             }
         }
         return null;
@@ -198,11 +200,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoContents(Marker marker) {
         for (BaseLayer layer : layers) {
-            if (layer instanceof ClusterBaseLayer) {
-                View view = ((ClusterBaseLayer) layer).getInfoContents(marker);
-                if (view != null) {
-                    return view;
-                }
+            View view = layer.getInfoContents(marker);
+            if (view != null) {
+                return view;
             }
         }
         return null;
@@ -239,14 +239,11 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
         for (BaseLayer layer : layers) {
-            if (layer instanceof ClusterBaseLayer) {
-                ClusterBaseLayer clusterBaseLayer = (ClusterBaseLayer) layer;
-                BaseClusterManager clusterManager = clusterBaseLayer.getClusterManager();
-                BaseClusterRenderer clusterRenderer = clusterBaseLayer.getClusterRenderer();
-                if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
-                        || clusterRenderer.getCluster(marker) != null)) {
-                    return clusterManager.onMarkerClick(marker);
-                }
+            BaseClusterManager clusterManager = layer.getClusterManager();
+            BaseClusterRenderer clusterRenderer = layer.getClusterRenderer();
+            if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
+                    || clusterRenderer.getCluster(marker) != null)) {
+                return clusterManager.onMarkerClick(marker);
             }
         }
         return true;
