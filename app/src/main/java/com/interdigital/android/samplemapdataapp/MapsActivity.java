@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +62,8 @@ public class MapsActivity extends AppCompatActivity
     private static final int CLEARVIEW_SILVERSTONE = 5;
     private static final int BIT_CARRIER_SILVERSTONE = 6;
 
+    public static float density;
+
     private Context context;
     private SupportMapFragment mapFragment;
     private GoogleMap googleMap;
@@ -79,6 +82,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        density = displayMetrics.density;
         context = getApplicationContext();
         setContentView(R.layout.activity_maps);
         initialiseToolbar();

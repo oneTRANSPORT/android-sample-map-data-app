@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
     <TextView
         android:id="@+id/sign_text_view"
@@ -17,6 +17,7 @@
         android:id="@+id/flow_time_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/sign_text_view"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         android:textColor="#404040"
@@ -27,6 +28,7 @@
         android:id="@+id/entering_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/flow_time_text_view"
         android:drawableLeft="@drawable/cars_pop_up_icon"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
@@ -34,22 +36,44 @@
         android:textSize="14sp"
         android:textStyle="bold"/>
 
+    <com.interdigital.android.samplemapdataapp.view.MicroGraphView
+        android:id="@+id/entering_graph_view"
+        android:layout_width="80dp"
+        android:layout_height="16dp"
+        android:layout_alignTop="@id/entering_text_view"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/entering_text_view"/>
+
     <TextView
         android:id="@+id/leaving_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/entering_text_view"
         android:drawableLeft="@drawable/cars_pop_up_icon"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:textColor="#404040"
         android:textStyle="bold"/>
 
+    <com.interdigital.android.samplemapdataapp.view.MicroGraphView
+        android:id="@+id/leaving_graph_view"
+        android:layout_width="80dp"
+        android:layout_height="16dp"
+        android:layout_alignTop="@id/leaving_text_view"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/leaving_text_view"/>
+
     <TextView
         android:id="@+id/changed_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/leaving_text_view"
         android:layout_gravity="end"
         android:layout_marginTop="4dp"
         android:textColor="#808080"
         android:textSize="12sp"/>
-</LinearLayout>
+
+
+</RelativeLayout>

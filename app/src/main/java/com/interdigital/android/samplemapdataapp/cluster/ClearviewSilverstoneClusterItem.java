@@ -1,6 +1,8 @@
 package com.interdigital.android.samplemapdataapp.cluster;
 
 import android.database.Cursor;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
@@ -9,7 +11,6 @@ import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsCont
 import net.uk.onetransport.android.modules.clearviewsilverstone.traffic.Traffic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ClearviewSilverstoneClusterItem implements ClusterItem {
 
@@ -25,9 +26,13 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
     private int entering = 0;
     private int leaving = 0;
     private String flowTime = null;
+    private SparseIntArray vehiclesIn;
+    private SparseIntArray vehiclesOut;
 
     public ClearviewSilverstoneClusterItem(Cursor cursor,
-                                           HashMap<Integer, ArrayList<Traffic>> trafficMap) {
+                                           SparseArray<ArrayList<Traffic>> trafficArray,
+                                           SparseArray<SparseIntArray> vehiclesIn,
+                                           SparseArray<SparseIntArray> vehiclesOut) {
         sensorId = cursor.getInt(cursor.getColumnIndex(
                 CvsContract.ClearviewSilverstoneDevice.COLUMN_SENSOR_ID));
         title = cursor.getString(cursor.getColumnIndex(
@@ -43,7 +48,7 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
         double longitude = cursor.getDouble(cursor.getColumnIndex(
                 CvsContract.ClearviewSilverstoneDevice.COLUMN_LONGITUDE));
         position = new LatLng(latitude, longitude);
-        trafficList = trafficMap.get(sensorId);
+        trafficList = trafficArray.get(sensorId);
         if (trafficList != null) {
             for (Traffic traffic : trafficList) {
                 if (traffic.getDirection()) {
@@ -54,6 +59,8 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
                 flowTime = traffic.getTime();
             }
         }
+        this.vehiclesIn = vehiclesIn.get(sensorId);
+        this.vehiclesOut = vehiclesOut.get(sensorId);
     }
 
     @Override
@@ -147,5 +154,21 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
 
     public void setFlowTime(String flowTime) {
         this.flowTime = flowTime;
+    }
+
+    public SparseIntArray getVehiclesIn() {
+        return vehiclesIn;
+    }
+
+    public void setVehiclesIn(SparseIntArray vehiclesIn) {
+        this.vehiclesIn = vehiclesIn;
+    }
+
+    public SparseIntArray getVehiclesOut() {
+        return vehiclesOut;
+    }
+
+    public void setVehiclesOut(SparseIntArray vehiclesOut) {
+        this.vehiclesOut = vehiclesOut;
     }
 }

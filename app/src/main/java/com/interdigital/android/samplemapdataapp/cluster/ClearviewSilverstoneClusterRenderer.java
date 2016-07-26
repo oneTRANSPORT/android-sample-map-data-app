@@ -9,6 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 import com.interdigital.android.samplemapdataapp.R;
+import com.interdigital.android.samplemapdataapp.view.MicroGraphView;
 
 public class ClearviewSilverstoneClusterRenderer
         extends BaseClusterRenderer<ClearviewSilverstoneClusterItem> {
@@ -52,6 +53,10 @@ public class ClearviewSilverstoneClusterRenderer
             view.findViewById(R.id.entering_text_view).setVisibility(View.GONE);
             view.findViewById(R.id.leaving_text_view).setVisibility(View.GONE);
         }
+        ((MicroGraphView)view.findViewById(R.id.entering_graph_view))
+                .setValues(clearviewSilverstoneClusterItem.getVehiclesIn());
+        ((MicroGraphView)view.findViewById(R.id.leaving_graph_view))
+                .setValues(clearviewSilverstoneClusterItem.getVehiclesOut());
         return view;
     }
 
