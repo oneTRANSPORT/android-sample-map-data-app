@@ -23,15 +23,16 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         this.progressBar = progressBar;
         this.moveMap = moveMap;
         this.baseLayers = baseLayers;
-        ClusterBaseLayer.initialiseClusterItems(baseLayers);
+        for (BaseLayer layer : baseLayers) {
+            layer.initialise(); // Has to be UI thread.
+        }
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         try {
             for (BaseLayer layer : baseLayers) {
-                layer.loadClusterItems();
-                layer.loadPolylines();
+                layer.load();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,7 +49,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        // Has to be on UI thread?
+        // Has to be on UI thread.
         for (BaseLayer layer : baseLayers) {
             layer.addToMap();
         }

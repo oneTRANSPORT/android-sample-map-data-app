@@ -4,23 +4,24 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.interdigital.android.samplemapdataapp.polyline.BitCarrierSketchPolyline;
+import com.interdigital.android.samplemapdataapp.marker.BitCarrierSilverstoneNodeMarker;
 
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsContentHelper;
 
-public class BitCarrierSilverstone extends PolylineBaseLayer {
+public class BitCarrierSilverstoneNodes extends MarkerBaseLayer {
 
-    public BitCarrierSilverstone(Context context, GoogleMap googleMap) {
+    public BitCarrierSilverstoneNodes(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
 
     @Override
     public void load() {
-        Cursor cursor = BcsContentHelper.getSketches(getContext());
+        Cursor cursor = BcsContentHelper.getNodes(getContext());
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                BitCarrierSketchPolyline bcsp = new BitCarrierSketchPolyline(cursor);
-                getBasePolylines().add(bcsp);
+                BitCarrierSilverstoneNodeMarker bsnm = new BitCarrierSilverstoneNodeMarker(
+                        getContext(), cursor);
+                getBaseMarkers().add(bsnm);
                 cursor.moveToNext();
             }
         }

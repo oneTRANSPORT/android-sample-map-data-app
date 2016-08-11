@@ -19,7 +19,7 @@ public class TrafficFlow extends ClusterBaseLayer<TrafficFlowClusterItem> {
     }
 
     @Override
-    public void loadClusterItems() throws Exception {
+    public void load() throws Exception {
         Cursor cursor = BucksContentHelper.getTrafficFlows(getContext());
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {

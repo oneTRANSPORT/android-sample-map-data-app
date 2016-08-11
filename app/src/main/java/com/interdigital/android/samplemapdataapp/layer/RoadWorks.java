@@ -19,7 +19,7 @@ public class RoadWorks extends ClusterBaseLayer<RoadWorksClusterItem> {
     }
 
     @Override
-    public void loadClusterItems() throws Exception {
+    public void load() throws Exception {
         Cursor cursor = BucksContentHelper.getRoadWorks(getContext());
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {

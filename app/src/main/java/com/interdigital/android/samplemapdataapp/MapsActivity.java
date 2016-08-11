@@ -30,13 +30,14 @@ import com.interdigital.android.dougal.exception.DougalException;
 import com.interdigital.android.dougal.resource.ApplicationEntity;
 import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
-import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
+import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
 import com.interdigital.android.samplemapdataapp.layer.CarPark;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
+import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.Fastprk;
+import com.interdigital.android.samplemapdataapp.layer.MarkerBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.RoadWorks;
 import com.interdigital.android.samplemapdataapp.layer.TrafficFlow;
 import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
@@ -60,7 +61,8 @@ public class MapsActivity extends AppCompatActivity
     private static final int ROAD_WORKS = 3;
     private static final int FASTPRK = 4;
     private static final int CLEARVIEW = 5;
-    private static final int BITCARRIER = 6;
+    private static final int BITCARRIER_NODES = 6;
+    private static final int BITCARRIER_ROADS = 7;
 
 
     public static float density;
@@ -79,7 +81,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox clearviewCheckBox;
     private CheckBox bitcarrierCheckBox;
     private ItemObserver itemObserver;
-    private BaseLayer[] layers = new BaseLayer[7];
+    private BaseLayer[] layers = new BaseLayer[8];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +141,8 @@ public class MapsActivity extends AppCompatActivity
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
                 BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
-                        bitcarrierCheckBox.isChecked(), bitcarrierCheckBox.isChecked());
+                        bitcarrierCheckBox.isChecked(), bitcarrierCheckBox.isChecked(),
+                        bitcarrierCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -169,14 +172,12 @@ public class MapsActivity extends AppCompatActivity
         layers[ROAD_WORKS] = new RoadWorks(context, googleMap);
         layers[FASTPRK] = new Fastprk(context, googleMap);
         layers[CLEARVIEW] = new ClearviewSilverstone(context, googleMap);
-        layers[BITCARRIER] = new BitCarrierSilverstone(context, googleMap);
+        layers[BITCARRIER_NODES] = new BitCarrierSilverstoneNodes(context, googleMap);
+        layers[BITCARRIER_ROADS] = new BitCarrierSilverstone(context, googleMap);
         loadMarkers(true);
     }
 
     public void loadMarkers(boolean moveMap) {
-        for (BaseLayer layer : layers) {
-            layer.initialiseClusterItems();
-        }
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
                 moveMap, layers).execute();
     }
@@ -197,9 +198,11 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoWindow(Marker marker) {
         for (BaseLayer layer : layers) {
-            View view = layer.getInfoWindow(marker);
-            if (view != null) {
-                return view;
+            if (layer instanceof MarkerBaseLayer) {
+                View view = ((MarkerBaseLayer) layer).getInfoWindow(marker);
+                if (view != null) {
+                    return view;
+                }
             }
         }
         return null;
@@ -208,9 +211,11 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoContents(Marker marker) {
         for (BaseLayer layer : layers) {
-            View view = layer.getInfoContents(marker);
-            if (view != null) {
-                return view;
+            if (layer instanceof MarkerBaseLayer) {
+                View view = ((MarkerBaseLayer) layer).getInfoContents(marker);
+                if (view != null) {
+                    return view;
+                }
             }
         }
         return null;
@@ -235,7 +240,8 @@ public class MapsActivity extends AppCompatActivity
                 layers[CLEARVIEW].setVisible(checked);
                 break;
             case R.id.bitcarrier_checkbox:
-                layers[BITCARRIER].setVisible(checked);
+                layers[BITCARRIER_NODES].setVisible(checked);
+                layers[BITCARRIER_ROADS].setVisible(checked);
                 break;
         }
     }
@@ -250,14 +256,17 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public boolean onMarkerClick(Marker marker) {
         for (BaseLayer layer : layers) {
-            BaseClusterManager clusterManager = layer.getClusterManager();
-            BaseClusterRenderer clusterRenderer = layer.getClusterRenderer();
-            if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
-                    || clusterRenderer.getCluster(marker) != null)) {
-                return clusterManager.onMarkerClick(marker);
+            if (layer instanceof MarkerBaseLayer) {
+                if (((MarkerBaseLayer) layer).onMarkerClick(marker)) {
+                    return true;
+                }
+            } else if (layer instanceof ClusterBaseLayer) {
+                if (((ClusterBaseLayer) layer).onMarkerClick(marker)) {
+                    return true;
+                }
             }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -319,8 +328,8 @@ public class MapsActivity extends AppCompatActivity
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
         roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
-        clearviewCheckBox=(CheckBox)findViewById(R.id.clearview_checkbox);
-        bitcarrierCheckBox=(CheckBox)findViewById(R.id.bitcarrier_checkbox);
+        clearviewCheckBox = (CheckBox) findViewById(R.id.clearview_checkbox);
+        bitcarrierCheckBox = (CheckBox) findViewById(R.id.bitcarrier_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);

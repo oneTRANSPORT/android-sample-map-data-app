@@ -25,7 +25,7 @@ public class ClearviewSilverstone extends ClusterBaseLayer<ClearviewSilverstoneC
     }
 
     @Override
-    public void loadClusterItems() throws Exception {
+    public void load() throws Exception {
         Cursor cursor = CvsContentHelper.getTraffic(getContext());
         SparseArray<ArrayList<Traffic>> trafficArray = new SparseArray<>();
         if (cursor.moveToFirst()) {

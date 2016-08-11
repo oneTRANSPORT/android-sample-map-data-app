@@ -51,7 +51,7 @@ public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
     }
 
     @Override
-    public void loadClusterItems() throws Exception {
+    public void load() throws Exception {
         for (int i = 0; i < SENSOR_IDS.length; i++) {
             getClusterItems().add(new WorldsensingClusterItem(loadPosition(i), SENSOR_IDS[i]));
         }

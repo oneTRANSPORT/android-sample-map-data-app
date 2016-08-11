@@ -19,7 +19,7 @@ public class VariableMessageSign extends ClusterBaseLayer<VmsClusterItem> {
     }
 
     @Override
-    public void loadClusterItems() throws Exception {
+    public void load() throws Exception {
         Cursor cursor = BucksContentHelper.getVariableMessageSigns(getContext());
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {

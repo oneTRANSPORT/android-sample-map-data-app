@@ -16,7 +16,7 @@ public abstract class ClusterBaseLayer<T extends ClusterItem> extends BaseLayer 
 
     private BaseClusterManager<T> clusterManager;
     private BaseClusterRenderer<T> clusterRenderer;
-    private ArrayList<T> clusterItems;
+    private ArrayList<T> clusterItems = new ArrayList<>();
 
     public ClusterBaseLayer(Context context, GoogleMap googleMap) {
         super(context, googleMap);
@@ -25,8 +25,7 @@ public abstract class ClusterBaseLayer<T extends ClusterItem> extends BaseLayer 
     }
 
     @Override
-    public void initialiseClusterItems() {
-        clusterItems = new ArrayList<>();
+    public void initialise() {
         if (clusterManager != null) {
             for (Marker marker : clusterManager.getMarkerCollection().getMarkers()) {
                 marker.remove();
@@ -63,14 +62,18 @@ public abstract class ClusterBaseLayer<T extends ClusterItem> extends BaseLayer 
 
     @Override
     public void addToMap() {
-        clusterManager.addItems(clusterItems);
-        clusterManager.setRenderer(clusterRenderer);
+        if (clusterItems.size() > 0) {
+            clusterManager.addItems(clusterItems);
+            clusterManager.setRenderer(clusterRenderer);
+        }
     }
 
-    public static void initialiseClusterItems(BaseLayer[] layers) {
-        for (BaseLayer layer : layers) {
-            layer.initialiseClusterItems();
+    public boolean onMarkerClick(Marker marker) {
+        if (clusterManager != null && (clusterRenderer.getClusterItem(marker) != null
+                || clusterRenderer.getCluster(marker) != null)) {
+            return clusterManager.onMarkerClick(marker);
         }
+        return false;
     }
 
     @Override
@@ -78,21 +81,19 @@ public abstract class ClusterBaseLayer<T extends ClusterItem> extends BaseLayer 
         clusterRenderer.setVisible(visible);
     }
 
-    @Override
     public BaseClusterManager<T> getClusterManager() {
         return clusterManager;
     }
 
-    @Override
     public BaseClusterRenderer<T> getClusterRenderer() {
         return clusterRenderer;
+    }
+
+    public ArrayList<T> getClusterItems() {
+        return clusterItems;
     }
 
     protected abstract BaseClusterManager<T> newClusterManager();
 
     protected abstract BaseClusterRenderer<T> newClusterRenderer();
-
-    public ArrayList<T> getClusterItems() {
-        return clusterItems;
-    }
 }
