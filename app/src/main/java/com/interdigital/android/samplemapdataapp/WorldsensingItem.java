@@ -30,7 +30,7 @@
 //public class WorldsensingItem extends Item implements DougalCallback {
 //
 //    private static final String TAG = "WorldsensingItem";
-//    private static final String APP_NAME = "Worldsensing";
+//    private static final String APP_NAME = "Fastprk";
 //    private static final String[] CONTAINERS_STATIC = {
 //            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b11dbcb9b3277b782e708",
 //            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/Sensor/s555b15b0cb9b3277b782ec0d",
@@ -54,7 +54,7 @@
 //    private WeakReference<MapsActivity> weakMapsActivity;
 //
 //    public WorldsensingItem(int offset, MapsActivity mapsActivity) {
-//        super("Worldsensing " + String.valueOf(offset));
+//        super("Fastprk " + String.valueOf(offset));
 //        this.offset = offset;
 //        weakMapsActivity = new WeakReference<>(mapsActivity);
 //        setType(TYPE_CAR_PARK);
@@ -80,7 +80,7 @@
 //    @Override
 //    public void getResponse(Resource resource, Throwable throwable) {
 //        if (resource == null) {
-//            Log.e(TAG, "Worldsensing content instance not retrieved.");
+//            Log.e(TAG, "Fastprk content instance not retrieved.");
 //            full = Math.random() > 0.7;
 //        } else {
 //            try {

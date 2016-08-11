@@ -26,5 +26,11 @@
     <string name="car_parks">Car parks</string>
     <string name="traffic_flow">Traffic flow</string>
     <string name="road_works">Road works</string>
-    <string name="clearview_silverstone">Silverstone parking</string>
+
+    <string name="worldsensing_buckinghamshire">Worldsensing Buckinghamshire</string>
+    <string name="clearview_silverstone">Clearview Silverstone</string>
+    <string name="parking">Parking</string>
+    <string name="bitcarrier_silverstone">BitCarrier Silverstone</string>
+    <string name="road_network">Road network</string>
+    <string name="fastprk">Fastprk</string>
 </resources>

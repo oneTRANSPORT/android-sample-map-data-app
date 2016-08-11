@@ -52,7 +52,7 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
         for (BaseLayer layer : baseLayers) {
             layer.addToMap();
         }
-        // Move to about the middle of Aylesbury so we can see Worldsensing, ANPR and car park items.
+        // Move to about the middle of Aylesbury so we can see Fastprk, ANPR and car park items.
         // Zoom out for VMS.
         if (moveMap) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(

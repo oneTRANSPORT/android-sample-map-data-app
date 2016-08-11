@@ -26,13 +26,9 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
     private int entering = 0;
     private int leaving = 0;
     private String flowTime = null;
-    private SparseIntArray vehiclesIn;
-    private SparseIntArray vehiclesOut;
 
     public ClearviewSilverstoneClusterItem(Cursor cursor,
-                                           SparseArray<ArrayList<Traffic>> trafficArray,
-                                           SparseArray<SparseIntArray> vehiclesIn,
-                                           SparseArray<SparseIntArray> vehiclesOut) {
+                                           SparseArray<ArrayList<Traffic>> trafficArray) {
         sensorId = cursor.getInt(cursor.getColumnIndex(
                 CvsContract.ClearviewSilverstoneDevice.COLUMN_SENSOR_ID));
         title = cursor.getString(cursor.getColumnIndex(
@@ -59,8 +55,6 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
                 flowTime = traffic.getTime();
             }
         }
-        this.vehiclesIn = vehiclesIn.get(sensorId);
-        this.vehiclesOut = vehiclesOut.get(sensorId);
     }
 
     @Override
@@ -154,21 +148,5 @@ public class ClearviewSilverstoneClusterItem implements ClusterItem {
 
     public void setFlowTime(String flowTime) {
         this.flowTime = flowTime;
-    }
-
-    public SparseIntArray getVehiclesIn() {
-        return vehiclesIn;
-    }
-
-    public void setVehiclesIn(SparseIntArray vehiclesIn) {
-        this.vehiclesIn = vehiclesIn;
-    }
-
-    public SparseIntArray getVehiclesOut() {
-        return vehiclesOut;
-    }
-
-    public void setVehiclesOut(SparseIntArray vehiclesOut) {
-        this.vehiclesOut = vehiclesOut;
     }
 }

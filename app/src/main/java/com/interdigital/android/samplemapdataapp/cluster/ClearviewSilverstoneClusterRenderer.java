@@ -9,7 +9,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 import com.interdigital.android.samplemapdataapp.R;
-import com.interdigital.android.samplemapdataapp.view.MicroGraphView;
 
 public class ClearviewSilverstoneClusterRenderer
         extends BaseClusterRenderer<ClearviewSilverstoneClusterItem> {
@@ -34,7 +33,7 @@ public class ClearviewSilverstoneClusterRenderer
         ClearviewSilverstoneClusterItem clearviewSilverstoneClusterItem = getClusterItem(marker);
         String description = clearviewSilverstoneClusterItem.getDescription();
         String changed = "Device installation: " + clearviewSilverstoneClusterItem.getChanged().trim()
-                .replaceFirst(" .*$", "");
+                .replaceFirst(" .*$", "").replaceFirst("^[0-9]+-", "");
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_silverstone_car_park, null, false);
@@ -44,7 +43,7 @@ public class ClearviewSilverstoneClusterRenderer
             String entering = "Entering: " + String.valueOf(clearviewSilverstoneClusterItem.getEntering());
             String leaving = "Leaving: " + String.valueOf(clearviewSilverstoneClusterItem.getLeaving());
             String flowTime = "Traffic flow at " + clearviewSilverstoneClusterItem.getFlowTime().trim()
-                    .replaceFirst("^.* ", "").replaceFirst(":[^:]*$", "");
+                    .replaceFirst("^[0-9]+-", "").replaceFirst(":[^:]*$", "");
             ((TextView) view.findViewById(R.id.flow_time_text_view)).setText(flowTime);
             ((TextView) view.findViewById(R.id.entering_text_view)).setText(entering);
             ((TextView) view.findViewById(R.id.leaving_text_view)).setText(leaving);
@@ -53,10 +52,6 @@ public class ClearviewSilverstoneClusterRenderer
             view.findViewById(R.id.entering_text_view).setVisibility(View.GONE);
             view.findViewById(R.id.leaving_text_view).setVisibility(View.GONE);
         }
-        ((MicroGraphView)view.findViewById(R.id.entering_graph_view))
-                .setValues(clearviewSilverstoneClusterItem.getVehiclesIn());
-        ((MicroGraphView)view.findViewById(R.id.leaving_graph_view))
-                .setValues(clearviewSilverstoneClusterItem.getVehiclesOut());
         return view;
     }
 

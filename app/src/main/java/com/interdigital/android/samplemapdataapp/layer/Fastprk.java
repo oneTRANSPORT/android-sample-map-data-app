@@ -22,7 +22,7 @@ import com.interdigital.android.samplemapdataapp.cluster.WorldsensingClusterRend
 
 import org.json.JSONObject;
 
-public class Worldsensing extends ClusterBaseLayer<WorldsensingClusterItem>
+public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
         implements Handler.Callback, DougalCallback {
 
     private static final String APP_NAME = "Worldsensing";
@@ -45,7 +45,7 @@ public class Worldsensing extends ClusterBaseLayer<WorldsensingClusterItem>
 
     private Handler handler = new Handler(this);
 
-    public Worldsensing(Context context, GoogleMap googleMap) {
+    public Fastprk(Context context, GoogleMap googleMap) {
         super(context, googleMap);
         startUpdateTimer();
     }
@@ -81,9 +81,9 @@ public class Worldsensing extends ClusterBaseLayer<WorldsensingClusterItem>
     @Override
     public void getResponse(Resource resource, Throwable throwable) {
         if (resource == null) {
-            Log.e("Worldsensing", "Worldsensing content instance not retrieved.");
+            Log.e("Fastprk", "Fastprk content instance not retrieved.");
         } else {
-            Log.e("Worldsensing", "Worldsensing content instance OK.");
+            Log.e("Fastprk", "Fastprk content instance OK.");
             try {
                 String jsonContent = ((ContentInstance) resource).getContent();
                 JSONObject jsonObject = new JSONObject(jsonContent);

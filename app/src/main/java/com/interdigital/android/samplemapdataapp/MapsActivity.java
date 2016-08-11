@@ -36,10 +36,10 @@ import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.CarPark;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
+import com.interdigital.android.samplemapdataapp.layer.Fastprk;
 import com.interdigital.android.samplemapdataapp.layer.RoadWorks;
 import com.interdigital.android.samplemapdataapp.layer.TrafficFlow;
 import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
-import com.interdigital.android.samplemapdataapp.layer.Worldsensing;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsProviderModule;
@@ -58,9 +58,10 @@ public class MapsActivity extends AppCompatActivity
     private static final int CAR_PARK = 1;
     private static final int TRAFFIC_FLOW = 2;
     private static final int ROAD_WORKS = 3;
-    private static final int WORLDSENSING = 4;
-    private static final int CLEARVIEW_SILVERSTONE = 5;
-    private static final int BIT_CARRIER_SILVERSTONE = 6;
+    private static final int FASTPRK = 4;
+    private static final int CLEARVIEW = 5;
+    private static final int BITCARRIER = 6;
+
 
     public static float density;
 
@@ -75,7 +76,8 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
     private CheckBox roadWorksCheckBox;
-    private CheckBox clearviewSilverstoneCheckBox;
+    private CheckBox clearviewCheckBox;
+    private CheckBox bitcarrierCheckBox;
     private ItemObserver itemObserver;
     private BaseLayer[] layers = new BaseLayer[7];
 
@@ -134,10 +136,10 @@ public class MapsActivity extends AppCompatActivity
                 // TODO    Find a way to merge these sync adapter calls.
                 BucksProviderModule.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
                         trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
-                CvsProviderModule.refresh(context, clearviewSilverstoneCheckBox.isChecked(),
-                        clearviewSilverstoneCheckBox.isChecked());
-                BcsProviderModule.refresh(context, clearviewSilverstoneCheckBox.isChecked(),
-                        clearviewSilverstoneCheckBox.isChecked(), clearviewSilverstoneCheckBox.isChecked());
+                CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
+                        clearviewCheckBox.isChecked());
+                BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
+                        bitcarrierCheckBox.isChecked(), bitcarrierCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -165,9 +167,9 @@ public class MapsActivity extends AppCompatActivity
         layers[CAR_PARK] = new CarPark(context, googleMap);
         layers[TRAFFIC_FLOW] = new TrafficFlow(context, googleMap);
         layers[ROAD_WORKS] = new RoadWorks(context, googleMap);
-        layers[WORLDSENSING] = new Worldsensing(context, googleMap);
-        layers[CLEARVIEW_SILVERSTONE] = new ClearviewSilverstone(context, googleMap);
-        layers[BIT_CARRIER_SILVERSTONE] = new BitCarrierSilverstone(context, googleMap);
+        layers[FASTPRK] = new Fastprk(context, googleMap);
+        layers[CLEARVIEW] = new ClearviewSilverstone(context, googleMap);
+        layers[BITCARRIER] = new BitCarrierSilverstone(context, googleMap);
         loadMarkers(true);
     }
 
@@ -229,8 +231,11 @@ public class MapsActivity extends AppCompatActivity
             case R.id.road_works_checkbox:
                 layers[ROAD_WORKS].setVisible(checked);
                 break;
-            case R.id.clearview_silverstone_checkbox:
-                layers[CLEARVIEW_SILVERSTONE].setVisible(checked);
+            case R.id.clearview_checkbox:
+                layers[CLEARVIEW].setVisible(checked);
+                break;
+            case R.id.bitcarrier_checkbox:
+                layers[BITCARRIER].setVisible(checked);
                 break;
         }
     }
@@ -258,8 +263,8 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (layers[WORLDSENSING] != null) {
-            ((Worldsensing) layers[WORLDSENSING]).startUpdateTimer();
+        if (layers[FASTPRK] != null) {
+            ((Fastprk) layers[FASTPRK]).startUpdateTimer();
         }
         getContentResolver().registerContentObserver(LastUpdatedProviderModule.LAST_UPDATED_URI,
                 false, itemObserver);
@@ -268,8 +273,8 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         getContentResolver().unregisterContentObserver(itemObserver);
-        if (layers[WORLDSENSING] != null) {
-            ((Worldsensing) layers[WORLDSENSING]).stopUpdateTimer();
+        if (layers[FASTPRK] != null) {
+            ((Fastprk) layers[FASTPRK]).stopUpdateTimer();
         }
         super.onPause();
     }
@@ -314,12 +319,14 @@ public class MapsActivity extends AppCompatActivity
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
         roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
-        clearviewSilverstoneCheckBox = (CheckBox) findViewById(R.id.clearview_silverstone_checkbox);
+        clearviewCheckBox=(CheckBox)findViewById(R.id.clearview_checkbox);
+        bitcarrierCheckBox=(CheckBox)findViewById(R.id.bitcarrier_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
         roadWorksCheckBox.setOnCheckedChangeListener(this);
-        clearviewSilverstoneCheckBox.setOnCheckedChangeListener(this);
+        clearviewCheckBox.setOnCheckedChangeListener(this);
+        bitcarrierCheckBox.setOnCheckedChangeListener(this);
     }
 }
 
