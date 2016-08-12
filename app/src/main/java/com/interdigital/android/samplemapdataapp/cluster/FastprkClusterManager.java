@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 
-public class WorldsensingClusterManager extends BaseClusterManager<WorldsensingClusterItem>{
+public class FastprkClusterManager extends BaseClusterManager<FastprkClusterItem>{
 
-    public WorldsensingClusterManager(Context context, GoogleMap googleMap) {
+    public FastprkClusterManager(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
 }

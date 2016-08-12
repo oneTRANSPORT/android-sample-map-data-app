@@ -3,14 +3,14 @@ package com.interdigital.android.samplemapdataapp.cluster;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
-public class WorldsensingClusterItem implements ClusterItem {
+public class FastprkClusterItem implements ClusterItem {
 
     private LatLng position;
     private boolean full = false;
     private boolean updating = false;
     private String sensorId;
 
-    public WorldsensingClusterItem(LatLng position, String sensorId) {
+    public FastprkClusterItem(LatLng position, String sensorId) {
         this.position = position;
         this.sensorId = sensorId;
     }

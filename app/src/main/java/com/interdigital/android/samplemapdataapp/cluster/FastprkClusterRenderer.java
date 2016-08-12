@@ -15,19 +15,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 import com.interdigital.android.samplemapdataapp.R;
 
-public class WorldsensingClusterRenderer extends BaseClusterRenderer<WorldsensingClusterItem> {
+public class FastprkClusterRenderer extends BaseClusterRenderer<FastprkClusterItem> {
 
-    public WorldsensingClusterRenderer(Context context, GoogleMap map,
-                                       ClusterManager<WorldsensingClusterItem> clusterManager) {
+    public FastprkClusterRenderer(Context context, GoogleMap map,
+                                  ClusterManager<FastprkClusterItem> clusterManager) {
         super(context, map, clusterManager);
     }
 
     @Override
-    public int getIconResource(WorldsensingClusterItem worldsensingClusterItem) {
-        if (worldsensingClusterItem.isUpdating()) {
+    public int getIconResource(FastprkClusterItem fastprkClusterItem) {
+        if (fastprkClusterItem.isUpdating()) {
             return R.drawable.worldsensing_updating_us_icon;
         }
-        if (worldsensingClusterItem.isFull()) {
+        if (fastprkClusterItem.isFull()) {
             return R.drawable.worldsensing_full_us_icon;
         }
         return R.drawable.worldsensing_us_icon;
@@ -40,8 +40,8 @@ public class WorldsensingClusterRenderer extends BaseClusterRenderer<Worldsensin
 
     @Override
     public View getInfoContents(Marker marker) {
-        WorldsensingClusterItem worldsensingClusterItem = getClusterItem(marker);
-        boolean full = worldsensingClusterItem.isFull();
+        FastprkClusterItem fastprkClusterItem = getClusterItem(marker);
+        boolean full = fastprkClusterItem.isFull();
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         TextView signTextView = new TextView(context);

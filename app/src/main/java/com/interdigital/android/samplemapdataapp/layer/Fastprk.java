@@ -16,13 +16,13 @@ import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.CseDetails;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.WorldsensingClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.WorldsensingClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.WorldsensingClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.FastprkClusterItem;
+import com.interdigital.android.samplemapdataapp.cluster.FastprkClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.FastprkClusterRenderer;
 
 import org.json.JSONObject;
 
-public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
+public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
         implements Handler.Callback, DougalCallback {
 
     private static final String APP_NAME = "Worldsensing";
@@ -53,7 +53,7 @@ public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
     @Override
     public void load() throws Exception {
         for (int i = 0; i < SENSOR_IDS.length; i++) {
-            getClusterItems().add(new WorldsensingClusterItem(loadPosition(i), SENSOR_IDS[i]));
+            getClusterItems().add(new FastprkClusterItem(loadPosition(i), SENSOR_IDS[i]));
         }
     }
 
@@ -89,7 +89,7 @@ public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
                 JSONObject jsonObject = new JSONObject(jsonContent);
                 boolean full = jsonObject.optBoolean("occupied", false);
                 String sensorId = jsonObject.optString("sensorId");
-                WorldsensingClusterItem item = findClusterItem(sensorId);
+                FastprkClusterItem item = findClusterItem(sensorId);
                 item.setUpdating(false);
                 item.setFull(full);
                 Marker marker = getClusterRenderer().getMarker(item);
@@ -103,13 +103,13 @@ public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
     }
 
     @Override
-    protected BaseClusterManager<WorldsensingClusterItem> newClusterManager() {
-        return new WorldsensingClusterManager(getContext(), getGoogleMap());
+    protected BaseClusterManager<FastprkClusterItem> newClusterManager() {
+        return new FastprkClusterManager(getContext(), getGoogleMap());
     }
 
     @Override
-    protected BaseClusterRenderer<WorldsensingClusterItem> newClusterRenderer() {
-        return new WorldsensingClusterRenderer(getContext(), getGoogleMap(), getClusterManager());
+    protected BaseClusterRenderer<FastprkClusterItem> newClusterRenderer() {
+        return new FastprkClusterRenderer(getContext(), getGoogleMap(), getClusterManager());
     }
 
     private LatLng loadPosition(int i) {
@@ -152,7 +152,7 @@ public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
             Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.baseUrl,
                     APP_NAME + OCCUPATION_PREFIX + SENSOR_IDS[i],
                     CseDetails.userName, CseDetails.password, this);
-            WorldsensingClusterItem item = findClusterItem(SENSOR_IDS[i]);
+            FastprkClusterItem item = findClusterItem(SENSOR_IDS[i]);
             item.setUpdating(true);
             Marker marker = getClusterRenderer().getMarker(item);
             marker.setIcon(BitmapDescriptorFactory.fromResource(getClusterRenderer()
@@ -160,8 +160,8 @@ public class Fastprk extends ClusterBaseLayer<WorldsensingClusterItem>
         }
     }
 
-    private WorldsensingClusterItem findClusterItem(String sensorId) {
-        for (WorldsensingClusterItem item : getClusterItems()) {
+    private FastprkClusterItem findClusterItem(String sensorId) {
+        for (FastprkClusterItem item : getClusterItems()) {
             if (item.getSensorId().equals(sensorId)) {
                 return item;
             }
