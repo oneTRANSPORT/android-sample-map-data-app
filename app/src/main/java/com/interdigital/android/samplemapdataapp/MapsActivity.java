@@ -198,11 +198,14 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoWindow(Marker marker) {
         for (BaseLayer layer : layers) {
+            View view = null;
             if (layer instanceof MarkerBaseLayer) {
-                View view = ((MarkerBaseLayer) layer).getInfoWindow(marker);
-                if (view != null) {
-                    return view;
-                }
+                view = ((MarkerBaseLayer) layer).getInfoWindow(marker);
+            } else if (layer instanceof ClusterBaseLayer) {
+                view = ((ClusterBaseLayer) layer).getInfoWindow(marker);
+            }
+            if (view != null) {
+                return view;
             }
         }
         return null;
@@ -211,11 +214,14 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public View getInfoContents(Marker marker) {
         for (BaseLayer layer : layers) {
+            View view = null;
             if (layer instanceof MarkerBaseLayer) {
-                View view = ((MarkerBaseLayer) layer).getInfoContents(marker);
-                if (view != null) {
-                    return view;
-                }
+                view = ((MarkerBaseLayer) layer).getInfoContents(marker);
+            } else if (layer instanceof ClusterBaseLayer) {
+                view = ((ClusterBaseLayer) layer).getInfoContents(marker);
+            }
+            if (view != null) {
+                return view;
             }
         }
         return null;

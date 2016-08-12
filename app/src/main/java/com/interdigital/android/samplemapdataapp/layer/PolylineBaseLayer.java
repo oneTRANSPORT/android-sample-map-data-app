@@ -22,15 +22,18 @@ public abstract class PolylineBaseLayer extends BaseLayer {
     public void initialise() {
         if (basePolylines.size() > 0) {
             for (BasePolyline basePolyline : getBasePolylines()) {
-                basePolyline.getPolyline().remove();
+                if (basePolyline.getPolyline() != null) {
+                    basePolyline.getPolyline().remove();
+                }
             }
             basePolylines.clear();
         }
     }
 
     public void addToMap() {
-        for (BasePolyline basePolyline : getBasePolylines()) {
-            basePolyline.setPolyline(getGoogleMap().addPolyline(basePolyline.getPolylineOptions()));
+        for (int i = 0; i < basePolylines.size(); i++) {
+            basePolylines.get(i).setPolyline(getGoogleMap().addPolyline(
+                    basePolylines.get(i).getPolylineOptions()));
         }
     }
 

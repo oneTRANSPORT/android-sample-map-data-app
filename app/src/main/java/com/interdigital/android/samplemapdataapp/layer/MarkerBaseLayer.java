@@ -21,12 +21,13 @@ public abstract class MarkerBaseLayer extends BaseLayer {
 
     @Override
     public void initialise() {
-        if (baseMarkers.size() > 0) {
-            for (BaseMarker baseMarker : baseMarkers) {
+        for (int i = 0; i < baseMarkers.size(); i++) {
+            BaseMarker baseMarker = baseMarkers.get(i);
+            if (baseMarker.getMarker() != null) {
                 baseMarker.getMarker().remove();
             }
-            baseMarkers.clear();
         }
+        baseMarkers.clear();
     }
 
     public View getInfoWindow(Marker marker) {
