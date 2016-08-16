@@ -33,8 +33,8 @@ public class BitCarrierSilverstoneNodeMarker extends BaseMarker {
         double longitude = cursor.getDouble(cursor.getColumnIndex(
                 BcsContract.BitCarrierSilverstoneNode.COLUMN_LONGITUDE));
         setLatLng(new LatLng(latitude, longitude));
-        getMarkerOptions().icon(BitmapDescriptorFactory
-                .fromResource(R.drawable.node_icon))
+        getMarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.node_icon))
                 .anchor(0.5f, 0.5f)
                 .infoWindowAnchor(0.5f, 0.37f)
                 .position(getLatLng());

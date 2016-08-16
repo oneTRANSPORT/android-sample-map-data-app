@@ -24,6 +24,7 @@ public abstract class PolylineBaseLayer extends BaseLayer {
             for (BasePolyline basePolyline : getBasePolylines()) {
                 if (basePolyline.getPolyline() != null) {
                     basePolyline.getPolyline().remove();
+                    basePolyline.getCentreMarker().remove();
                 }
             }
             basePolylines.clear();
@@ -34,12 +35,15 @@ public abstract class PolylineBaseLayer extends BaseLayer {
         for (int i = 0; i < basePolylines.size(); i++) {
             basePolylines.get(i).setPolyline(getGoogleMap().addPolyline(
                     basePolylines.get(i).getPolylineOptions()));
+            basePolylines.get(i).setCentreMarker(getGoogleMap().addMarker(
+                    basePolylines.get(i).getCentreMarkerOptions()));
         }
     }
 
     public void setVisible(boolean visible) {
         for (BasePolyline basePolyline : basePolylines) {
             basePolyline.getPolyline().setVisible(visible);
+            basePolyline.getCentreMarker().setVisible(visible);
         }
     }
 
