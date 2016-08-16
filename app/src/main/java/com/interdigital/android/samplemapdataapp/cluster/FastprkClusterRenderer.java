@@ -25,17 +25,17 @@ public class FastprkClusterRenderer extends BaseClusterRenderer<FastprkClusterIt
     @Override
     public int getIconResource(FastprkClusterItem fastprkClusterItem) {
         if (fastprkClusterItem.isUpdating()) {
-            return R.drawable.worldsensing_updating_us_icon;
+            return R.drawable.worldsensing_updating;
         }
         if (fastprkClusterItem.isFull()) {
-            return R.drawable.worldsensing_full_us_icon;
+            return R.drawable.worldsensing_full_icon;
         }
-        return R.drawable.worldsensing_us_icon;
+        return R.drawable.worldsensing_icon;
     }
 
     @Override
     public int getIconClusterResource() {
-        return R.drawable.worldsensing_updating;
+        return R.drawable.carpark_cluster_icon;
     }
 
     @Override

@@ -70,7 +70,7 @@ public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
     public void startUpdateTimer() {
         if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
             // TODO    Turn this back on when we have finished debugging.
-//            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
+            handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
         }
     }
 

@@ -78,6 +78,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox carParkCheckbox;
     private CheckBox trafficFlowCheckBox;
     private CheckBox roadWorksCheckBox;
+    private CheckBox fastprkCheckBox;
     private CheckBox clearviewCheckBox;
     private CheckBox bitcarrierCheckBox;
     private ItemObserver itemObserver;
@@ -241,6 +242,9 @@ public class MapsActivity extends AppCompatActivity
             case R.id.road_works_checkbox:
                 layers[ROAD_WORKS].setVisible(checked);
                 break;
+            case R.id.fastprk_checkbox:
+                layers[FASTPRK].setVisible(checked);
+                break;
             case R.id.clearview_checkbox:
                 layers[CLEARVIEW].setVisible(checked);
                 break;
@@ -333,12 +337,14 @@ public class MapsActivity extends AppCompatActivity
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
         roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
+        fastprkCheckBox = (CheckBox) findViewById(R.id.fastprk_checkbox);
         clearviewCheckBox = (CheckBox) findViewById(R.id.clearview_checkbox);
         bitcarrierCheckBox = (CheckBox) findViewById(R.id.bitcarrier_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
         roadWorksCheckBox.setOnCheckedChangeListener(this);
+        fastprkCheckBox.setOnCheckedChangeListener(this);
         clearviewCheckBox.setOnCheckedChangeListener(this);
         bitcarrierCheckBox.setOnCheckedChangeListener(this);
     }
