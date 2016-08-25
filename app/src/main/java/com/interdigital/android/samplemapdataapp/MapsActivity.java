@@ -142,7 +142,7 @@ public class MapsActivity extends AppCompatActivity
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
                 BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
-                        bitcarrierCheckBox.isChecked());
+                        bitcarrierCheckBox.isChecked(),bitcarrierCheckBox.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

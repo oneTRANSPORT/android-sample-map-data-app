@@ -16,14 +16,21 @@ public class BitCarrierSilverstone extends PolylineBaseLayer {
 
     @Override
     public void load() {
-        Cursor cursor = BcsContentHelper.getSketches(getContext());
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                BitCarrierSketchPolyline bcsp = new BitCarrierSketchPolyline(cursor);
+        Cursor sketchCursor = BcsContentHelper.getSketches(getContext());
+        Cursor nodeCursor = BcsContentHelper.getNodes(getContext());
+        Cursor travelTimeCursor = BcsContentHelper.getLatestTravelTimes(getContext());
+        Cursor vectorCursor = BcsContentHelper.getVectors(getContext());
+        if (sketchCursor.moveToFirst()) {
+            while (!sketchCursor.isAfterLast()) {
+                BitCarrierSketchPolyline bcsp = new BitCarrierSketchPolyline(sketchCursor, nodeCursor,
+                        travelTimeCursor, vectorCursor);
                 getBasePolylines().add(bcsp);
-                cursor.moveToNext();
+                sketchCursor.moveToNext();
             }
         }
-        cursor.close();
+        sketchCursor.close();
+        nodeCursor.close();
+        travelTimeCursor.close();
+        vectorCursor.close();
     }
 }

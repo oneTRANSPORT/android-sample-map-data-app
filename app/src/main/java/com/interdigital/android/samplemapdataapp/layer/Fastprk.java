@@ -44,6 +44,7 @@ public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
 //            "/FastPrk/v1.0/Owner1/Fastprk-Demo-London/SensorOccupation/s555b12b4cb9b3277b782e821",
 
     private Handler handler = new Handler(this);
+    private boolean addedToMap = false;
 
     public Fastprk(Context context, GoogleMap googleMap) {
         super(context, googleMap);
@@ -51,9 +52,27 @@ public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
     }
 
     @Override
+    public void initialise() {
+        // We don't want to re-initialise the Fastprk sensors as they might be mid-download.
+        if (!addedToMap) {
+            super.initialise();
+        }
+    }
+
+    @Override
     public void load() throws Exception {
-        for (int i = 0; i < SENSOR_IDS.length; i++) {
-            getClusterItems().add(new FastprkClusterItem(loadPosition(i), SENSOR_IDS[i]));
+        if (!addedToMap) {
+            for (int i = 0; i < SENSOR_IDS.length; i++) {
+                getClusterItems().add(new FastprkClusterItem(loadPosition(i), SENSOR_IDS[i]));
+            }
+        }
+    }
+
+    @Override
+    public void addToMap() {
+        if (!addedToMap) {
+            addedToMap = true;
+            super.addToMap();
         }
     }
 
@@ -69,7 +88,6 @@ public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
 
     public void startUpdateTimer() {
         if (!handler.hasMessages(MSG_SET_PLEASE_UPDATE)) {
-            // TODO    Turn this back on when we have finished debugging.
             handler.sendEmptyMessageDelayed(MSG_SET_PLEASE_UPDATE, 15000L);
         }
     }

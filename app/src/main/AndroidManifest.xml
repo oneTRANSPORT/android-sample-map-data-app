@@ -16,7 +16,6 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="locked"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
