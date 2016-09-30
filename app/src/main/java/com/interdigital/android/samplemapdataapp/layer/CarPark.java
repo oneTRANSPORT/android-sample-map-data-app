@@ -20,7 +20,7 @@ public class CarPark extends ClusterBaseLayer<CarParkClusterItem> {
 
     @Override
     public void load() throws Exception {
-        Cursor cursor = BucksContentHelper.getCarParks(getContext());
+        Cursor cursor = BucksContentHelper.getCarParkCursor(getContext());
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 CarParkClusterItem carParkClusterItem = new CarParkClusterItem(cursor);

@@ -7,6 +7,8 @@ import com.google.maps.android.clustering.ClusterItem;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksContract;
 
+import static net.uk.onetransport.android.county.bucks.provider.BucksContract.BucksRoadWorks;
+
 public class RoadWorksClusterItem implements ClusterItem {
 
     private LatLng position;
@@ -14,38 +16,37 @@ public class RoadWorksClusterItem implements ClusterItem {
     private String effectOnRoadLayout;
     private String roadMaintenanceType;
     private String impactOnTraffic;
-    private String type;
     private String status;
     private String overallStartTime;
     private String overallEndTime;
-    private String periods;
-    private String locationDescription;
+    private String startOfPeriod;
+    private String endOfPeriod;
     private String guid;
 
     public RoadWorksClusterItem(Cursor cursor) {
         comment = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_COMMENT));
+                BucksRoadWorks.COLUMN_COMMENT));
         effectOnRoadLayout = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_EFFECT_ON_ROAD_LAYOUT));
+                BucksRoadWorks.COLUMN_EFFECT_ON_ROAD_LAYOUT));
         roadMaintenanceType = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_ROAD_MAINTENANCE_TYPE));
+                BucksRoadWorks.COLUMN_ROAD_MAINTENANCE_TYPE));
         impactOnTraffic = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_IMPACT_ON_TRAFFIC));
-        type = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_TYPE));
-        status = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_STATUS));
+                BucksRoadWorks.COLUMN_IMPACT_ON_TRAFFIC));
+        status = cursor.getString(cursor.getColumnIndex(BucksRoadWorks.COLUMN_VALIDITY_STATUS));
         overallStartTime = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_OVERALL_START_TIME));
+                BucksRoadWorks.COLUMN_OVERALL_START_TIME));
         overallEndTime = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_OVERALL_END_TIME));
-        periods = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_PERIODS));
-        locationDescription = cursor.getString(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_LOCATION_DESCRIPTION));
-        guid = cursor.getString(cursor.getColumnIndex(BucksContract.RoadWorks.COLUMN_ID));
+                BucksRoadWorks.COLUMN_OVERALL_END_TIME));
+        startOfPeriod = cursor.getString(cursor.getColumnIndex(
+                BucksRoadWorks.COLUMN_START_OF_PERIOD));
+        endOfPeriod = cursor.getString(cursor.getColumnIndex(
+                BucksRoadWorks.COLUMN_END_OF_PERIOD));
+        guid = cursor.getString(cursor.getColumnIndex(BucksContract.BucksRoadWorks.COLUMN_ID));
 
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_LATITUDE));
+                BucksContract.BucksRoadWorks.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.RoadWorks.COLUMN_LONGITUDE));
+                BucksContract.BucksRoadWorks.COLUMN_LONGITUDE));
         position = new LatLng(latitude, longitude);
     }
 
@@ -70,10 +71,6 @@ public class RoadWorksClusterItem implements ClusterItem {
         return impactOnTraffic;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -86,12 +83,12 @@ public class RoadWorksClusterItem implements ClusterItem {
         return overallEndTime;
     }
 
-    public String getPeriods() {
-        return periods;
+    public String getStartOfPeriod() {
+        return startOfPeriod;
     }
 
-    public String getLocationDescription() {
-        return locationDescription;
+    public String getEndOfPeriod() {
+        return endOfPeriod;
     }
 
     public String getGuid() {

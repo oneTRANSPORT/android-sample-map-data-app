@@ -16,18 +16,19 @@ public class CarParkClusterItem implements ClusterItem {
     private int totalParkingCapacity;
     private int entranceFull;
 
+    // TODO    Refer to object rather than unpack cursor?
     public CarParkClusterItem(Cursor cursor) {
         identity = cursor.getString(cursor.getColumnIndex(
-                BucksContract.CarPark.COLUMN_CAR_PARK_IDENTITY))
+                BucksContract.BucksCarPark.COLUMN_CAR_PARK_IDENTITY))
                 .replace(BUCK_PREFIX, "").replaceAll("_", " ");
         totalParkingCapacity = cursor.getInt(cursor.getColumnIndex(
-                BucksContract.CarPark.COLUMN_TOTAL_PARKING_CAPACITY));
+                BucksContract.BucksCarPark.COLUMN_TOTAL_PARKING_CAPACITY));
         entranceFull = cursor.getInt(cursor.getColumnIndex(
-                BucksContract.CarPark.COLUMN_ENTRANCE_FULL));
+                BucksContract.BucksCarPark.COLUMN_ENTRANCE_FULL));
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.CarPark.COLUMN_LATITUDE));
+                BucksContract.BucksCarPark.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.CarPark.COLUMN_LONGITUDE));
+                BucksContract.BucksCarPark.COLUMN_LONGITUDE));
         position = new LatLng(latitude, longitude);
     }
 

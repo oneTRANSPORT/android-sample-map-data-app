@@ -5,7 +5,7 @@ import android.database.Cursor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
-import net.uk.onetransport.android.county.bucks.provider.BucksContract;
+import static net.uk.onetransport.android.county.bucks.provider.BucksContract.BucksVariableMessageSign;
 
 public class VmsClusterItem implements ClusterItem {
 
@@ -15,14 +15,14 @@ public class VmsClusterItem implements ClusterItem {
 
     public VmsClusterItem(Cursor cursor) {
         String legendStr = cursor.getString(cursor.getColumnIndex(
-                BucksContract.VariableMessageSign.COLUMN_VMS_LEGENDS));
+                BucksVariableMessageSign.COLUMN_VMS_LEGENDS));
         vmsLegends = legendStr.split("\\|");
         locationReference = cursor.getString(cursor.getColumnIndex(
-                BucksContract.VariableMessageSign.COLUMN_DESCRIPTOR));
+                BucksVariableMessageSign.COLUMN_DESCRIPTION));
         double latitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.VariableMessageSign.COLUMN_LATITUDE));
+                BucksVariableMessageSign.COLUMN_LATITUDE));
         double longitude = cursor.getDouble(cursor.getColumnIndex(
-                BucksContract.VariableMessageSign.COLUMN_LONGITUDE));
+                BucksVariableMessageSign.COLUMN_LONGITUDE));
         position = new LatLng(latitude, longitude);
     }
 

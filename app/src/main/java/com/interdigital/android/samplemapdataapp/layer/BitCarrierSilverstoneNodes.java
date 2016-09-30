@@ -16,7 +16,7 @@ public class BitCarrierSilverstoneNodes extends MarkerBaseLayer {
 
     @Override
     public void load() {
-        Cursor cursor = BcsContentHelper.getNodes(getContext());
+        Cursor cursor = BcsContentHelper.getNodeCursor(getContext());
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 BitCarrierSilverstoneNodeMarker bsnm = new BitCarrierSilverstoneNodeMarker(

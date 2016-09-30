@@ -31,26 +31,26 @@ public class ClearviewSilverstoneClusterRenderer
     @Override
     public View getInfoContents(Marker marker) {
         ClearviewSilverstoneClusterItem clearviewSilverstoneClusterItem = getClusterItem(marker);
-        String description = clearviewSilverstoneClusterItem.getDescription();
-        String changed = "Device installation: " + clearviewSilverstoneClusterItem.getChanged().trim()
-                .replaceFirst(" .*$", "").replaceFirst("^[0-9]+-", "");
+        String description = clearviewSilverstoneClusterItem.getDevice().getDescription();
+        String changed = "Device installation: " + clearviewSilverstoneClusterItem.getDevice()
+                .getChanged().trim().replaceFirst(" .*$", "").replaceFirst("^[0-9]+-", "");
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_silverstone_car_park, null, false);
         ((TextView) view.findViewById(R.id.sign_text_view)).setText(description);
         ((TextView) view.findViewById(R.id.changed_text_view)).setText(changed);
-        if (clearviewSilverstoneClusterItem.getFlowTime() != null) {
-            String entering = "Entering: " + String.valueOf(clearviewSilverstoneClusterItem.getEntering());
-            String leaving = "Leaving: " + String.valueOf(clearviewSilverstoneClusterItem.getLeaving());
-            String flowTime = "Traffic flow at " + clearviewSilverstoneClusterItem.getFlowTime().trim()
-                    .replaceFirst("^[0-9]+-", "").replaceFirst(":[^:]*$", "");
+        if (clearviewSilverstoneClusterItem.getTrafficItem().getTime() != null) {
+            if (clearviewSilverstoneClusterItem.getTrafficItem().getDirection()) {
+                ((TextView) view.findViewById(R.id.direction_text_view)).setText("Outgoing");
+            } else {
+                ((TextView) view.findViewById(R.id.direction_text_view)).setText("Incoming");
+            }
+            String flowTime = "Traffic flow at " + clearviewSilverstoneClusterItem.getTrafficItem()
+                    .getTime().trim().replaceFirst("^[0-9]+-", "").replaceFirst(":[^:]*$", "");
             ((TextView) view.findViewById(R.id.flow_time_text_view)).setText(flowTime);
-            ((TextView) view.findViewById(R.id.entering_text_view)).setText(entering);
-            ((TextView) view.findViewById(R.id.leaving_text_view)).setText(leaving);
         } else {
             view.findViewById(R.id.sign_text_view).setVisibility(View.GONE);
-            view.findViewById(R.id.entering_text_view).setVisibility(View.GONE);
-            view.findViewById(R.id.leaving_text_view).setVisibility(View.GONE);
+            view.findViewById(R.id.direction_text_view).setVisibility(View.GONE);
         }
         return view;
     }

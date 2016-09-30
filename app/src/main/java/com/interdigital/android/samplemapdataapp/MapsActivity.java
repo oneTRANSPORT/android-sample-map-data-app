@@ -31,16 +31,11 @@ import com.interdigital.android.dougal.resource.ApplicationEntity;
 import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
-import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
-import com.interdigital.android.samplemapdataapp.layer.CarPark;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.Fastprk;
 import com.interdigital.android.samplemapdataapp.layer.MarkerBaseLayer;
-import com.interdigital.android.samplemapdataapp.layer.RoadWorks;
-import com.interdigital.android.samplemapdataapp.layer.TrafficFlow;
-import com.interdigital.android.samplemapdataapp.layer.VariableMessageSign;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsProviderModule;
@@ -82,7 +77,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox clearviewCheckBox;
     private CheckBox bitcarrierCheckBox;
     private ItemObserver itemObserver;
-    private BaseLayer[] layers = new BaseLayer[8];
+    private BaseLayer[] layers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,11 +133,11 @@ public class MapsActivity extends AppCompatActivity
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
                 // TODO    Find a way to merge these sync adapter calls.
                 BucksProviderModule.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
-                        trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked());
+                        trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked(), true, true, true, true, true);
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
                 BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
-                        bitcarrierCheckBox.isChecked(),bitcarrierCheckBox.isChecked());
+                        bitcarrierCheckBox.isChecked(), bitcarrierCheckBox.isChecked(), true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -160,20 +155,31 @@ public class MapsActivity extends AppCompatActivity
         net.uk.onetransport.android.county.bucks.authentication.CredentialHelper
                 .initialiseCredentials(context, getString(R.string.pref_default_user_name),
                         getString(R.string.pref_default_password), installationId);
+        net.uk.onetransport.android.county.herts.authentication.CredentialHelper
+                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                        getString(R.string.pref_default_password), installationId);
+        net.uk.onetransport.android.county.northants.authentication.CredentialHelper
+                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                        getString(R.string.pref_default_password), installationId);
+        net.uk.onetransport.android.county.oxon.authentication.CredentialHelper
+                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
+                        getString(R.string.pref_default_password), installationId);
         net.uk.onetransport.android.modules.clearviewsilverstone.authentication.CredentialHelper
                 .initialiseCredentials(context, getString(R.string.pref_default_user_name),
                         getString(R.string.pref_default_password), installationId);
         net.uk.onetransport.android.modules.bitcarriersilverstone.authentication.CredentialHelper
                 .initialiseCredentials(context, getString(R.string.pref_default_user_name),
                         getString(R.string.pref_default_password), installationId);
-        layers[VMS] = new VariableMessageSign(context, googleMap);
-        layers[CAR_PARK] = new CarPark(context, googleMap);
-        layers[TRAFFIC_FLOW] = new TrafficFlow(context, googleMap);
-        layers[ROAD_WORKS] = new RoadWorks(context, googleMap);
-        layers[FASTPRK] = new Fastprk(context, googleMap);
-        layers[CLEARVIEW] = new ClearviewSilverstone(context, googleMap);
-        layers[BITCARRIER_NODES] = new BitCarrierSilverstoneNodes(context, googleMap);
-        layers[BITCARRIER_ROADS] = new BitCarrierSilverstone(context, googleMap);
+        layers = new BaseLayer[]{
+//                new VariableMessageSign(context, googleMap),
+//                new CarPark(context, googleMap),
+//                new TrafficFlow(context, googleMap),
+//                new RoadWorks(context, googleMap),
+//                new Fastprk(context, googleMap),
+                new ClearviewSilverstone(context, googleMap),
+//                new BitCarrierSilverstoneNodes(context, googleMap),
+//                new BitCarrierSilverstone(context, googleMap)
+        };
         loadMarkers(true);
     }
 
@@ -281,9 +287,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (layers[FASTPRK] != null) {
-            ((Fastprk) layers[FASTPRK]).startUpdateTimer();
-        }
+//        if (layers[FASTPRK] != null) {
+//            ((Fastprk) layers[FASTPRK]).startUpdateTimer();
+//        }
         getContentResolver().registerContentObserver(LastUpdatedProviderModule.LAST_UPDATED_URI,
                 false, itemObserver);
     }
@@ -291,9 +297,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         getContentResolver().unregisterContentObserver(itemObserver);
-        if (layers[FASTPRK] != null) {
-            ((Fastprk) layers[FASTPRK]).stopUpdateTimer();
-        }
+//        if (layers[FASTPRK] != null) {
+//            ((Fastprk) layers[FASTPRK]).stopUpdateTimer();
+//        }
         super.onPause();
     }
 

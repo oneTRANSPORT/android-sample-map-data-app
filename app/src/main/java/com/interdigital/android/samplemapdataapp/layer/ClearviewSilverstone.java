@@ -1,8 +1,6 @@
 package com.interdigital.android.samplemapdataapp.layer;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.util.SparseArray;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -11,11 +9,9 @@ import com.interdigital.android.samplemapdataapp.cluster.ClearviewSilverstoneClu
 import com.interdigital.android.samplemapdataapp.cluster.ClearviewSilverstoneClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.ClearviewSilverstoneClusterRenderer;
 
+import net.uk.onetransport.android.modules.clearviewsilverstone.device.Device;
 import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsContentHelper;
-import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsContract;
-import net.uk.onetransport.android.modules.clearviewsilverstone.traffic.Traffic;
-
-import java.util.ArrayList;
+import net.uk.onetransport.android.modules.clearviewsilverstone.traffic.TrafficItem;
 
 public class ClearviewSilverstone extends ClusterBaseLayer<ClearviewSilverstoneClusterItem> {
 
@@ -26,36 +22,13 @@ public class ClearviewSilverstone extends ClusterBaseLayer<ClearviewSilverstoneC
 
     @Override
     public void load() throws Exception {
-        Cursor cursor = CvsContentHelper.getTraffic(getContext());
-        SparseArray<ArrayList<Traffic>> trafficArray = new SparseArray<>();
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                Integer sensorId = cursor.getInt(cursor.getColumnIndex(
-                        CvsContract.ClearviewSilverstoneTraffic.COLUMN_SENSOR_ID));
-                if (trafficArray.get(sensorId) == null) {
-                    trafficArray.put(sensorId, new ArrayList<Traffic>());
-                }
-                Traffic traffic = new Traffic();
-                traffic.setTime(cursor.getString(cursor.getColumnIndex(
-                        CvsContract.ClearviewSilverstoneTraffic.COLUMN_TIMESTAMP)));
-                traffic.setDirection(cursor.getInt(cursor.getColumnIndex(
-                        CvsContract.ClearviewSilverstoneTraffic.COLUMN_DIRECTION)) != 0);
-                trafficArray.get(sensorId).add(traffic);
-                cursor.moveToNext();
-            }
+        TrafficItem[] trafficItems = CvsContentHelper.getLatestTrafficItems(getContext());
+        Device[] devices = CvsContentHelper.getLatestDevices(getContext());
+        for (Device device : devices) {
+            ClearviewSilverstoneClusterItem csci = new ClearviewSilverstoneClusterItem(device,
+                    trafficItems);
+            getClusterItems().add(csci);
         }
-        cursor.close();
-
-        cursor = CvsContentHelper.getDevices(getContext());
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                ClearviewSilverstoneClusterItem csci = new ClearviewSilverstoneClusterItem(cursor,
-                        trafficArray);
-                getClusterItems().add(csci);
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
     }
 
     @Override
