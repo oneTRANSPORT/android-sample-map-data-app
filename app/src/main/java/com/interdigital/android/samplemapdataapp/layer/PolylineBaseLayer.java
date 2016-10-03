@@ -3,8 +3,11 @@ package com.interdigital.android.samplemapdataapp.layer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.interdigital.android.samplemapdataapp.polyline.BasePolyline;
 
@@ -45,6 +48,35 @@ public abstract class PolylineBaseLayer extends BaseLayer {
             basePolyline.getPolyline().setVisible(visible);
             basePolyline.getCentreMarker().setVisible(visible);
         }
+    }
+
+    public boolean onMarkerClick(Marker marker) {
+        Log.i("PolylineBaseLayer", "Testing centre marker = " + marker);
+        for (BasePolyline basePolyline : basePolylines) {
+            if (basePolyline.getCentreMarker().equals(marker)) {
+                basePolyline.getCentreMarker().showInfoWindow();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public View getInfoWindow(Marker marker) {
+        for (BasePolyline basePolyline : basePolylines) {
+            if (basePolyline.getCentreMarker().equals(marker)) {
+                return basePolyline.getInfoWindow();
+            }
+        }
+        return null;
+    }
+
+    public View getInfoContents(Marker marker) {
+        for (BasePolyline basePolyline : basePolylines) {
+            if (basePolyline.getCentreMarker().equals(marker)) {
+                return basePolyline.getInfoContents();
+            }
+        }
+        return null;
     }
 
     public boolean onPolylineClick(Polyline polyline) {

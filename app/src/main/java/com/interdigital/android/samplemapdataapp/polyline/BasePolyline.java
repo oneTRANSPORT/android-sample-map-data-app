@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.polyline;
 
 import android.location.Location;
+import android.view.View;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -67,6 +68,10 @@ public abstract class BasePolyline {
         this.markerResource = markerResource;
     }
 
+    public abstract View getInfoWindow();
+
+    public abstract View getInfoContents();
+
     private void updateCentreMarker(ArrayList<LatLng> latLngs) {
         float length = 0;
         float[] results = new float[1];
@@ -88,6 +93,8 @@ public abstract class BasePolyline {
         centreMarkerOptions
                 .position(latLngs.get(i))
                 .anchor(0.5f, 0.5f)
+                .infoWindowAnchor(0.5f, 0.4f)
+                .title("Centre marker")
                 .icon(BitmapDescriptorFactory.fromResource(markerResource));
     }
 }

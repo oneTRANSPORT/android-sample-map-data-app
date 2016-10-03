@@ -31,11 +31,12 @@ import com.interdigital.android.dougal.resource.ApplicationEntity;
 import com.interdigital.android.dougal.resource.Resource;
 import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
-import com.interdigital.android.samplemapdataapp.layer.Fastprk;
 import com.interdigital.android.samplemapdataapp.layer.MarkerBaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.PolylineBaseLayer;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsProviderModule;
@@ -177,8 +178,8 @@ public class MapsActivity extends AppCompatActivity
 //                new RoadWorks(context, googleMap),
 //                new Fastprk(context, googleMap),
                 new ClearviewSilverstone(context, googleMap),
-//                new BitCarrierSilverstoneNodes(context, googleMap),
-//                new BitCarrierSilverstone(context, googleMap)
+                new BitCarrierSilverstoneNodes(context, googleMap),
+                new BitCarrierSilverstone(context, googleMap)
         };
         loadMarkers(true);
     }
@@ -209,6 +210,8 @@ public class MapsActivity extends AppCompatActivity
                 view = ((MarkerBaseLayer) layer).getInfoWindow(marker);
             } else if (layer instanceof ClusterBaseLayer) {
                 view = ((ClusterBaseLayer) layer).getInfoWindow(marker);
+            } else if (layer instanceof PolylineBaseLayer) {
+                view = ((PolylineBaseLayer) layer).getInfoWindow(marker);
             }
             if (view != null) {
                 return view;
@@ -225,6 +228,8 @@ public class MapsActivity extends AppCompatActivity
                 view = ((MarkerBaseLayer) layer).getInfoContents(marker);
             } else if (layer instanceof ClusterBaseLayer) {
                 view = ((ClusterBaseLayer) layer).getInfoContents(marker);
+            } else if (layer instanceof PolylineBaseLayer) {
+                view = ((PolylineBaseLayer) layer).getInfoContents(marker);
             }
             if (view != null) {
                 return view;
@@ -277,6 +282,10 @@ public class MapsActivity extends AppCompatActivity
                 }
             } else if (layer instanceof ClusterBaseLayer) {
                 if (((ClusterBaseLayer) layer).onMarkerClick(marker)) {
+                    return true;
+                }
+            } else if (layer instanceof PolylineBaseLayer) {
+                if (((PolylineBaseLayer) layer).onMarkerClick(marker)) {
                     return true;
                 }
             }

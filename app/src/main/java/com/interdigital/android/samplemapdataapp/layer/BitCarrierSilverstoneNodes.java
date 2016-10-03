@@ -1,11 +1,11 @@
 package com.interdigital.android.samplemapdataapp.layer;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.marker.BitCarrierSilverstoneNodeMarker;
 
+import net.uk.onetransport.android.modules.bitcarriersilverstone.config.node.Node;
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsContentHelper;
 
 public class BitCarrierSilverstoneNodes extends MarkerBaseLayer {
@@ -16,15 +16,11 @@ public class BitCarrierSilverstoneNodes extends MarkerBaseLayer {
 
     @Override
     public void load() {
-        Cursor cursor = BcsContentHelper.getNodeCursor(getContext());
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                BitCarrierSilverstoneNodeMarker bsnm = new BitCarrierSilverstoneNodeMarker(
-                        getContext(), cursor);
-                getBaseMarkers().add(bsnm);
-                cursor.moveToNext();
-            }
+        Node[] nodes = BcsContentHelper.getNodes(getContext());
+        for (Node node : nodes) {
+            BitCarrierSilverstoneNodeMarker bsnm = new BitCarrierSilverstoneNodeMarker(
+                    getContext(), node);
+            getBaseMarkers().add(bsnm);
         }
-        cursor.close();
     }
 }
