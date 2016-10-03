@@ -21,7 +21,7 @@ public class BucksVariableMessageSigns extends ClusterBaseLayer<VmsClusterItem> 
     @Override
     public void load() throws Exception {
         VariableMessageSign[] variableMessageSigns = BucksContentHelper
-                .getVariableMessageSigns(getContext());
+                .getLatestVariableMessageSigns(getContext());
         for (VariableMessageSign variableMessageSign : variableMessageSigns) {
             VmsClusterItem vmsClusterItem = new VmsClusterItem(variableMessageSign);
             if (vmsClusterItem.shouldAdd()) {

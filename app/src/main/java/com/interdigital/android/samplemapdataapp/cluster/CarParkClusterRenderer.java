@@ -19,7 +19,7 @@ public class CarParkClusterRenderer extends BaseClusterRenderer<CarParkClusterIt
 
     @Override
     public int getIconResource(CarParkClusterItem carParkClusterItem) {
-        if (carParkClusterItem.getEntranceFull() == 0) {
+        if (carParkClusterItem.getCarPark().getEntranceFull() == 0) {
             return R.drawable.carpark_icon;
         }
         return R.drawable.carpark_full_icon;
@@ -33,9 +33,9 @@ public class CarParkClusterRenderer extends BaseClusterRenderer<CarParkClusterIt
     @Override
     public View getInfoContents(Marker marker) {
         CarParkClusterItem carParkClusterItem = getClusterItem(marker);
-        int totalParkingCapacity = carParkClusterItem.getTotalParkingCapacity();
-        int entranceFull = carParkClusterItem.getEntranceFull();
-        String identity = carParkClusterItem.getIdentity();
+        int totalParkingCapacity = (int) (double) carParkClusterItem.getCarPark().getTotalParkingCapacity();
+        int entranceFull =(int)(double) carParkClusterItem.getCarPark().getEntranceFull();
+        String identity = carParkClusterItem.getCarPark().getCarParkIdentity();
 
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);

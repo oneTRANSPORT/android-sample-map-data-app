@@ -1,7 +1,6 @@
 package com.interdigital.android.samplemapdataapp.layer;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -10,25 +9,22 @@ import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterItem;
 import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.CarParkClusterRenderer;
 
+import net.uk.onetransport.android.county.bucks.carparks.CarPark;
 import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
 
-public class CarPark extends ClusterBaseLayer<CarParkClusterItem> {
+public class BucksCarParks extends ClusterBaseLayer<CarParkClusterItem> {
 
-    public CarPark(Context context, GoogleMap googleMap) {
+    public BucksCarParks(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
 
     @Override
     public void load() throws Exception {
-        Cursor cursor = BucksContentHelper.getCarParkCursor(getContext());
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                CarParkClusterItem carParkClusterItem = new CarParkClusterItem(cursor);
-                getClusterItems().add(carParkClusterItem);
-                cursor.moveToNext();
-            }
+        CarPark[] carParks = BucksContentHelper.getLatestCarParks(getContext());
+        for (CarPark carPark : carParks) {
+            CarParkClusterItem carParkClusterItem = new CarParkClusterItem(carPark);
+            getClusterItems().add(carParkClusterItem);
         }
-        cursor.close();
     }
 
     @Override
