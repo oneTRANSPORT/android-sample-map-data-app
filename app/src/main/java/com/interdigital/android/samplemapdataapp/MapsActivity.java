@@ -33,6 +33,7 @@ import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
+import com.interdigital.android.samplemapdataapp.layer.BucksVariableMessageSigns;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.MarkerBaseLayer;
@@ -172,7 +173,7 @@ public class MapsActivity extends AppCompatActivity
                 .initialiseCredentials(context, getString(R.string.pref_default_user_name),
                         getString(R.string.pref_default_password), installationId);
         layers = new BaseLayer[]{
-//                new VariableMessageSign(context, googleMap),
+                new BucksVariableMessageSigns(context, googleMap),
 //                new CarPark(context, googleMap),
 //                new TrafficFlow(context, googleMap),
 //                new RoadWorks(context, googleMap),

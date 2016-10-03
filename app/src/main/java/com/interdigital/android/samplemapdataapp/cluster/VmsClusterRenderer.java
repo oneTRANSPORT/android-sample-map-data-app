@@ -45,7 +45,7 @@ public class VmsClusterRenderer extends BaseClusterRenderer<VmsClusterItem> {
         signTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         signTextView.setTypeface(Typeface.DEFAULT_BOLD);
         StringBuilder buf = new StringBuilder();
-        for (String line : vmsClusterItem.getVmsLegends()) {
+        for (String line : vmsClusterItem.getVariableMessageSign().getLegend()) {
             buf.append(line.trim());
             if (line.trim().length() > 0) {
                 buf.append("\n");
@@ -55,7 +55,7 @@ public class VmsClusterRenderer extends BaseClusterRenderer<VmsClusterItem> {
         linearLayout.addView(signTextView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView nameTextView = new TextView(context);
-        nameTextView.setText(vmsClusterItem.getLocationReference());
+        nameTextView.setText(vmsClusterItem.getVariableMessageSign().getDescription());
         nameTextView.setTextColor(0xff808080);
         nameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         nameTextView.setGravity(GravityCompat.END);
