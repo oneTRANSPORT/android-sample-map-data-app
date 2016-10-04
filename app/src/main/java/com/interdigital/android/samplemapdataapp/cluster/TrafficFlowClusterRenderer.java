@@ -30,15 +30,14 @@ public class TrafficFlowClusterRenderer extends BaseClusterRenderer<TrafficFlowC
     @Override
     public View getInfoContents(Marker marker) {
         TrafficFlowClusterItem trafficFlowClusterItem = getClusterItem(marker);
-        int vehicleFlow = trafficFlowClusterItem.getVehicleFlow();
-        String locationReference = trafficFlowClusterItem.getLocationReference();
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.pop_up_traffic_flow, null, false);
+        int vehicleFlow = (int) (double) trafficFlowClusterItem.getTrafficFlow().getVehicleFlow();
+        String locationReference = trafficFlowClusterItem.getTrafficFlow().getToDescriptor();
+
         ((TextView) view.findViewById(R.id.cars_text_view))
                 .setText(String.format(context.getString(R.string.cars_per_min), vehicleFlow));
-        ((TextView) view.findViewById(R.id.speed_text_view))
-                .setText("NONE");
         ((TextView) view.findViewById(R.id.location_text_view)).setText(locationReference);
         return view;
     }
