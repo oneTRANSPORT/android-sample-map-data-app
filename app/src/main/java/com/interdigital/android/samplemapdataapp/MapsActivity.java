@@ -33,9 +33,13 @@ import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
-import com.interdigital.android.samplemapdataapp.layer.BucksTrafficFlows;
-import com.interdigital.android.samplemapdataapp.layer.BucksVariableMessageSigns;
 import com.interdigital.android.samplemapdataapp.layer.BucksCarParks;
+import com.interdigital.android.samplemapdataapp.layer.BucksTrafficFlows;
+import com.interdigital.android.samplemapdataapp.layer.BucksTrafficQueues;
+import com.interdigital.android.samplemapdataapp.layer.BucksTrafficScoots;
+import com.interdigital.android.samplemapdataapp.layer.BucksTrafficSpeeds;
+import com.interdigital.android.samplemapdataapp.layer.BucksTrafficTravelTimes;
+import com.interdigital.android.samplemapdataapp.layer.BucksVariableMessageSigns;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.MarkerBaseLayer;
@@ -57,11 +61,15 @@ public class MapsActivity extends AppCompatActivity
     private static final int VMS = 0;
     private static final int CAR_PARK = 1;
     private static final int TRAFFIC_FLOW = 2;
-    private static final int ROAD_WORKS = 3;
-    private static final int FASTPRK = 4;
-    private static final int CLEARVIEW = 5;
-    private static final int BITCARRIER_NODES = 6;
-    private static final int BITCARRIER_ROADS = 7;
+    private static final int TRAFFIC_QUEUE = 3;
+    private static final int TRAFFIC_SCOOT = 4;
+    private static final int TRAFFIC_SPEED = 5;
+    private static final int TRAFFIC_TRAVEL_TIME = 6;
+    private static final int ROAD_WORKS = 7;
+    private static final int FASTPRK = 8;
+    private static final int CLEARVIEW = 9;
+    private static final int BITCARRIER_NODES = 10;
+    private static final int BITCARRIER_ROADS = 11;
 
 
     public static float density;
@@ -75,7 +83,12 @@ public class MapsActivity extends AppCompatActivity
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private CheckBox vmsCheckbox;
     private CheckBox carParkCheckbox;
+    private CheckBox eventCheckbox;
     private CheckBox trafficFlowCheckBox;
+    private CheckBox trafficQueueCheckBox;
+    private CheckBox trafficScootCheckBox;
+    private CheckBox trafficSpeedCheckBox;
+    private CheckBox trafficTravelTimeCheckBox;
     private CheckBox roadWorksCheckBox;
     private CheckBox fastprkCheckBox;
     private CheckBox clearviewCheckBox;
@@ -136,8 +149,17 @@ public class MapsActivity extends AppCompatActivity
             case R.id.refresh_item:
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
                 // TODO    Find a way to merge these sync adapter calls.
-                BucksProviderModule.refresh(context, vmsCheckbox.isChecked(), carParkCheckbox.isChecked(),
-                        trafficFlowCheckBox.isChecked(), roadWorksCheckBox.isChecked(), true, true, true, true, true);
+                // TODO    Same order as app.
+                BucksProviderModule.refresh(context,
+                        vmsCheckbox.isChecked(),
+                        eventCheckbox.isChecked(),
+                        roadWorksCheckBox.isChecked(),
+                        trafficFlowCheckBox.isChecked(),
+                        trafficQueueCheckBox.isChecked(),
+                        trafficScootCheckBox.isChecked(),
+                        trafficSpeedCheckBox.isChecked(),
+                        trafficTravelTimeCheckBox.isChecked(),
+                        true);
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
                 BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
@@ -178,6 +200,10 @@ public class MapsActivity extends AppCompatActivity
                 new BucksVariableMessageSigns(context, googleMap),
                 new BucksCarParks(context, googleMap),
                 new BucksTrafficFlows(context, googleMap),
+                new BucksTrafficQueues(context, googleMap),
+                new BucksTrafficScoots(context, googleMap),
+                new BucksTrafficSpeeds(context, googleMap),
+                new BucksTrafficTravelTimes(context, googleMap),
 //                new RoadWorks(context, googleMap),
 //                new Fastprk(context, googleMap),
                 new ClearviewSilverstone(context, googleMap),
@@ -252,6 +278,18 @@ public class MapsActivity extends AppCompatActivity
                 break;
             case R.id.traffic_flow_checkbox:
                 layers[TRAFFIC_FLOW].setVisible(checked);
+                break;
+            case R.id.traffic_queue_checkbox:
+                layers[TRAFFIC_QUEUE].setVisible(checked);
+                break;
+            case R.id.traffic_scoot_checkbox:
+                layers[TRAFFIC_SCOOT].setVisible(checked);
+                break;
+            case R.id.traffic_speed_checkbox:
+                layers[TRAFFIC_SPEED].setVisible(checked);
+                break;
+            case R.id.traffic_travel_time_checkbox:
+                layers[TRAFFIC_TRAVEL_TIME].setVisible(checked);
                 break;
             case R.id.road_works_checkbox:
                 layers[ROAD_WORKS].setVisible(checked);
@@ -353,14 +391,24 @@ public class MapsActivity extends AppCompatActivity
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         vmsCheckbox = (CheckBox) findViewById(R.id.vms_checkbox);
         carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
+        eventCheckbox = (CheckBox) findViewById(R.id.event_checkbox);
         trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
+        trafficQueueCheckBox = (CheckBox) findViewById(R.id.traffic_queue_checkbox);
+        trafficScootCheckBox = (CheckBox) findViewById(R.id.traffic_scoot_checkbox);
+        trafficSpeedCheckBox = (CheckBox) findViewById(R.id.traffic_speed_checkbox);
+        trafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.traffic_travel_time_checkbox);
         roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
         fastprkCheckBox = (CheckBox) findViewById(R.id.fastprk_checkbox);
         clearviewCheckBox = (CheckBox) findViewById(R.id.clearview_checkbox);
         bitcarrierCheckBox = (CheckBox) findViewById(R.id.bitcarrier_checkbox);
         vmsCheckbox.setOnCheckedChangeListener(this);
         carParkCheckbox.setOnCheckedChangeListener(this);
+        eventCheckbox.setOnCheckedChangeListener(this);
         trafficFlowCheckBox.setOnCheckedChangeListener(this);
+        trafficQueueCheckBox.setOnCheckedChangeListener(this);
+        trafficScootCheckBox.setOnCheckedChangeListener(this);
+        trafficSpeedCheckBox.setOnCheckedChangeListener(this);
+        trafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
         roadWorksCheckBox.setOnCheckedChangeListener(this);
         fastprkCheckBox.setOnCheckedChangeListener(this);
         clearviewCheckBox.setOnCheckedChangeListener(this);

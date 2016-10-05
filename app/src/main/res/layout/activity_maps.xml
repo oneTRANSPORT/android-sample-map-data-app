@@ -67,7 +67,6 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:paddingLeft="16dp"
-                android:singleLine="true"
                 android:text="@string/buckinghamshire"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"/>
@@ -93,7 +92,6 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/variable_message_signs"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -121,8 +119,34 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/car_parks"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/event_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:alpha="222"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:text="@string/events"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
 
@@ -149,8 +173,115 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/traffic_flow"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/traffic_queue_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:alpha="222"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:text="@string/traffic_queue"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/traffic_scoot_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:alpha="222"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:text="@string/traffic_scoot"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/traffic_speed_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:alpha="222"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:text="@string/traffic_speed"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/traffic_travel_time_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:alpha="222"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:text="@string/traffic_travel_time"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
 
@@ -177,7 +308,6 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/road_works"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -205,7 +335,6 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/fastprk"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -220,7 +349,6 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:paddingLeft="16dp"
-                android:singleLine="true"
                 android:text="@string/clearview_silverstone"
                 android:textColor="#4b384c"
                 android:textSize="16sp"/>
@@ -246,7 +374,6 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/parking"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -261,7 +388,6 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:paddingLeft="16dp"
-                android:singleLine="true"
                 android:text="@string/bitcarrier_silverstone"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"/>
@@ -287,7 +413,6 @@
                     android:alpha="222"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:text="@string/road_network"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>

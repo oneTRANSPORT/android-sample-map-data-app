@@ -14,6 +14,9 @@
 
     <string name="cars_per_min">%1$d cars/min</string>
     <string name="kph">%1$dkph</string>
+    <string name="queue_severity">Queue severity: %1$d</string>
+    <string name="average_speed">Average speed: %1$d</string>
+    <string name="travel_time">Travel time: %1$d:%2$d</string>
 
     <string name="space">SPACE</string>
     <string name="full">FULL</string>
@@ -24,7 +27,12 @@
 
     <string name="variable_message_signs">Variable message signs</string>
     <string name="car_parks">Car parks</string>
+    <string name="events">Events</string>
     <string name="traffic_flow">Traffic flow</string>
+    <string name="traffic_queue">Traffic queue</string>
+    <string name="traffic_scoot">Traffic Scoot</string>
+    <string name="traffic_speed">Traffic speed</string>
+    <string name="traffic_travel_time">Traffic travel time</string>
     <string name="road_works">Road works</string>
 
     <string name="buckinghamshire">Buckinghamshire</string>

@@ -20,8 +20,7 @@ public class BucksTrafficFlows extends ClusterBaseLayer<TrafficFlowClusterItem> 
 
     @Override
     public void load() throws Exception {
-        Context context = getContext();
-        TrafficFlow[] trafficFlows = BucksContentHelper.getLatestTrafficFlows(context);
+        TrafficFlow[] trafficFlows = BucksContentHelper.getLatestTrafficFlows(getContext());
         for (TrafficFlow trafficFlow : trafficFlows) {
             TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(trafficFlow);
             if (trafficFlowClusterItem.shouldAdd()) {
