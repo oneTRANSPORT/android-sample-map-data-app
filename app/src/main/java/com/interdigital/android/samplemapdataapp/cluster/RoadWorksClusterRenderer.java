@@ -30,7 +30,7 @@ public class RoadWorksClusterRenderer extends BaseClusterRenderer<RoadWorksClust
     @Override
     public View getInfoContents(Marker marker) {
         RoadWorksClusterItem roadWorksClusterItem = getClusterItem(marker);
-        String comment = roadWorksClusterItem.getComment();
+        String comment = roadWorksClusterItem.getRoadWorks().getComment();
         if (!comment.contains(": Event Location :") && !comment.contains(": Location :")) {
             // Unformatted text, very difficult to do anything else here.
             TextView textView = new TextView(context);

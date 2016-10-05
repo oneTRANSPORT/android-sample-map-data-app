@@ -34,6 +34,8 @@ import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
 import com.interdigital.android.samplemapdataapp.layer.BucksCarParks;
+import com.interdigital.android.samplemapdataapp.layer.BucksEvents;
+import com.interdigital.android.samplemapdataapp.layer.BucksRoadWorks;
 import com.interdigital.android.samplemapdataapp.layer.BucksTrafficFlows;
 import com.interdigital.android.samplemapdataapp.layer.BucksTrafficQueues;
 import com.interdigital.android.samplemapdataapp.layer.BucksTrafficScoots;
@@ -60,16 +62,17 @@ public class MapsActivity extends AppCompatActivity
     private static final String TAG = "MapsActivity";
     private static final int VMS = 0;
     private static final int CAR_PARK = 1;
-    private static final int TRAFFIC_FLOW = 2;
-    private static final int TRAFFIC_QUEUE = 3;
-    private static final int TRAFFIC_SCOOT = 4;
-    private static final int TRAFFIC_SPEED = 5;
-    private static final int TRAFFIC_TRAVEL_TIME = 6;
-    private static final int ROAD_WORKS = 7;
-    private static final int FASTPRK = 8;
-    private static final int CLEARVIEW = 9;
-    private static final int BITCARRIER_NODES = 10;
-    private static final int BITCARRIER_ROADS = 11;
+    private static final int EVENT = 2;
+    private static final int TRAFFIC_FLOW = 3;
+    private static final int TRAFFIC_QUEUE = 4;
+    private static final int TRAFFIC_SCOOT = 5;
+    private static final int TRAFFIC_SPEED = 6;
+    private static final int TRAFFIC_TRAVEL_TIME = 7;
+    private static final int ROAD_WORKS = 8;
+    private static final int FASTPRK = 9;
+    private static final int CLEARVIEW = 10;
+    private static final int BITCARRIER_NODES = 11;
+    private static final int BITCARRIER_ROADS = 12;
 
 
     public static float density;
@@ -199,12 +202,13 @@ public class MapsActivity extends AppCompatActivity
         layers = new BaseLayer[]{
                 new BucksVariableMessageSigns(context, googleMap),
                 new BucksCarParks(context, googleMap),
+                new BucksEvents(context, googleMap),
                 new BucksTrafficFlows(context, googleMap),
                 new BucksTrafficQueues(context, googleMap),
                 new BucksTrafficScoots(context, googleMap),
                 new BucksTrafficSpeeds(context, googleMap),
                 new BucksTrafficTravelTimes(context, googleMap),
-//                new RoadWorks(context, googleMap),
+                new BucksRoadWorks(context, googleMap),
 //                new Fastprk(context, googleMap),
                 new ClearviewSilverstone(context, googleMap),
                 new BitCarrierSilverstoneNodes(context, googleMap),
