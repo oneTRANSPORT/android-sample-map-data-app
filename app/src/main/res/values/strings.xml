@@ -36,6 +36,9 @@
     <string name="road_works">Road works</string>
 
     <string name="buckinghamshire">Buckinghamshire</string>
+    <string name="hertfordshire">Hertfordshire</string>
+    <string name="northamptonshire">Northamptonshire</string>
+    <string name="oxfordshire">Oxfordshire</string>
     <string name="clearview_silverstone">Clearview Silverstone</string>
     <string name="parking">Parking</string>
     <string name="bitcarrier_silverstone">BitCarrier Silverstone</string>

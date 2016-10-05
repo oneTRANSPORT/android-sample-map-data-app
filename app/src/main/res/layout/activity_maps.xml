@@ -62,7 +62,7 @@
             <TextView
                 android:layout_width="266dp"
                 android:layout_height="48dp"
-                android:background="#000000"
+                android:background="#507f2e"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
                 android:maxLines="1"
@@ -76,7 +76,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/vms_checkbox"
+                    android:id="@+id/bucks_vms_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -103,7 +103,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/car_park_checkbox"
+                    android:id="@+id/bucks_car_park_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -130,7 +130,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/event_checkbox"
+                    android:id="@+id/bucks_event_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -157,7 +157,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/traffic_flow_checkbox"
+                    android:id="@+id/bucks_traffic_flow_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -184,7 +184,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/traffic_queue_checkbox"
+                    android:id="@+id/bucks_traffic_queue_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -211,7 +211,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/traffic_scoot_checkbox"
+                    android:id="@+id/bucks_traffic_scoot_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -238,7 +238,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/traffic_speed_checkbox"
+                    android:id="@+id/bucks_traffic_speed_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -265,7 +265,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/traffic_travel_time_checkbox"
+                    android:id="@+id/bucks_traffic_travel_time_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -292,7 +292,7 @@
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/road_works_checkbox"
+                    android:id="@+id/bucks_road_works_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -340,6 +340,43 @@
                     android:textSize="14sp"/>
 
             </RelativeLayout>
+
+            <TextView
+                android:layout_width="266dp"
+                android:layout_height="48dp"
+                android:background="#9eb947"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="16dp"
+                android:text="@string/hertfordshire"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="266dp"
+                android:layout_height="48dp"
+                android:background="#7f1183"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="16dp"
+                android:text="@string/northamptonshire"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="266dp"
+                android:layout_height="48dp"
+                android:background="#004200"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="16dp"
+                android:text="@string/oxfordshire"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
 
             <TextView
                 android:layout_width="266dp"

@@ -60,20 +60,19 @@ public class MapsActivity extends AppCompatActivity
         GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapsActivity";
-    private static final int VMS = 0;
-    private static final int CAR_PARK = 1;
-    private static final int EVENT = 2;
-    private static final int TRAFFIC_FLOW = 3;
-    private static final int TRAFFIC_QUEUE = 4;
-    private static final int TRAFFIC_SCOOT = 5;
-    private static final int TRAFFIC_SPEED = 6;
-    private static final int TRAFFIC_TRAVEL_TIME = 7;
-    private static final int ROAD_WORKS = 8;
+    private static final int BUCKS_VMS = 0;
+    private static final int BUCKS_CAR_PARK = 1;
+    private static final int BUCKS_EVENT = 2;
+    private static final int BUCKS_TRAFFIC_FLOW = 3;
+    private static final int BUCKS_TRAFFIC_QUEUE = 4;
+    private static final int BUCKS_TRAFFIC_SCOOT = 5;
+    private static final int BUCKS_TRAFFIC_SPEED = 6;
+    private static final int BUCKS_TRAFFIC_TRAVEL_TIME = 7;
+    private static final int BUCKS_ROAD_WORKS = 8;
     private static final int FASTPRK = 9;
     private static final int CLEARVIEW = 10;
     private static final int BITCARRIER_NODES = 11;
     private static final int BITCARRIER_ROADS = 12;
-
 
     public static float density;
 
@@ -84,15 +83,15 @@ public class MapsActivity extends AppCompatActivity
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private CheckBox vmsCheckbox;
-    private CheckBox carParkCheckbox;
-    private CheckBox eventCheckbox;
-    private CheckBox trafficFlowCheckBox;
-    private CheckBox trafficQueueCheckBox;
-    private CheckBox trafficScootCheckBox;
-    private CheckBox trafficSpeedCheckBox;
-    private CheckBox trafficTravelTimeCheckBox;
-    private CheckBox roadWorksCheckBox;
+    private CheckBox bucksVmsCheckbox;
+    private CheckBox bucksCarParkCheckbox;
+    private CheckBox bucksEventCheckbox;
+    private CheckBox bucksTrafficFlowCheckBox;
+    private CheckBox bucksTrafficQueueCheckBox;
+    private CheckBox bucksTrafficScootCheckBox;
+    private CheckBox bucksTrafficSpeedCheckBox;
+    private CheckBox bucksTrafficTravelTimeCheckBox;
+    private CheckBox bucksRoadWorksCheckBox;
     private CheckBox fastprkCheckBox;
     private CheckBox clearviewCheckBox;
     private CheckBox bitcarrierCheckBox;
@@ -154,14 +153,14 @@ public class MapsActivity extends AppCompatActivity
                 // TODO    Find a way to merge these sync adapter calls.
                 // TODO    Same order as app.
                 BucksProviderModule.refresh(context,
-                        vmsCheckbox.isChecked(),
-                        eventCheckbox.isChecked(),
-                        roadWorksCheckBox.isChecked(),
-                        trafficFlowCheckBox.isChecked(),
-                        trafficQueueCheckBox.isChecked(),
-                        trafficScootCheckBox.isChecked(),
-                        trafficSpeedCheckBox.isChecked(),
-                        trafficTravelTimeCheckBox.isChecked(),
+                        bucksVmsCheckbox.isChecked(),
+                        bucksEventCheckbox.isChecked(),
+                        bucksRoadWorksCheckBox.isChecked(),
+                        bucksTrafficFlowCheckBox.isChecked(),
+                        bucksTrafficQueueCheckBox.isChecked(),
+                        bucksTrafficScootCheckBox.isChecked(),
+                        bucksTrafficSpeedCheckBox.isChecked(),
+                        bucksTrafficTravelTimeCheckBox.isChecked(),
                         true);
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
@@ -274,29 +273,32 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         switch (compoundButton.getId()) {
-            case R.id.vms_checkbox:
-                layers[VMS].setVisible(checked);
+            case R.id.bucks_vms_checkbox:
+                layers[BUCKS_VMS].setVisible(checked);
                 break;
-            case R.id.car_park_checkbox:
-                layers[CAR_PARK].setVisible(checked);
+            case R.id.bucks_car_park_checkbox:
+                layers[BUCKS_CAR_PARK].setVisible(checked);
                 break;
-            case R.id.traffic_flow_checkbox:
-                layers[TRAFFIC_FLOW].setVisible(checked);
+            case R.id.bucks_event_checkbox:
+                layers[BUCKS_EVENT].setVisible(checked);
                 break;
-            case R.id.traffic_queue_checkbox:
-                layers[TRAFFIC_QUEUE].setVisible(checked);
+            case R.id.bucks_traffic_flow_checkbox:
+                layers[BUCKS_TRAFFIC_FLOW].setVisible(checked);
                 break;
-            case R.id.traffic_scoot_checkbox:
-                layers[TRAFFIC_SCOOT].setVisible(checked);
+            case R.id.bucks_traffic_queue_checkbox:
+                layers[BUCKS_TRAFFIC_QUEUE].setVisible(checked);
                 break;
-            case R.id.traffic_speed_checkbox:
-                layers[TRAFFIC_SPEED].setVisible(checked);
+            case R.id.bucks_traffic_scoot_checkbox:
+                layers[BUCKS_TRAFFIC_SCOOT].setVisible(checked);
                 break;
-            case R.id.traffic_travel_time_checkbox:
-                layers[TRAFFIC_TRAVEL_TIME].setVisible(checked);
+            case R.id.bucks_traffic_speed_checkbox:
+                layers[BUCKS_TRAFFIC_SPEED].setVisible(checked);
                 break;
-            case R.id.road_works_checkbox:
-                layers[ROAD_WORKS].setVisible(checked);
+            case R.id.bucks_traffic_travel_time_checkbox:
+                layers[BUCKS_TRAFFIC_TRAVEL_TIME].setVisible(checked);
+                break;
+            case R.id.bucks_road_works_checkbox:
+                layers[BUCKS_ROAD_WORKS].setVisible(checked);
                 break;
             case R.id.fastprk_checkbox:
                 layers[FASTPRK].setVisible(checked);
@@ -393,27 +395,27 @@ public class MapsActivity extends AppCompatActivity
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        vmsCheckbox = (CheckBox) findViewById(R.id.vms_checkbox);
-        carParkCheckbox = (CheckBox) findViewById(R.id.car_park_checkbox);
-        eventCheckbox = (CheckBox) findViewById(R.id.event_checkbox);
-        trafficFlowCheckBox = (CheckBox) findViewById(R.id.traffic_flow_checkbox);
-        trafficQueueCheckBox = (CheckBox) findViewById(R.id.traffic_queue_checkbox);
-        trafficScootCheckBox = (CheckBox) findViewById(R.id.traffic_scoot_checkbox);
-        trafficSpeedCheckBox = (CheckBox) findViewById(R.id.traffic_speed_checkbox);
-        trafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.traffic_travel_time_checkbox);
-        roadWorksCheckBox = (CheckBox) findViewById(R.id.road_works_checkbox);
+        bucksVmsCheckbox = (CheckBox) findViewById(R.id.bucks_vms_checkbox);
+        bucksCarParkCheckbox = (CheckBox) findViewById(R.id.bucks_car_park_checkbox);
+        bucksEventCheckbox = (CheckBox) findViewById(R.id.bucks_event_checkbox);
+        bucksTrafficFlowCheckBox = (CheckBox) findViewById(R.id.bucks_traffic_flow_checkbox);
+        bucksTrafficQueueCheckBox = (CheckBox) findViewById(R.id.bucks_traffic_queue_checkbox);
+        bucksTrafficScootCheckBox = (CheckBox) findViewById(R.id.bucks_traffic_scoot_checkbox);
+        bucksTrafficSpeedCheckBox = (CheckBox) findViewById(R.id.bucks_traffic_speed_checkbox);
+        bucksTrafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.bucks_traffic_travel_time_checkbox);
+        bucksRoadWorksCheckBox = (CheckBox) findViewById(R.id.bucks_road_works_checkbox);
         fastprkCheckBox = (CheckBox) findViewById(R.id.fastprk_checkbox);
         clearviewCheckBox = (CheckBox) findViewById(R.id.clearview_checkbox);
         bitcarrierCheckBox = (CheckBox) findViewById(R.id.bitcarrier_checkbox);
-        vmsCheckbox.setOnCheckedChangeListener(this);
-        carParkCheckbox.setOnCheckedChangeListener(this);
-        eventCheckbox.setOnCheckedChangeListener(this);
-        trafficFlowCheckBox.setOnCheckedChangeListener(this);
-        trafficQueueCheckBox.setOnCheckedChangeListener(this);
-        trafficScootCheckBox.setOnCheckedChangeListener(this);
-        trafficSpeedCheckBox.setOnCheckedChangeListener(this);
-        trafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
-        roadWorksCheckBox.setOnCheckedChangeListener(this);
+        bucksVmsCheckbox.setOnCheckedChangeListener(this);
+        bucksCarParkCheckbox.setOnCheckedChangeListener(this);
+        bucksEventCheckbox.setOnCheckedChangeListener(this);
+        bucksTrafficFlowCheckBox.setOnCheckedChangeListener(this);
+        bucksTrafficQueueCheckBox.setOnCheckedChangeListener(this);
+        bucksTrafficScootCheckBox.setOnCheckedChangeListener(this);
+        bucksTrafficSpeedCheckBox.setOnCheckedChangeListener(this);
+        bucksTrafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
+        bucksRoadWorksCheckBox.setOnCheckedChangeListener(this);
         fastprkCheckBox.setOnCheckedChangeListener(this);
         clearviewCheckBox.setOnCheckedChangeListener(this);
         bitcarrierCheckBox.setOnCheckedChangeListener(this);
