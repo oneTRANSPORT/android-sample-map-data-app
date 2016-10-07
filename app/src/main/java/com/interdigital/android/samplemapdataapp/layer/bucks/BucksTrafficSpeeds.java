@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.bucks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -22,12 +23,14 @@ public class BucksTrafficSpeeds extends ClusterBaseLayer<TrafficSpeedClusterItem
     @Override
     public void load() throws Exception {
         TrafficSpeed[] trafficSpeeds = BucksContentHelper.getLatestTrafficSpeeds(getContext());
-        for (TrafficSpeed trafficspeed : trafficSpeeds) {
-            TrafficSpeedClusterItem trafficSpeedClusterItem = new TrafficSpeedClusterItem(trafficspeed);
-            if (trafficSpeedClusterItem.shouldAdd()) {
+        for (TrafficSpeed trafficSpeed : trafficSpeeds) {
+            TrafficSpeedClusterItem trafficSpeedClusterItem = new TrafficSpeedClusterItem(trafficSpeed);
+            if (isInDate(trafficSpeed.getTime()) && trafficSpeedClusterItem.shouldAdd()) {
                 getClusterItems().add(trafficSpeedClusterItem);
             }
         }
+        Log.i("BucksTrafficSpeeds", "Found " + trafficSpeeds.length
+                + ", discarded " + (trafficSpeeds.length - getClusterItems().size()));
     }
 
     @Override

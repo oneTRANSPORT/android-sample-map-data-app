@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.herts;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -28,6 +29,8 @@ public class HertsTrafficSpeeds extends ClusterBaseLayer<TrafficSpeedClusterItem
                 getClusterItems().add(trafficSpeedClusterItem);
             }
         }
+        Log.i("HertsTrafficSpeeds", "Found " + trafficSpeeds.length
+                + ", discarded " + (trafficSpeeds.length - getClusterItems().size()));
     }
 
     @Override

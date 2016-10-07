@@ -37,7 +37,7 @@ public class CarParkClusterRenderer extends BaseClusterRenderer<CarParkClusterIt
         CarParkClusterItem carParkClusterItem = getClusterItem(marker);
         int totalParkingCapacity = (int) (double) carParkClusterItem.getCarPark().getTotalParkingCapacity();
         int entranceFull =(int)(double) carParkClusterItem.getCarPark().getEntranceFull();
-        String identity = carParkClusterItem.getCarPark().getCarParkIdentity();
+        String name = carParkClusterItem.getCarPark().getParkingAreaName();
 
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
@@ -51,7 +51,7 @@ public class CarParkClusterRenderer extends BaseClusterRenderer<CarParkClusterIt
         } else {
             signTextView.setText(R.string.full);
         }
-        nameTextView.setText(identity);
+        nameTextView.setText(name);
         return view;
     }
 }

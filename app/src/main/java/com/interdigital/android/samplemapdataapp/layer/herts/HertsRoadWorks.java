@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.herts;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -34,11 +35,18 @@ public class HertsRoadWorks extends ClusterBaseLayer<RoadWorksClusterItem> {
                 }
             }
             if (!found) {
-                RoadWorksClusterItem roadWorksClusterItem = new RoadWorksClusterItem(roadWorkses[i]);
-                getClusterItems().add(roadWorksClusterItem);
-                coords[c++] = coord;
+                if (isInDate(roadWorkses[i].getStartOfPeriod())
+                        || isInDate(roadWorkses[i].getEndOfPeriod())
+                        || isInDate(roadWorkses[i].getOverallStartTime())
+                        || isInDate(roadWorkses[i].getOverallEndTime())) {
+                    RoadWorksClusterItem roadWorksClusterItem = new RoadWorksClusterItem(roadWorkses[i]);
+                    getClusterItems().add(roadWorksClusterItem);
+                    coords[c++] = coord;
+                }
             }
         }
+        Log.i("HertsRoadWorks", "Found " + roadWorkses.length
+                + ", discarded " + (roadWorkses.length - getClusterItems().size()));
     }
 
     @Override

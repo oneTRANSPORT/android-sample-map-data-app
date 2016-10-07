@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.bucks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -22,12 +23,14 @@ public class BucksTrafficQueues extends ClusterBaseLayer<TrafficQueueClusterItem
     @Override
     public void load() throws Exception {
         TrafficQueue[] trafficQueues = BucksContentHelper.getLatestTrafficQueues(getContext());
-        for (TrafficQueue trafficqueue : trafficQueues) {
-            TrafficQueueClusterItem trafficQueueClusterItem = new TrafficQueueClusterItem(trafficqueue);
-            if (trafficQueueClusterItem.shouldAdd()) {
+        for (TrafficQueue trafficQueue : trafficQueues) {
+            TrafficQueueClusterItem trafficQueueClusterItem = new TrafficQueueClusterItem(trafficQueue);
+            if (isInDate(trafficQueue.getTime()) && trafficQueueClusterItem.shouldAdd()) {
                 getClusterItems().add(trafficQueueClusterItem);
             }
         }
+        Log.i("BucksTrafficQueues", "Found " + trafficQueues.length
+                + ", discarded " + (trafficQueues.length - getClusterItems().size()));
     }
 
     @Override

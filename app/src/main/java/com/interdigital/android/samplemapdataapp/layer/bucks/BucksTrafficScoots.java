@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.bucks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -22,12 +23,14 @@ public class BucksTrafficScoots extends ClusterBaseLayer<TrafficScootClusterItem
     @Override
     public void load() throws Exception {
         TrafficScoot[] trafficScoots = BucksContentHelper.getLatestTrafficScoots(getContext());
-        for (TrafficScoot trafficscoot : trafficScoots) {
-            TrafficScootClusterItem trafficScootClusterItem = new TrafficScootClusterItem(trafficscoot);
-            if (trafficScootClusterItem.shouldAdd()) {
+        for (TrafficScoot trafficScoot : trafficScoots) {
+            TrafficScootClusterItem trafficScootClusterItem = new TrafficScootClusterItem(trafficScoot);
+            if (isInDate(trafficScoot.getTime()) && trafficScootClusterItem.shouldAdd()) {
                 getClusterItems().add(trafficScootClusterItem);
             }
         }
+        Log.i("BucksTrafficScoots", "Found " + trafficScoots.length
+                + ", discarded " + (trafficScoots.length - getClusterItems().size()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.herts;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -28,6 +29,8 @@ public class HertsTrafficScoots extends ClusterBaseLayer<TrafficScootClusterItem
                 getClusterItems().add(trafficScootClusterItem);
             }
         }
+        Log.i("HertsTrafficScoots", "Found " + trafficScoots.length
+                + ", discarded " + (trafficScoots.length - getClusterItems().size()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.bucks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -24,10 +25,12 @@ public class BucksTrafficFlows extends ClusterBaseLayer<TrafficFlowClusterItem> 
         TrafficFlow[] trafficFlows = BucksContentHelper.getLatestTrafficFlows(getContext());
         for (TrafficFlow trafficFlow : trafficFlows) {
             TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(trafficFlow);
-            if (trafficFlowClusterItem.shouldAdd()) {
+            if (isInDate(trafficFlow.getTime()) && trafficFlowClusterItem.shouldAdd()) {
                 getClusterItems().add(trafficFlowClusterItem);
             }
         }
+        Log.i("BucksTrafficFlows", "Found " + trafficFlows.length
+                + ", discarded " + (trafficFlows.length - getClusterItems().size()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.northants;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -28,6 +29,8 @@ public class NorthantsTrafficFlows extends ClusterBaseLayer<TrafficFlowClusterIt
                 getClusterItems().add(trafficFlowClusterItem);
             }
         }
+        Log.i("NorthantsTrafficFlows", "Found " + trafficFlows.length
+                + ", discarded " + (trafficFlows.length - getClusterItems().size()));
     }
 
     @Override

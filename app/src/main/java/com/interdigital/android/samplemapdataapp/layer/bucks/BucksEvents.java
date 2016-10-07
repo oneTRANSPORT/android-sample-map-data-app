@@ -1,6 +1,7 @@
 package com.interdigital.android.samplemapdataapp.layer.bucks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
@@ -34,13 +35,20 @@ public class BucksEvents extends ClusterBaseLayer<EventClusterItem> {
                 }
             }
             if (!found) {
-                EventClusterItem eventClusterItem = new EventClusterItem(events[i]);
-                if (eventClusterItem.shouldAdd()) {
-                    getClusterItems().add(eventClusterItem);
-                    coords[c++] = coord;
+                if (isInDate(events[i].getStartOfPeriod())
+                        || isInDate(events[i].getEndOfPeriod())
+                        || isInDate(events[i].getOverallStartTime())
+                        || isInDate(events[i].getOverallEndTime())) {
+                    EventClusterItem eventClusterItem = new EventClusterItem(events[i]);
+                    if (eventClusterItem.shouldAdd()) {
+                        getClusterItems().add(eventClusterItem);
+                        coords[c++] = coord;
+                    }
                 }
             }
         }
+        Log.i("BucksEvents", "Found " + events.length
+                + ", discarded " + (events.length - getClusterItems().size()));
     }
 
     @Override
