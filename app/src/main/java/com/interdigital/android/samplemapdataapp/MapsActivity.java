@@ -59,10 +59,20 @@ import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsRoadWo
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsTrafficFlows;
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsTrafficTravelTimes;
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsVariableMessageSigns;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonCarParks;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonEvents;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonRoadWorks;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonTrafficFlows;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonTrafficQueues;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonTrafficScoots;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonTrafficSpeeds;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonTrafficTravelTimes;
+import com.interdigital.android.samplemapdataapp.layer.oxon.OxonVariableMessageSigns;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
 import net.uk.onetransport.android.county.herts.provider.HertsProviderModule;
 import net.uk.onetransport.android.county.northants.provider.NorthantsProviderModule;
+import net.uk.onetransport.android.county.oxon.provider.OxonProviderModule;
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsProviderModule;
 import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsProviderModule;
 import net.uk.onetransport.android.modules.common.provider.lastupdated.LastUpdatedProviderModule;
@@ -97,10 +107,19 @@ public class MapsActivity extends AppCompatActivity
     private static final int NORTHANTS_TRAFFIC_FLOW = 19;
     private static final int NORTHANTS_TRAFFIC_TRAVEL_TIME = 20;
     private static final int NORTHANTS_ROAD_WORKS = 21;
-    private static final int FASTPRK = 22;
-    private static final int CLEARVIEW = 23;
-    private static final int BITCARRIER_NODES = 24;
-    private static final int BITCARRIER_ROADS = 25;
+    private static final int OXON_VMS = 22;
+    private static final int OXON_CAR_PARK = 23;
+    private static final int OXON_EVENT = 24;
+    private static final int OXON_TRAFFIC_FLOW = 25;
+    private static final int OXON_TRAFFIC_QUEUE = 26;
+    private static final int OXON_TRAFFIC_SCOOT = 27;
+    private static final int OXON_TRAFFIC_SPEED = 28;
+    private static final int OXON_TRAFFIC_TRAVEL_TIME = 29;
+    private static final int OXON_ROAD_WORKS = 30;
+    private static final int FASTPRK = 31;
+    private static final int CLEARVIEW = 32;
+    private static final int BITCARRIER_NODES = 33;
+    private static final int BITCARRIER_ROADS = 34;
 
     public static float density;
 
@@ -133,6 +152,15 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox northantsTrafficFlowCheckBox;
     private CheckBox northantsTrafficTravelTimeCheckBox;
     private CheckBox northantsRoadWorksCheckBox;
+    private CheckBox oxonVmsCheckbox;
+    private CheckBox oxonCarParkCheckbox;
+    private CheckBox oxonEventCheckbox;
+    private CheckBox oxonTrafficFlowCheckBox;
+    private CheckBox oxonTrafficQueueCheckBox;
+    private CheckBox oxonTrafficScootCheckBox;
+    private CheckBox oxonTrafficSpeedCheckBox;
+    private CheckBox oxonTrafficTravelTimeCheckBox;
+    private CheckBox oxonRoadWorksCheckBox;
     private CheckBox fastprkCheckBox;
     private CheckBox clearviewCheckBox;
     private CheckBox bitcarrierCheckBox;
@@ -218,6 +246,16 @@ public class MapsActivity extends AppCompatActivity
                         northantsTrafficFlowCheckBox.isChecked(),
                         northantsTrafficTravelTimeCheckBox.isChecked(),
                         northantsVmsCheckbox.isChecked());
+                OxonProviderModule.refresh(context,
+                        oxonCarParkCheckbox.isChecked(),
+                        oxonEventCheckbox.isChecked(),
+                        oxonRoadWorksCheckBox.isChecked(),
+                        oxonTrafficFlowCheckBox.isChecked(),
+                        oxonTrafficQueueCheckBox.isChecked(),
+                        oxonTrafficScootCheckBox.isChecked(),
+                        oxonTrafficSpeedCheckBox.isChecked(),
+                        oxonTrafficTravelTimeCheckBox.isChecked(),
+                        oxonVmsCheckbox.isChecked());
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
                 BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
@@ -277,6 +315,15 @@ public class MapsActivity extends AppCompatActivity
                 new NorthantsTrafficFlows(context,googleMap),
                 new NorthantsTrafficTravelTimes(context,googleMap),
                 new NorthantsRoadWorks(context,googleMap),
+                new OxonVariableMessageSigns(context, googleMap),
+                new OxonCarParks(context, googleMap),
+                new OxonEvents(context, googleMap),
+                new OxonTrafficFlows(context, googleMap),
+                new OxonTrafficQueues(context, googleMap),
+                new OxonTrafficScoots(context, googleMap),
+                new OxonTrafficSpeeds(context, googleMap),
+                new OxonTrafficTravelTimes(context, googleMap),
+                new OxonRoadWorks(context, googleMap),
 //                new Fastprk(context, googleMap),
                 new ClearviewSilverstone(context, googleMap),
                 new BitCarrierSilverstoneNodes(context, googleMap),
@@ -408,6 +455,33 @@ public class MapsActivity extends AppCompatActivity
             case R.id.northants_road_works_checkbox:
                 layers[NORTHANTS_ROAD_WORKS].setVisible(checked);
                 break;
+            case R.id.oxon_vms_checkbox:
+                layers[OXON_VMS].setVisible(checked);
+                break;
+            case R.id.oxon_car_park_checkbox:
+                layers[OXON_CAR_PARK].setVisible(checked);
+                break;
+            case R.id.oxon_event_checkbox:
+                layers[OXON_EVENT].setVisible(checked);
+                break;
+            case R.id.oxon_traffic_flow_checkbox:
+                layers[OXON_TRAFFIC_FLOW].setVisible(checked);
+                break;
+            case R.id.oxon_traffic_queue_checkbox:
+                layers[OXON_TRAFFIC_QUEUE].setVisible(checked);
+                break;
+            case R.id.oxon_traffic_scoot_checkbox:
+                layers[OXON_TRAFFIC_SCOOT].setVisible(checked);
+                break;
+            case R.id.oxon_traffic_speed_checkbox:
+                layers[OXON_TRAFFIC_SPEED].setVisible(checked);
+                break;
+            case R.id.oxon_traffic_travel_time_checkbox:
+                layers[OXON_TRAFFIC_TRAVEL_TIME].setVisible(checked);
+                break;
+            case R.id.oxon_road_works_checkbox:
+                layers[OXON_ROAD_WORKS].setVisible(checked);
+                break;
             case R.id.fastprk_checkbox:
                 layers[FASTPRK].setVisible(checked);
                 break;
@@ -525,6 +599,15 @@ public class MapsActivity extends AppCompatActivity
         northantsTrafficFlowCheckBox = (CheckBox) findViewById(R.id.northants_traffic_flow_checkbox);
         northantsTrafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.northants_traffic_travel_time_checkbox);
         northantsRoadWorksCheckBox = (CheckBox) findViewById(R.id.northants_road_works_checkbox);
+        oxonVmsCheckbox = (CheckBox) findViewById(R.id.oxon_vms_checkbox);
+        oxonCarParkCheckbox = (CheckBox) findViewById(R.id.oxon_car_park_checkbox);
+        oxonEventCheckbox = (CheckBox) findViewById(R.id.oxon_event_checkbox);
+        oxonTrafficFlowCheckBox = (CheckBox) findViewById(R.id.oxon_traffic_flow_checkbox);
+        oxonTrafficQueueCheckBox = (CheckBox) findViewById(R.id.oxon_traffic_queue_checkbox);
+        oxonTrafficScootCheckBox = (CheckBox) findViewById(R.id.oxon_traffic_scoot_checkbox);
+        oxonTrafficSpeedCheckBox = (CheckBox) findViewById(R.id.oxon_traffic_speed_checkbox);
+        oxonTrafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.oxon_traffic_travel_time_checkbox);
+        oxonRoadWorksCheckBox = (CheckBox) findViewById(R.id.oxon_road_works_checkbox);
         fastprkCheckBox = (CheckBox) findViewById(R.id.fastprk_checkbox);
         clearviewCheckBox = (CheckBox) findViewById(R.id.clearview_checkbox);
         bitcarrierCheckBox = (CheckBox) findViewById(R.id.bitcarrier_checkbox);
@@ -550,6 +633,15 @@ public class MapsActivity extends AppCompatActivity
         northantsTrafficFlowCheckBox.setOnCheckedChangeListener(this);
         northantsTrafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
         northantsRoadWorksCheckBox.setOnCheckedChangeListener(this);
+        oxonVmsCheckbox.setOnCheckedChangeListener(this);
+        oxonCarParkCheckbox.setOnCheckedChangeListener(this);
+        oxonEventCheckbox.setOnCheckedChangeListener(this);
+        oxonTrafficFlowCheckBox.setOnCheckedChangeListener(this);
+        oxonTrafficQueueCheckBox.setOnCheckedChangeListener(this);
+        oxonTrafficScootCheckBox.setOnCheckedChangeListener(this);
+        oxonTrafficSpeedCheckBox.setOnCheckedChangeListener(this);
+        oxonTrafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
+        oxonRoadWorksCheckBox.setOnCheckedChangeListener(this);
         fastprkCheckBox.setOnCheckedChangeListener(this);
         clearviewCheckBox.setOnCheckedChangeListener(this);
         bitcarrierCheckBox.setOnCheckedChangeListener(this);

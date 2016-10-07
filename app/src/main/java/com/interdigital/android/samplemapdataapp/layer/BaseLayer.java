@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public abstract class BaseLayer {
 
-    private static final long AGE_MILLIS = 1 * 24 * 60 * 60 * 1000L;
+    private static final long AGE_MILLIS = 5 * 24 * 60 * 60 * 1000L;
 
     private static SimpleDateFormat simpleDateFormat;
 
