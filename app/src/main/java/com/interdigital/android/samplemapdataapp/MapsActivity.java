@@ -54,9 +54,15 @@ import com.interdigital.android.samplemapdataapp.layer.herts.HertsTrafficScoots;
 import com.interdigital.android.samplemapdataapp.layer.herts.HertsTrafficSpeeds;
 import com.interdigital.android.samplemapdataapp.layer.herts.HertsTrafficTravelTimes;
 import com.interdigital.android.samplemapdataapp.layer.herts.HertsVariableMessageSigns;
+import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsCarParks;
+import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsRoadWorks;
+import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsTrafficFlows;
+import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsTrafficTravelTimes;
+import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsVariableMessageSigns;
 
 import net.uk.onetransport.android.county.bucks.provider.BucksProviderModule;
 import net.uk.onetransport.android.county.herts.provider.HertsProviderModule;
+import net.uk.onetransport.android.county.northants.provider.NorthantsProviderModule;
 import net.uk.onetransport.android.modules.bitcarriersilverstone.provider.BcsProviderModule;
 import net.uk.onetransport.android.modules.clearviewsilverstone.provider.CvsProviderModule;
 import net.uk.onetransport.android.modules.common.provider.lastupdated.LastUpdatedProviderModule;
@@ -86,10 +92,15 @@ public class MapsActivity extends AppCompatActivity
     private static final int HERTS_TRAFFIC_SPEED = 14;
     private static final int HERTS_TRAFFIC_TRAVEL_TIME = 15;
     private static final int HERTS_ROAD_WORKS = 16;
-    private static final int FASTPRK = 17;
-    private static final int CLEARVIEW = 18;
-    private static final int BITCARRIER_NODES = 19;
-    private static final int BITCARRIER_ROADS = 20;
+    private static final int NORTHANTS_VMS = 17;
+    private static final int NORTHANTS_CAR_PARK = 18;
+    private static final int NORTHANTS_TRAFFIC_FLOW = 19;
+    private static final int NORTHANTS_TRAFFIC_TRAVEL_TIME = 20;
+    private static final int NORTHANTS_ROAD_WORKS = 21;
+    private static final int FASTPRK = 22;
+    private static final int CLEARVIEW = 23;
+    private static final int BITCARRIER_NODES = 24;
+    private static final int BITCARRIER_ROADS = 25;
 
     public static float density;
 
@@ -117,6 +128,11 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox hertsTrafficSpeedCheckBox;
     private CheckBox hertsTrafficTravelTimeCheckBox;
     private CheckBox hertsRoadWorksCheckBox;
+    private CheckBox northantsVmsCheckbox;
+    private CheckBox northantsCarParkCheckbox;
+    private CheckBox northantsTrafficFlowCheckBox;
+    private CheckBox northantsTrafficTravelTimeCheckBox;
+    private CheckBox northantsRoadWorksCheckBox;
     private CheckBox fastprkCheckBox;
     private CheckBox clearviewCheckBox;
     private CheckBox bitcarrierCheckBox;
@@ -196,6 +212,12 @@ public class MapsActivity extends AppCompatActivity
                         hertsTrafficSpeedCheckBox.isChecked(),
                         hertsTrafficTravelTimeCheckBox.isChecked(),
                         hertsVmsCheckbox.isChecked());
+                NorthantsProviderModule.refresh(context,
+                        northantsCarParkCheckbox.isChecked(),
+                        northantsRoadWorksCheckBox.isChecked(),
+                        northantsTrafficFlowCheckBox.isChecked(),
+                        northantsTrafficTravelTimeCheckBox.isChecked(),
+                        northantsVmsCheckbox.isChecked());
                 CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
                         clearviewCheckBox.isChecked());
                 BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
@@ -250,6 +272,11 @@ public class MapsActivity extends AppCompatActivity
                 new HertsTrafficSpeeds(context, googleMap),
                 new HertsTrafficTravelTimes(context, googleMap),
                 new HertsRoadWorks(context, googleMap),
+                new NorthantsVariableMessageSigns(context,googleMap),
+                new NorthantsCarParks(context,googleMap),
+                new NorthantsTrafficFlows(context,googleMap),
+                new NorthantsTrafficTravelTimes(context,googleMap),
+                new NorthantsRoadWorks(context,googleMap),
 //                new Fastprk(context, googleMap),
                 new ClearviewSilverstone(context, googleMap),
                 new BitCarrierSilverstoneNodes(context, googleMap),
@@ -366,6 +393,21 @@ public class MapsActivity extends AppCompatActivity
             case R.id.herts_road_works_checkbox:
                 layers[HERTS_ROAD_WORKS].setVisible(checked);
                 break;
+            case R.id.northants_vms_checkbox:
+                layers[NORTHANTS_VMS].setVisible(checked);
+                break;
+            case R.id.northants_car_park_checkbox:
+                layers[NORTHANTS_CAR_PARK].setVisible(checked);
+                break;
+            case R.id.northants_traffic_flow_checkbox:
+                layers[NORTHANTS_TRAFFIC_FLOW].setVisible(checked);
+                break;
+            case R.id.northants_traffic_travel_time_checkbox:
+                layers[NORTHANTS_TRAFFIC_TRAVEL_TIME].setVisible(checked);
+                break;
+            case R.id.northants_road_works_checkbox:
+                layers[NORTHANTS_ROAD_WORKS].setVisible(checked);
+                break;
             case R.id.fastprk_checkbox:
                 layers[FASTPRK].setVisible(checked);
                 break;
@@ -478,6 +520,11 @@ public class MapsActivity extends AppCompatActivity
         hertsTrafficSpeedCheckBox = (CheckBox) findViewById(R.id.herts_traffic_speed_checkbox);
         hertsTrafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.herts_traffic_travel_time_checkbox);
         hertsRoadWorksCheckBox = (CheckBox) findViewById(R.id.herts_road_works_checkbox);
+        northantsVmsCheckbox = (CheckBox) findViewById(R.id.northants_vms_checkbox);
+        northantsCarParkCheckbox = (CheckBox) findViewById(R.id.northants_car_park_checkbox);
+        northantsTrafficFlowCheckBox = (CheckBox) findViewById(R.id.northants_traffic_flow_checkbox);
+        northantsTrafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.northants_traffic_travel_time_checkbox);
+        northantsRoadWorksCheckBox = (CheckBox) findViewById(R.id.northants_road_works_checkbox);
         fastprkCheckBox = (CheckBox) findViewById(R.id.fastprk_checkbox);
         clearviewCheckBox = (CheckBox) findViewById(R.id.clearview_checkbox);
         bitcarrierCheckBox = (CheckBox) findViewById(R.id.bitcarrier_checkbox);
@@ -498,6 +545,11 @@ public class MapsActivity extends AppCompatActivity
         hertsTrafficSpeedCheckBox.setOnCheckedChangeListener(this);
         hertsTrafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
         hertsRoadWorksCheckBox.setOnCheckedChangeListener(this);
+        northantsVmsCheckbox.setOnCheckedChangeListener(this);
+        northantsCarParkCheckbox.setOnCheckedChangeListener(this);
+        northantsTrafficFlowCheckBox.setOnCheckedChangeListener(this);
+        northantsTrafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
+        northantsRoadWorksCheckBox.setOnCheckedChangeListener(this);
         fastprkCheckBox.setOnCheckedChangeListener(this);
         clearviewCheckBox.setOnCheckedChangeListener(this);
         bitcarrierCheckBox.setOnCheckedChangeListener(this);
