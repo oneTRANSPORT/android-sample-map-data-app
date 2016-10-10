@@ -23,10 +23,15 @@ public class BucksTrafficSpeeds extends ClusterBaseLayer<TrafficSpeedClusterItem
     @Override
     public void load() throws Exception {
         TrafficSpeed[] trafficSpeeds = BucksContentHelper.getLatestTrafficSpeeds(getContext());
+        int count = 0;
         for (TrafficSpeed trafficSpeed : trafficSpeeds) {
-            TrafficSpeedClusterItem trafficSpeedClusterItem = new TrafficSpeedClusterItem(trafficSpeed);
-            if (isInDate(trafficSpeed.getTime()) && trafficSpeedClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficSpeedClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficSpeedClusterItem trafficSpeedClusterItem = new TrafficSpeedClusterItem(trafficSpeed);
+                if (isInDate(trafficSpeed.getTime())
+                        && trafficSpeedClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficSpeedClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("BucksTrafficSpeeds", "Found " + trafficSpeeds.length

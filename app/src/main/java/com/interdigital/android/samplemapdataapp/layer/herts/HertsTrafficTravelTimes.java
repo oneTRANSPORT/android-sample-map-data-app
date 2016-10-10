@@ -23,10 +23,14 @@ public class HertsTrafficTravelTimes extends ClusterBaseLayer<TrafficTravelTimeC
     @Override
     public void load() throws Exception {
         TrafficTravelTime[] trafficTravelTimes = HertsContentHelper.getLatestTrafficTravelTimes(getContext());
+        int count = 0;
         for (TrafficTravelTime trafficTravelTime : trafficTravelTimes) {
-            TrafficTravelTimeClusterItem trafficTravelTimeClusterItem = new TrafficTravelTimeClusterItem(trafficTravelTime);
-            if (trafficTravelTimeClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficTravelTimeClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficTravelTimeClusterItem trafficTravelTimeClusterItem = new TrafficTravelTimeClusterItem(trafficTravelTime);
+                if (trafficTravelTimeClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficTravelTimeClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("HertsTrafficTravelTimes", "Found " + trafficTravelTimes.length

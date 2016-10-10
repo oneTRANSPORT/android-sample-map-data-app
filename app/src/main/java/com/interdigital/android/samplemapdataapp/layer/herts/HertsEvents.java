@@ -34,7 +34,7 @@ public class HertsEvents extends ClusterBaseLayer<EventClusterItem> {
                     found = true;
                 }
             }
-            if (!found) {
+            if (c < MAX_ITEMS && !found) {
                 if (isInDate(events[i].getStartOfPeriod())
                         || isInDate(events[i].getEndOfPeriod())
                         || isInDate(events[i].getOverallStartTime())

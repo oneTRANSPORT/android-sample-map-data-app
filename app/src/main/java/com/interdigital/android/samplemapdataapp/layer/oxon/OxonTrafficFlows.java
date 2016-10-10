@@ -23,10 +23,14 @@ public class OxonTrafficFlows extends ClusterBaseLayer<TrafficFlowClusterItem> {
     @Override
     public void load() throws Exception {
         TrafficFlow[] trafficFlows = OxonContentHelper.getLatestTrafficFlows(getContext());
+        int count = 0;
         for (TrafficFlow trafficFlow : trafficFlows) {
-            TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(trafficFlow);
-            if (isInDate(trafficFlow.getTime()) && trafficFlowClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficFlowClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(trafficFlow);
+                if (isInDate(trafficFlow.getTime()) && trafficFlowClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficFlowClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("OxonTrafficFlows", "Found " + trafficFlows.length

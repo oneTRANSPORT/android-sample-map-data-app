@@ -23,10 +23,14 @@ public class HertsTrafficScoots extends ClusterBaseLayer<TrafficScootClusterItem
     @Override
     public void load() throws Exception {
         TrafficScoot[] trafficScoots = HertsContentHelper.getLatestTrafficScoots(getContext());
+        int count = 0;
         for (TrafficScoot trafficscoot : trafficScoots) {
-            TrafficScootClusterItem trafficScootClusterItem = new TrafficScootClusterItem(trafficscoot);
-            if (trafficScootClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficScootClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficScootClusterItem trafficScootClusterItem = new TrafficScootClusterItem(trafficscoot);
+                if (trafficScootClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficScootClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("HertsTrafficScoots", "Found " + trafficScoots.length

@@ -23,10 +23,15 @@ public class BucksTrafficQueues extends ClusterBaseLayer<TrafficQueueClusterItem
     @Override
     public void load() throws Exception {
         TrafficQueue[] trafficQueues = BucksContentHelper.getLatestTrafficQueues(getContext());
+        int count = 0;
         for (TrafficQueue trafficQueue : trafficQueues) {
-            TrafficQueueClusterItem trafficQueueClusterItem = new TrafficQueueClusterItem(trafficQueue);
-            if (isInDate(trafficQueue.getTime()) && trafficQueueClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficQueueClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficQueueClusterItem trafficQueueClusterItem = new TrafficQueueClusterItem(trafficQueue);
+                if (isInDate(trafficQueue.getTime())
+                        && trafficQueueClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficQueueClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("BucksTrafficQueues", "Found " + trafficQueues.length

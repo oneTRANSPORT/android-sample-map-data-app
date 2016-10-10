@@ -34,7 +34,7 @@ public class NorthantsRoadWorks extends ClusterBaseLayer<RoadWorksClusterItem> {
                     found = true;
                 }
             }
-            if (!found) {
+            if (c < MAX_ITEMS && !found) {
                 if (isInDate(roadWorkses[i].getStartOfPeriod())
                         || isInDate(roadWorkses[i].getEndOfPeriod())
                         || isInDate(roadWorkses[i].getOverallStartTime())

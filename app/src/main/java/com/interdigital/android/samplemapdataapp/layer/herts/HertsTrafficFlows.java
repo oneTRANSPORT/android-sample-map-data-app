@@ -23,10 +23,14 @@ public class HertsTrafficFlows extends ClusterBaseLayer<TrafficFlowClusterItem> 
     @Override
     public void load() throws Exception {
         TrafficFlow[] trafficFlows = HertsContentHelper.getLatestTrafficFlows(getContext());
+        int count = 0;
         for (TrafficFlow trafficFlow : trafficFlows) {
-            TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(trafficFlow);
-            if (trafficFlowClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficFlowClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficFlowClusterItem trafficFlowClusterItem = new TrafficFlowClusterItem(trafficFlow);
+                if (trafficFlowClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficFlowClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("HertsTrafficFlows", "Found " + trafficFlows.length

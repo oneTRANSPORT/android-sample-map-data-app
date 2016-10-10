@@ -35,7 +35,7 @@ public class HertsVariableMessageSigns extends ClusterBaseLayer<VmsClusterItem> 
                     found = true;
                 }
             }
-            if (!found) {
+            if (c < MAX_ITEMS && !found) {
                 VmsClusterItem vmsClusterItem = new VmsClusterItem(variableMessageSigns[i]);
                 if (vmsClusterItem.shouldAdd()) {
                     getClusterItems().add(vmsClusterItem);

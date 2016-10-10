@@ -13,7 +13,11 @@ import java.util.Locale;
 
 public abstract class BaseLayer {
 
-    private static final long AGE_MILLIS = 5 * 24 * 60 * 60 * 1000L;
+    // Maximum number of items in a single layer.
+    protected static final int MAX_ITEMS = 10;
+
+    // Map items older than this will not be shown.
+    private static final long AGE_MILLIS = 5000 * 24 * 60 * 60 * 1000L;
 
     private static SimpleDateFormat simpleDateFormat;
 
@@ -53,7 +57,7 @@ public abstract class BaseLayer {
     }
 
     protected boolean isInDate(String dateString) {
-        if (TextUtils.isEmpty(dateString)){
+        if (TextUtils.isEmpty(dateString)) {
             return false;
         }
         if (simpleDateFormat == null) {

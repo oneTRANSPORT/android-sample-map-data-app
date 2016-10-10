@@ -23,10 +23,14 @@ public class HertsTrafficSpeeds extends ClusterBaseLayer<TrafficSpeedClusterItem
     @Override
     public void load() throws Exception {
         TrafficSpeed[] trafficSpeeds = HertsContentHelper.getLatestTrafficSpeeds(getContext());
+        int count = 0;
         for (TrafficSpeed trafficspeed : trafficSpeeds) {
-            TrafficSpeedClusterItem trafficSpeedClusterItem = new TrafficSpeedClusterItem(trafficspeed);
-            if (trafficSpeedClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficSpeedClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficSpeedClusterItem trafficSpeedClusterItem = new TrafficSpeedClusterItem(trafficspeed);
+                if (trafficSpeedClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficSpeedClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("HertsTrafficSpeeds", "Found " + trafficSpeeds.length

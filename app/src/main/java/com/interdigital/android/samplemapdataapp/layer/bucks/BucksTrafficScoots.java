@@ -23,10 +23,15 @@ public class BucksTrafficScoots extends ClusterBaseLayer<TrafficScootClusterItem
     @Override
     public void load() throws Exception {
         TrafficScoot[] trafficScoots = BucksContentHelper.getLatestTrafficScoots(getContext());
+        int count = 0;
         for (TrafficScoot trafficScoot : trafficScoots) {
-            TrafficScootClusterItem trafficScootClusterItem = new TrafficScootClusterItem(trafficScoot);
-            if (isInDate(trafficScoot.getTime()) && trafficScootClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficScootClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficScootClusterItem trafficScootClusterItem = new TrafficScootClusterItem(trafficScoot);
+                if (isInDate(trafficScoot.getTime())
+                        && trafficScootClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficScootClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("BucksTrafficScoots", "Found " + trafficScoots.length

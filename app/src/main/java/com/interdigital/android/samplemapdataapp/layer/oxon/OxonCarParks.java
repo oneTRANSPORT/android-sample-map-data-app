@@ -22,9 +22,13 @@ public class OxonCarParks extends ClusterBaseLayer<CarParkClusterItem> {
     @Override
     public void load() throws Exception {
         CarPark[] carParks = OxonContentHelper.getLatestCarParks(getContext());
+        int count = 0;
         for (CarPark carPark : carParks) {
-            CarParkClusterItem carParkClusterItem = new CarParkClusterItem(carPark);
-            getClusterItems().add(carParkClusterItem);
+            if (count < MAX_ITEMS) {
+                CarParkClusterItem carParkClusterItem = new CarParkClusterItem(carPark);
+                getClusterItems().add(carParkClusterItem);
+                count++;
+            }
         }
     }
 

@@ -23,10 +23,14 @@ public class NorthantsTrafficTravelTimes extends ClusterBaseLayer<TrafficTravelT
     @Override
     public void load() throws Exception {
         TrafficTravelTime[] trafficTravelTimes = NorthantsContentHelper.getLatestTrafficTravelTimes(getContext());
+        int count = 0;
         for (TrafficTravelTime trafficTravelTime : trafficTravelTimes) {
-            TrafficTravelTimeClusterItem trafficTravelTimeClusterItem = new TrafficTravelTimeClusterItem(trafficTravelTime);
-            if (trafficTravelTimeClusterItem.shouldAdd()) {
-                getClusterItems().add(trafficTravelTimeClusterItem);
+            if (count < MAX_ITEMS) {
+                TrafficTravelTimeClusterItem trafficTravelTimeClusterItem = new TrafficTravelTimeClusterItem(trafficTravelTime);
+                if (trafficTravelTimeClusterItem.shouldAdd()) {
+                    getClusterItems().add(trafficTravelTimeClusterItem);
+                    count++;
+                }
             }
         }
         Log.i("NorthantsTravelTimes", "Found " + trafficTravelTimes.length
