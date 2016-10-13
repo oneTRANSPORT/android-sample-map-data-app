@@ -6,28 +6,28 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.oxon.RoadWorksClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.oxon.RoadWorksClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.oxon.RoadWorksClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.oxon.RoadworksClusterItem;
+import com.interdigital.android.samplemapdataapp.cluster.oxon.RoadworksClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.oxon.RoadworksClusterRenderer;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 
 import net.uk.onetransport.android.county.oxon.provider.OxonContentHelper;
-import net.uk.onetransport.android.county.oxon.roadworks.RoadWorks;
+import net.uk.onetransport.android.county.oxon.roadworks.Roadworks;
 
-public class OxonRoadWorks extends ClusterBaseLayer<RoadWorksClusterItem> {
+public class OxonRoadworks extends ClusterBaseLayer<RoadworksClusterItem> {
 
-    public OxonRoadWorks(Context context, GoogleMap googleMap) {
+    public OxonRoadworks(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
 
     @Override
     public void load() throws Exception {
-        RoadWorks[] roadWorkses = OxonContentHelper.getLatestRoadWorks(getContext());
-        double[] coords = new double[roadWorkses.length];
+        Roadworks[] roadworkses = OxonContentHelper.getLatestRoadworks(getContext());
+        double[] coords = new double[roadworkses.length];
         int c = 0;
-        for (int i = roadWorkses.length - 1; i >= 0; i--) {
+        for (int i = roadworkses.length - 1; i >= 0; i--) {
             // Prevent concurrent locations.
-            double coord = roadWorkses[i].getLatitude() * 360 + roadWorkses[i].getLongitude();
+            double coord = roadworkses[i].getLatitude() * 360 + roadworkses[i].getLongitude();
             boolean found = false;
             for (int j = 0; j < c; j++) {
                 if (coords[j] == coord) {
@@ -35,27 +35,27 @@ public class OxonRoadWorks extends ClusterBaseLayer<RoadWorksClusterItem> {
                 }
             }
             if (c < MAX_ITEMS && !found) {
-                if (isInDate(roadWorkses[i].getStartOfPeriod())
-                        || isInDate(roadWorkses[i].getEndOfPeriod())
-                        || isInDate(roadWorkses[i].getOverallStartTime())
-                        || isInDate(roadWorkses[i].getOverallEndTime())) {
-                    RoadWorksClusterItem roadWorksClusterItem = new RoadWorksClusterItem(roadWorkses[i]);
-                    getClusterItems().add(roadWorksClusterItem);
+                if (isInDate(roadworkses[i].getStartOfPeriod())
+                        || isInDate(roadworkses[i].getEndOfPeriod())
+                        || isInDate(roadworkses[i].getOverallStartTime())
+                        || isInDate(roadworkses[i].getOverallEndTime())) {
+                    RoadworksClusterItem roadworksClusterItem = new RoadworksClusterItem(roadworkses[i]);
+                    getClusterItems().add(roadworksClusterItem);
                     coords[c++] = coord;
                 }
             }
         }
-        Log.i("OxonRoadWorks", "Found " + roadWorkses.length
-                + ", discarded " + (roadWorkses.length - getClusterItems().size()));
+        Log.i("OxonRoadworks", "Found " + roadworkses.length
+                + ", discarded " + (roadworkses.length - getClusterItems().size()));
     }
 
     @Override
-    protected BaseClusterManager<RoadWorksClusterItem> newClusterManager() {
-        return new RoadWorksClusterManager(getContext(), getGoogleMap());
+    protected BaseClusterManager<RoadworksClusterItem> newClusterManager() {
+        return new RoadworksClusterManager(getContext(), getGoogleMap());
     }
 
     @Override
-    protected BaseClusterRenderer<RoadWorksClusterItem> newClusterRenderer() {
-        return new RoadWorksClusterRenderer(getContext(), getGoogleMap(), getClusterManager());
+    protected BaseClusterRenderer<RoadworksClusterItem> newClusterRenderer() {
+        return new RoadworksClusterRenderer(getContext(), getGoogleMap(), getClusterManager());
     }
 }

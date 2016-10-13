@@ -5,9 +5,9 @@ import android.content.Context;
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
 
-public class RoadWorksClusterManager extends BaseClusterManager<RoadWorksClusterItem> {
+public class RoadworksClusterManager extends BaseClusterManager<RoadworksClusterItem> {
 
-    public RoadWorksClusterManager(Context context, GoogleMap googleMap) {
+    public RoadworksClusterManager(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
 

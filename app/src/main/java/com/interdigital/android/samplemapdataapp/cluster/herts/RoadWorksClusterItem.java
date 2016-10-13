@@ -3,16 +3,16 @@ package com.interdigital.android.samplemapdataapp.cluster.herts;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
-import net.uk.onetransport.android.county.herts.roadworks.RoadWorks;
+import net.uk.onetransport.android.county.herts.roadworks.Roadworks;
 
-public class RoadWorksClusterItem implements ClusterItem {
+public class RoadworksClusterItem implements ClusterItem {
 
     private LatLng position;
-    private RoadWorks roadWorks;
+    private Roadworks roadworks;
 
-    public RoadWorksClusterItem(RoadWorks roadWorks) {
-        this.roadWorks = roadWorks;
-        position = new LatLng(roadWorks.getLatitude(), roadWorks.getLongitude());
+    public RoadworksClusterItem(Roadworks roadworks) {
+        this.roadworks = roadworks;
+        position = new LatLng(roadworks.getLatitude(), roadworks.getLongitude());
     }
 
     @Override
@@ -20,7 +20,7 @@ public class RoadWorksClusterItem implements ClusterItem {
         return position;
     }
 
-    public RoadWorks getRoadWorks() {
-        return roadWorks;
+    public Roadworks getRoadworks() {
+        return roadworks;
     }
 }

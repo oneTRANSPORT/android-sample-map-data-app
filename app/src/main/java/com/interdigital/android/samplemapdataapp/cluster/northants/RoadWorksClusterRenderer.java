@@ -11,15 +11,15 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.interdigital.android.samplemapdataapp.R;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
 
-public class RoadWorksClusterRenderer extends BaseClusterRenderer<RoadWorksClusterItem> {
+public class RoadworksClusterRenderer extends BaseClusterRenderer<RoadworksClusterItem> {
 
-    public RoadWorksClusterRenderer(Context context, GoogleMap googleMap,
-                                    ClusterManager<RoadWorksClusterItem> clusterManager) {
+    public RoadworksClusterRenderer(Context context, GoogleMap googleMap,
+                                    ClusterManager<RoadworksClusterItem> clusterManager) {
         super(context, googleMap, clusterManager);
     }
 
     @Override
-    public int getIconResource(RoadWorksClusterItem roadWorksClusterItem) {
+    public int getIconResource(RoadworksClusterItem roadworksClusterItem) {
         return R.drawable.roadworks_icon;
     }
 
@@ -30,8 +30,8 @@ public class RoadWorksClusterRenderer extends BaseClusterRenderer<RoadWorksClust
 
     @Override
     public View getInfoContents(Marker marker) {
-        RoadWorksClusterItem roadWorksClusterItem = getClusterItem(marker);
-        String comment = roadWorksClusterItem.getRoadWorks().getComment();
+        RoadworksClusterItem roadworksClusterItem = getClusterItem(marker);
+        String comment = roadworksClusterItem.getRoadworks().getComment();
         if (!comment.contains(": Event Location :") && !comment.contains(": Location :")) {
             // Unformatted text, very difficult to do anything else here.
             TextView textView = new TextView(context);
@@ -41,7 +41,7 @@ public class RoadWorksClusterRenderer extends BaseClusterRenderer<RoadWorksClust
         } else {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(R.layout.pop_up_road_works, null, false);
+            View view = layoutInflater.inflate(R.layout.pop_up_roadworks, null, false);
             TextView reasonTextView = (TextView) view.findViewById(R.id.reason_text_view);
             TextView closuresTextView = (TextView) view.findViewById(R.id.closures_text_view);
             TextView locationTextView = (TextView) view.findViewById(R.id.location_text_view);
