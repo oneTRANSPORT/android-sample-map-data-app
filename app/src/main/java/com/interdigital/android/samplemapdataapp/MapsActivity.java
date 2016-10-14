@@ -1,17 +1,21 @@
 package com.interdigital.android.samplemapdataapp;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,11 +29,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
-import com.interdigital.android.dougal.Types;
-import com.interdigital.android.dougal.exception.DougalException;
-import com.interdigital.android.dougal.resource.ApplicationEntity;
-import com.interdigital.android.dougal.resource.Resource;
-import com.interdigital.android.dougal.resource.callback.DougalCallback;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
@@ -81,7 +80,7 @@ import java.util.UUID;
 
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter,
-        DougalCallback, CompoundButton.OnCheckedChangeListener, GoogleMap.OnCameraChangeListener,
+        CompoundButton.OnCheckedChangeListener, GoogleMap.OnCameraChangeListener,
         GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapsActivity";
@@ -120,6 +119,7 @@ public class MapsActivity extends AppCompatActivity
     private static final int CLEARVIEW = 32;
     private static final int BITCARRIER_NODES = 33;
     private static final int BITCARRIER_ROADS = 34;
+    private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     public static float density;
 
@@ -180,9 +180,9 @@ public class MapsActivity extends AppCompatActivity
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         maybeCreateInstallationId();
-        maybeCreateAe();
         initialiseDrawer();
         itemObserver = new ItemObserver(null, this);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -219,47 +219,14 @@ public class MapsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.refresh_item:
                 findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
-                // TODO    Find a way to merge these sync adapter calls.
-                // TODO    Same order as app.
-                BucksProviderModule.refresh(context,
-                        bucksCarParkCheckbox.isChecked(),
-                        bucksEventCheckbox.isChecked(),
-                        bucksRoadWorksCheckBox.isChecked(),
-                        bucksTrafficFlowCheckBox.isChecked(),
-                        bucksTrafficQueueCheckBox.isChecked(),
-                        bucksTrafficScootCheckBox.isChecked(),
-                        bucksTrafficSpeedCheckBox.isChecked(),
-                        bucksTrafficTravelTimeCheckBox.isChecked(),
-                        bucksVmsCheckbox.isChecked());
-                HertsProviderModule.refresh(context,
-                        hertsCarParkCheckbox.isChecked(),
-                        hertsEventCheckbox.isChecked(),
-                        hertsRoadWorksCheckBox.isChecked(),
-                        hertsTrafficFlowCheckBox.isChecked(),
-                        hertsTrafficScootCheckBox.isChecked(),
-                        hertsTrafficSpeedCheckBox.isChecked(),
-                        hertsTrafficTravelTimeCheckBox.isChecked(),
-                        hertsVmsCheckbox.isChecked());
-                NorthantsProviderModule.refresh(context,
-                        northantsCarParkCheckbox.isChecked(),
-                        northantsRoadWorksCheckBox.isChecked(),
-                        northantsTrafficFlowCheckBox.isChecked(),
-                        northantsTrafficTravelTimeCheckBox.isChecked(),
-                        northantsVmsCheckbox.isChecked());
-                OxonProviderModule.refresh(context,
-                        oxonCarParkCheckbox.isChecked(),
-                        oxonEventCheckbox.isChecked(),
-                        oxonRoadWorksCheckBox.isChecked(),
-                        oxonTrafficFlowCheckBox.isChecked(),
-                        oxonTrafficQueueCheckBox.isChecked(),
-                        oxonTrafficScootCheckBox.isChecked(),
-                        oxonTrafficSpeedCheckBox.isChecked(),
-                        oxonTrafficTravelTimeCheckBox.isChecked(),
-                        oxonVmsCheckbox.isChecked());
-                CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
-                        clearviewCheckBox.isChecked());
-                BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
-                        bitcarrierCheckBox.isChecked(), bitcarrierCheckBox.isChecked(), true);
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                } else {
+                    refreshCache();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -335,19 +302,6 @@ public class MapsActivity extends AppCompatActivity
     public void loadMarkers(boolean moveMap) {
         new LoadMarkerTask(googleMap, (ProgressBar) findViewById(R.id.progress_bar),
                 moveMap, layers).execute();
-    }
-
-    @Override
-    public void getResponse(Resource resource, Throwable throwable) {
-        if (throwable != null) {
-            if (throwable instanceof DougalException) {
-                int statusCode = ((DougalException) throwable).getCode();
-                if (statusCode != Types.STATUS_CODE_CONFLICT) {
-                    Log.e(TAG, "Error creating application entity, status code " + statusCode);
-                }
-            }
-        }
-        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -541,6 +495,22 @@ public class MapsActivity extends AppCompatActivity
         super.onPause();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    refreshCache();
+                } else {
+                    findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+                }
+                break;
+            }
+        }
+    }
+
     private void initialiseToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -554,16 +524,6 @@ public class MapsActivity extends AppCompatActivity
             installationId = UUID.randomUUID().toString();
             Storage.putInstallationId(context, installationId);
         }
-    }
-
-    private void maybeCreateAe() {
-        CseDetails.aeId = getString(R.string.pref_default_user_ae_name);
-        CseDetails.appName = "SampleMapDataApp";
-        String applicationId = "SampleMapDataApp-Id";
-        ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
-                CseDetails.appName, applicationId, CseDetails.METHOD + CseDetails.hostName,
-                CseDetails.cseName, false);
-        applicationEntity.createAsync(CseDetails.token, this);
     }
 
     private void initialisePreferences() {
@@ -646,5 +606,50 @@ public class MapsActivity extends AppCompatActivity
         clearviewCheckBox.setOnCheckedChangeListener(this);
         bitcarrierCheckBox.setOnCheckedChangeListener(this);
     }
+
+    private void refreshCache() {
+        // TODO    Find a way to merge these sync adapter calls.
+        // TODO    Same order as app.
+        BucksProviderModule.refresh(context,
+                bucksCarParkCheckbox.isChecked(),
+                bucksEventCheckbox.isChecked(),
+                bucksRoadWorksCheckBox.isChecked(),
+                bucksTrafficFlowCheckBox.isChecked(),
+                bucksTrafficQueueCheckBox.isChecked(),
+                bucksTrafficScootCheckBox.isChecked(),
+                bucksTrafficSpeedCheckBox.isChecked(),
+                bucksTrafficTravelTimeCheckBox.isChecked(),
+                bucksVmsCheckbox.isChecked());
+        HertsProviderModule.refresh(context,
+                hertsCarParkCheckbox.isChecked(),
+                hertsEventCheckbox.isChecked(),
+                hertsRoadWorksCheckBox.isChecked(),
+                hertsTrafficFlowCheckBox.isChecked(),
+                hertsTrafficScootCheckBox.isChecked(),
+                hertsTrafficSpeedCheckBox.isChecked(),
+                hertsTrafficTravelTimeCheckBox.isChecked(),
+                hertsVmsCheckbox.isChecked());
+        NorthantsProviderModule.refresh(context,
+                northantsCarParkCheckbox.isChecked(),
+                northantsRoadWorksCheckBox.isChecked(),
+                northantsTrafficFlowCheckBox.isChecked(),
+                northantsTrafficTravelTimeCheckBox.isChecked(),
+                northantsVmsCheckbox.isChecked());
+        OxonProviderModule.refresh(context,
+                oxonCarParkCheckbox.isChecked(),
+                oxonEventCheckbox.isChecked(),
+                oxonRoadWorksCheckBox.isChecked(),
+                oxonTrafficFlowCheckBox.isChecked(),
+                oxonTrafficQueueCheckBox.isChecked(),
+                oxonTrafficScootCheckBox.isChecked(),
+                oxonTrafficSpeedCheckBox.isChecked(),
+                oxonTrafficTravelTimeCheckBox.isChecked(),
+                oxonVmsCheckbox.isChecked());
+        CvsProviderModule.refresh(context, clearviewCheckBox.isChecked(),
+                clearviewCheckBox.isChecked());
+        BcsProviderModule.refresh(context, bitcarrierCheckBox.isChecked(),
+                bitcarrierCheckBox.isChecked(), bitcarrierCheckBox.isChecked(), true);
+    }
+
 }
 
