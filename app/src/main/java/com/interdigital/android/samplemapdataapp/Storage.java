@@ -9,8 +9,8 @@ public class Storage {
     public static final String KEY_INSTALLATION_ID = "pref_installation_id";
     public static final String KEY_HOST_NAME = "pref_host_name";
     public static final String KEY_CSE_NAME = "pref_cse_name";
-    public static final String KEY_USER_NAME = "pref_user_name";
-    public static final String KEY_PASSWORD = "pref_password";
+    public static final String KEY_AE_ID = "pref_ae_id";
+    public static final String KEY_TOKEN = "pref_token";
 
     public static String getInstallationId(Context context) {
         return getString(context, KEY_INSTALLATION_ID);
@@ -28,12 +28,12 @@ public class Storage {
         return getString(context, KEY_CSE_NAME);
     }
 
-    public static String getUserName(Context context) {
-        return getString(context, KEY_USER_NAME);
+    public static String getAeId(Context context) {
+        return getString(context, KEY_AE_ID);
     }
 
-    public static String getPassword(Context context) {
-        return getString(context, KEY_PASSWORD);
+    public static String getToken(Context context) {
+        return getString(context, KEY_TOKEN);
     }
 
     private static String getString(Context context, String key) {

@@ -24,7 +24,7 @@ public class SettingsFragment extends PreferenceFragment
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         onSharedPreferenceChanged(sharedPreferences, Storage.KEY_HOST_NAME);
         onSharedPreferenceChanged(sharedPreferences, Storage.KEY_CSE_NAME);
-        onSharedPreferenceChanged(sharedPreferences, Storage.KEY_USER_NAME);
+        onSharedPreferenceChanged(sharedPreferences, Storage.KEY_AE_ID);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -45,7 +45,7 @@ public class SettingsFragment extends PreferenceFragment
                 Preference cseNamePref = findPreference(key);
                 cseNamePref.setSummary(sharedPreferences.getString(key, ""));
                 break;
-            case Storage.KEY_USER_NAME:
+            case Storage.KEY_AE_ID:
                 Preference userNamePref = findPreference(key);
                 userNamePref.setSummary(sharedPreferences.getString(key, ""));
                 break;

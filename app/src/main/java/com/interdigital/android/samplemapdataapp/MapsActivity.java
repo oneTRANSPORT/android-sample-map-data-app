@@ -275,23 +275,23 @@ public class MapsActivity extends AppCompatActivity
         googleMap.setOnCameraChangeListener(this);
         googleMap.setOnMarkerClickListener(this);
         net.uk.onetransport.android.county.bucks.authentication.CredentialHelper
-                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                        getString(R.string.pref_default_password), installationId);
+                .initialiseCredentials(context, getString(R.string.pref_default_user_ae_name),
+                        getString(R.string.pref_default_bearer_token), installationId);
         net.uk.onetransport.android.county.herts.authentication.CredentialHelper
-                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                        getString(R.string.pref_default_password), installationId);
+                .initialiseCredentials(context, getString(R.string.pref_default_user_ae_name),
+                        getString(R.string.pref_default_bearer_token), installationId);
         net.uk.onetransport.android.county.northants.authentication.CredentialHelper
-                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                        getString(R.string.pref_default_password), installationId);
+                .initialiseCredentials(context, getString(R.string.pref_default_user_ae_name),
+                        getString(R.string.pref_default_bearer_token), installationId);
         net.uk.onetransport.android.county.oxon.authentication.CredentialHelper
-                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                        getString(R.string.pref_default_password), installationId);
+                .initialiseCredentials(context, getString(R.string.pref_default_user_ae_name),
+                        getString(R.string.pref_default_bearer_token), installationId);
         net.uk.onetransport.android.modules.clearviewsilverstone.authentication.CredentialHelper
-                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                        getString(R.string.pref_default_password), installationId);
+                .initialiseCredentials(context, getString(R.string.pref_default_user_ae_name),
+                        getString(R.string.pref_default_bearer_token), installationId);
         net.uk.onetransport.android.modules.bitcarriersilverstone.authentication.CredentialHelper
-                .initialiseCredentials(context, getString(R.string.pref_default_user_name),
-                        getString(R.string.pref_default_password), installationId);
+                .initialiseCredentials(context, getString(R.string.pref_default_user_ae_name),
+                        getString(R.string.pref_default_bearer_token), installationId);
         layers = new BaseLayer[]{
                 new BucksVariableMessageSigns(context, googleMap),
                 new BucksCarParks(context, googleMap),
@@ -310,11 +310,11 @@ public class MapsActivity extends AppCompatActivity
                 new HertsTrafficSpeeds(context, googleMap),
                 new HertsTrafficTravelTimes(context, googleMap),
                 new HertsRoadworks(context, googleMap),
-                new NorthantsVariableMessageSigns(context,googleMap),
-                new NorthantsCarParks(context,googleMap),
-                new NorthantsTrafficFlows(context,googleMap),
-                new NorthantsTrafficTravelTimes(context,googleMap),
-                new NorthantsRoadworks(context,googleMap),
+                new NorthantsVariableMessageSigns(context, googleMap),
+                new NorthantsCarParks(context, googleMap),
+                new NorthantsTrafficFlows(context, googleMap),
+                new NorthantsTrafficTravelTimes(context, googleMap),
+                new NorthantsRoadworks(context, googleMap),
                 new OxonVariableMessageSigns(context, googleMap),
                 new OxonCarParks(context, googleMap),
                 new OxonEvents(context, googleMap),
@@ -557,13 +557,13 @@ public class MapsActivity extends AppCompatActivity
     }
 
     private void maybeCreateAe() {
-        CseDetails.aeId = "C-" + getString(R.string.pref_default_user_name);
+        CseDetails.aeId = getString(R.string.pref_default_user_ae_name);
         CseDetails.appName = "SampleMapDataApp";
         String applicationId = "SampleMapDataApp-Id";
         ApplicationEntity applicationEntity = new ApplicationEntity(CseDetails.aeId,
                 CseDetails.appName, applicationId, CseDetails.METHOD + CseDetails.hostName,
                 CseDetails.cseName, false);
-        applicationEntity.createAsync(CseDetails.userName, CseDetails.password, this);
+        applicationEntity.createAsync(CseDetails.token, this);
     }
 
     private void initialisePreferences() {

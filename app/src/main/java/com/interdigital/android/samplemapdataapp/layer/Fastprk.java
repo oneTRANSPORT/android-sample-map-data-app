@@ -135,7 +135,7 @@ public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
             ContentInstance contentInstance = Container.retrieveLatest(CseDetails.aeId,
                     CseDetails.METHOD + CseDetails.hostName,
                     CseDetails.cseName + "/" + APP_NAME + LOCATION_PREFIX + SENSOR_IDS[i],
-                    CseDetails.userName, CseDetails.password);
+                    CseDetails.token);
             String jsonContent = contentInstance.getContent();
             JSONObject jsonObject = new JSONObject(jsonContent);
             if (jsonObject.optJSONObject("position") != null) {
@@ -169,7 +169,7 @@ public class Fastprk extends ClusterBaseLayer<FastprkClusterItem>
         for (int i = 0; i < getClusterItems().size(); i++) {
             Container.retrieveLatestAsync(CseDetails.aeId, CseDetails.baseUrl,
                     APP_NAME + OCCUPATION_PREFIX + SENSOR_IDS[i],
-                    CseDetails.userName, CseDetails.password, this);
+                    CseDetails.token, this);
             FastprkClusterItem item = findClusterItem(SENSOR_IDS[i]);
             item.setUpdating(true);
             Marker marker = getClusterRenderer().getMarker(item);

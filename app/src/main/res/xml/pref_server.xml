@@ -23,7 +23,7 @@
             android:title="CSE name"/>
 
         <EditTextPreference
-            android:defaultValue="@string/pref_default_user_name"
+            android:defaultValue="@string/pref_default_user_ae_name"
             android:inputType="textNoSuggestions"
             android:key="pref_user_name"
             android:maxLines="1"
@@ -32,7 +32,7 @@
             android:title="User name"/>
 
         <EditTextPreference
-            android:defaultValue="@string/pref_default_password"
+            android:defaultValue="@string/pref_default_bearer_token"
             android:inputType="textPassword"
             android:key="pref_password"
             android:maxLines="1"
