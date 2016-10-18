@@ -24,7 +24,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.interdigital.android.samplemapdataapp.layer.BaseLayer;
-import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 
 public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 

@@ -62,10 +62,4 @@ limitations under the License.
     <string name="road_network">Road network</string>
     <string name="fastprk">Fastprk</string>
 
-    <string name="bitcarrier_base_url">https://dev.onetransport.uk.net/</string>
-    <string name="bitcarrier_cse_base_url">https://dev.onetransport.uk.net/ONETCSE01/</string>
-
-    <string name="clearview_base_url">https://dev.onetransport.uk.net/</string>
-    <string name="clearview_cse_base_url">https://dev.onetransport.uk.net/ONETCSE01/</string>
-
 </resources>

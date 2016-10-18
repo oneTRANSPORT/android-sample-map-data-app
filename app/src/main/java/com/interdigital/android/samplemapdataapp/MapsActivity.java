@@ -50,6 +50,7 @@ import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.BitCarrierSilverstoneNodes;
 import com.interdigital.android.samplemapdataapp.layer.ClearviewSilverstone;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
+import com.interdigital.android.samplemapdataapp.layer.Fastprk;
 import com.interdigital.android.samplemapdataapp.layer.MarkerBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.PolylineBaseLayer;
 import com.interdigital.android.samplemapdataapp.layer.bucks.BucksCarParks;
@@ -99,7 +100,6 @@ public class MapsActivity extends AppCompatActivity
         CompoundButton.OnCheckedChangeListener, GoogleMap.OnCameraChangeListener,
         GoogleMap.OnMarkerClickListener {
 
-    private static final String TAG = "MapsActivity";
     private static final int BUCKS_VMS = 0;
     private static final int BUCKS_CAR_PARK = 1;
     private static final int BUCKS_EVENT = 2;
@@ -307,11 +307,12 @@ public class MapsActivity extends AppCompatActivity
                 new OxonTrafficSpeeds(context, googleMap),
                 new OxonTrafficTravelTimes(context, googleMap),
                 new OxonRoadworks(context, googleMap),
-//                new Fastprk(context, googleMap),
+                new Fastprk(context, googleMap),
                 new ClearviewSilverstone(context, googleMap),
                 new BitCarrierSilverstoneNodes(context, googleMap),
                 new BitCarrierSilverstone(context, googleMap)
         };
+        ((Fastprk) layers[FASTPRK]).startUpdateTimer();
         loadMarkers(true);
     }
 
@@ -495,9 +496,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        if (layers[FASTPRK] != null) {
-//            ((Fastprk) layers[FASTPRK]).startUpdateTimer();
-//        }
+        if (layers != null && layers[FASTPRK] != null) {
+            ((Fastprk) layers[FASTPRK]).startUpdateTimer();
+        }
         getContentResolver().registerContentObserver(LastUpdatedProviderModule.LAST_UPDATED_URI,
                 false, itemObserver);
     }
@@ -505,9 +506,9 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         getContentResolver().unregisterContentObserver(itemObserver);
-//        if (layers[FASTPRK] != null) {
-//            ((Fastprk) layers[FASTPRK]).stopUpdateTimer();
-//        }
+        if (layers != null && layers[FASTPRK] != null) {
+            ((Fastprk) layers[FASTPRK]).stopUpdateTimer();
+        }
         super.onPause();
     }
 
