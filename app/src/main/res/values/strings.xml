@@ -23,8 +23,8 @@ limitations under the License.
 
     <string name="pref_default_host_name">dev.onetransport.uk.net</string>
     <string name="pref_default_cse_name">ONETCSE01</string>
-    <string name="pref_default_user_ae_name">C-Y249U2FtcGxlTWFwQXBwMixvdT1yb290</string>
-    <string name="pref_default_bearer_token">012vFwgnyuC5dFQ6</string>
+    <string name="pref_default_user_ae_name">C-Y249b25lLXRyYW5zcG9ydC1zZGstdGVzdCxvdT1yb290</string>
+    <string name="pref_default_bearer_token">01s8cyb6AfkMO82U</string>
 
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
