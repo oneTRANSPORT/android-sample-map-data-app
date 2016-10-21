@@ -67,8 +67,7 @@ public abstract class PolylineBaseLayer extends BaseLayer {
     }
 
     public boolean onMarkerClick(Marker marker) {
-        Log.i("PolylineBaseLayer", "Testing centre marker = " + marker);
-        for (BasePolyline basePolyline : basePolylines) {
+      for (BasePolyline basePolyline : basePolylines) {
             if (basePolyline.getCentreMarker().equals(marker)) {
                 basePolyline.getCentreMarker().showInfoWindow();
                 return true;

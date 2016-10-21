@@ -37,7 +37,7 @@ public class ItemObserver extends ContentObserver {
     public void onChange(boolean selfChange, Uri uri) {
         super.onChange(selfChange, uri);
         observed++;
-        if (observed == 3) { // Alternative might be to synchronise loader, but deadlock?
+        if (observed == 6) { // Alternative might be to synchronise loader, but deadlock?
             observed = 0;
             updateMap();
         }
