@@ -521,7 +521,7 @@ public class MapsActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     refreshCache();
                 } else {
-                    findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.progress_bar).setVisibility(View.INVISIBLE);
                 }
                 break;
             }
