@@ -16,9 +16,7 @@
  */
 package com.interdigital.android.samplemapdataapp.layer;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -56,12 +54,6 @@ public abstract class MarkerBaseLayer extends BaseLayer {
                 return baseMarker.getInfoContents();
             }
         }
-        return null;
-    }
-
-    public Intent onInfoWindowClick(Marker marker, Activity activity) {
-        // Return an intent if the marker is owned by this layer.
-        // The intent should start an activity to graph the marker data.
         return null;
     }
 

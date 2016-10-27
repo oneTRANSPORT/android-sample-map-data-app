@@ -45,12 +45,12 @@ public class LoadMarkerTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        try {
-            for (BaseLayer layer : baseLayers) {
+        for (BaseLayer layer : baseLayers) {
+            try {
                 layer.load();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
