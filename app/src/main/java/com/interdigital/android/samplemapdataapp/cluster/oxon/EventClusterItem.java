@@ -41,7 +41,7 @@ public class EventClusterItem implements ClusterItem {
         if (event.getDescription() == null) {
             return false;
         }
-        return event.getDescription().matches(".*Location.*Reason.*Status.*");
+        return true;
     }
 
     @Override

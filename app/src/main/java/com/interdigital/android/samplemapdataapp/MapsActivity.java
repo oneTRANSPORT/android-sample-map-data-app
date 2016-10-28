@@ -71,6 +71,7 @@ import com.interdigital.android.samplemapdataapp.layer.herts.HertsTrafficSpeeds;
 import com.interdigital.android.samplemapdataapp.layer.herts.HertsTrafficTravelTimes;
 import com.interdigital.android.samplemapdataapp.layer.herts.HertsVariableMessageSigns;
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsCarParks;
+import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsEvents;
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsRoadworks;
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsTrafficFlows;
 import com.interdigital.android.samplemapdataapp.layer.northants.NorthantsTrafficTravelTimes;
@@ -119,22 +120,23 @@ public class MapsActivity extends AppCompatActivity
     private static final int HERTS_ROADWORKS = 16;
     private static final int NORTHANTS_VMS = 17;
     private static final int NORTHANTS_CAR_PARK = 18;
-    private static final int NORTHANTS_TRAFFIC_FLOW = 19;
-    private static final int NORTHANTS_TRAFFIC_TRAVEL_TIME = 20;
-    private static final int NORTHANTS_ROADWORKS = 21;
-    private static final int OXON_VMS = 22;
-    private static final int OXON_CAR_PARK = 23;
-    private static final int OXON_EVENT = 24;
-    private static final int OXON_TRAFFIC_FLOW = 25;
-    private static final int OXON_TRAFFIC_QUEUE = 26;
-    private static final int OXON_TRAFFIC_SCOOT = 27;
-    private static final int OXON_TRAFFIC_SPEED = 28;
-    private static final int OXON_TRAFFIC_TRAVEL_TIME = 29;
-    private static final int OXON_ROADWORKS = 30;
-    private static final int FASTPRK = 31;
-    private static final int CLEARVIEW = 32;
-    private static final int BITCARRIER_NODES = 33;
-    private static final int BITCARRIER_ROADS = 34;
+    private static final int NORTHANTS_EVENT = 19;
+    private static final int NORTHANTS_TRAFFIC_FLOW = 20;
+    private static final int NORTHANTS_TRAFFIC_TRAVEL_TIME = 21;
+    private static final int NORTHANTS_ROADWORKS = 22;
+    private static final int OXON_VMS = 23;
+    private static final int OXON_CAR_PARK = 24;
+    private static final int OXON_EVENT = 25;
+    private static final int OXON_TRAFFIC_FLOW = 26;
+    private static final int OXON_TRAFFIC_QUEUE = 27;
+    private static final int OXON_TRAFFIC_SCOOT = 28;
+    private static final int OXON_TRAFFIC_SPEED = 29;
+    private static final int OXON_TRAFFIC_TRAVEL_TIME = 30;
+    private static final int OXON_ROADWORKS = 31;
+    private static final int FASTPRK = 32;
+    private static final int CLEARVIEW = 33;
+    private static final int BITCARRIER_NODES = 34;
+    private static final int BITCARRIER_ROADS = 35;
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     public static float density;
@@ -165,6 +167,7 @@ public class MapsActivity extends AppCompatActivity
     private CheckBox hertsRoadWorksCheckBox;
     private CheckBox northantsVmsCheckbox;
     private CheckBox northantsCarParkCheckbox;
+    private CheckBox northantsEventCheckbox;
     private CheckBox northantsTrafficFlowCheckBox;
     private CheckBox northantsTrafficTravelTimeCheckBox;
     private CheckBox northantsRoadWorksCheckBox;
@@ -295,6 +298,7 @@ public class MapsActivity extends AppCompatActivity
                 new HertsRoadworks(context, googleMap),
                 new NorthantsVariableMessageSigns(context, googleMap),
                 new NorthantsCarParks(context, googleMap),
+                new NorthantsEvents(context, googleMap),
                 new NorthantsTrafficFlows(context, googleMap),
                 new NorthantsTrafficTravelTimes(context, googleMap),
                 new NorthantsRoadworks(context, googleMap),
@@ -416,6 +420,9 @@ public class MapsActivity extends AppCompatActivity
                 break;
             case R.id.northants_car_park_checkbox:
                 layers[NORTHANTS_CAR_PARK].setVisible(checked);
+                break;
+            case R.id.northants_event_checkbox:
+                layers[NORTHANTS_EVENT].setVisible(checked);
                 break;
             case R.id.northants_traffic_flow_checkbox:
                 layers[NORTHANTS_TRAFFIC_FLOW].setVisible(checked);
@@ -573,6 +580,7 @@ public class MapsActivity extends AppCompatActivity
         hertsRoadWorksCheckBox = (CheckBox) findViewById(R.id.herts_roadworks_checkbox);
         northantsVmsCheckbox = (CheckBox) findViewById(R.id.northants_vms_checkbox);
         northantsCarParkCheckbox = (CheckBox) findViewById(R.id.northants_car_park_checkbox);
+        northantsEventCheckbox = (CheckBox) findViewById(R.id.northants_event_checkbox);
         northantsTrafficFlowCheckBox = (CheckBox) findViewById(R.id.northants_traffic_flow_checkbox);
         northantsTrafficTravelTimeCheckBox = (CheckBox) findViewById(R.id.northants_traffic_travel_time_checkbox);
         northantsRoadWorksCheckBox = (CheckBox) findViewById(R.id.northants_roadworks_checkbox);
@@ -607,6 +615,7 @@ public class MapsActivity extends AppCompatActivity
         hertsRoadWorksCheckBox.setOnCheckedChangeListener(this);
         northantsVmsCheckbox.setOnCheckedChangeListener(this);
         northantsCarParkCheckbox.setOnCheckedChangeListener(this);
+        northantsEventCheckbox.setOnCheckedChangeListener(this);
         northantsTrafficFlowCheckBox.setOnCheckedChangeListener(this);
         northantsTrafficTravelTimeCheckBox.setOnCheckedChangeListener(this);
         northantsRoadWorksCheckBox.setOnCheckedChangeListener(this);
@@ -648,6 +657,7 @@ public class MapsActivity extends AppCompatActivity
                 hertsVmsCheckbox.isChecked());
         NorthantsProviderModule.refresh(context,
                 northantsCarParkCheckbox.isChecked(),
+                northantsEventCheckbox.isChecked(),
                 northantsRoadWorksCheckBox.isChecked(),
                 northantsTrafficFlowCheckBox.isChecked(),
                 northantsTrafficTravelTimeCheckBox.isChecked(),

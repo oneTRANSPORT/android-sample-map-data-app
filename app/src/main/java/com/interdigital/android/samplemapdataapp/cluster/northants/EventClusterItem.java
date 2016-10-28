@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.interdigital.android.samplemapdataapp.cluster.bucks;
+package com.interdigital.android.samplemapdataapp.cluster.northants;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
-import net.uk.onetransport.android.county.bucks.events.Event;
+import net.uk.onetransport.android.county.northants.events.Event;
 
 public class EventClusterItem implements ClusterItem {
 

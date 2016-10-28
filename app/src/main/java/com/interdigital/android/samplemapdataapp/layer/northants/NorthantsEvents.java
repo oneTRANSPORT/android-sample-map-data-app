@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.interdigital.android.samplemapdataapp.layer.bucks;
+package com.interdigital.android.samplemapdataapp.layer.northants;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,23 +22,23 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterManager;
 import com.interdigital.android.samplemapdataapp.cluster.BaseClusterRenderer;
-import com.interdigital.android.samplemapdataapp.cluster.bucks.EventClusterItem;
-import com.interdigital.android.samplemapdataapp.cluster.bucks.EventClusterManager;
-import com.interdigital.android.samplemapdataapp.cluster.bucks.EventClusterRenderer;
+import com.interdigital.android.samplemapdataapp.cluster.northants.EventClusterItem;
+import com.interdigital.android.samplemapdataapp.cluster.northants.EventClusterManager;
+import com.interdigital.android.samplemapdataapp.cluster.northants.EventClusterRenderer;
 import com.interdigital.android.samplemapdataapp.layer.ClusterBaseLayer;
 
-import net.uk.onetransport.android.county.bucks.events.Event;
-import net.uk.onetransport.android.county.bucks.provider.BucksContentHelper;
+import net.uk.onetransport.android.county.northants.events.Event;
+import net.uk.onetransport.android.county.northants.provider.NorthantsContentHelper;
 
-public class BucksEvents extends ClusterBaseLayer<EventClusterItem> {
+public class NorthantsEvents extends ClusterBaseLayer<EventClusterItem> {
 
-    public BucksEvents(Context context, GoogleMap googleMap) {
+    public NorthantsEvents(Context context, GoogleMap googleMap) {
         super(context, googleMap);
     }
 
     @Override
     public void load() throws Exception {
-        Event[] events = BucksContentHelper.getLatestEvents(getContext());
+        Event[] events = NorthantsContentHelper.getLatestEvents(getContext());
         double[] coords = new double[events.length];
         int c = 0;
         for (int i = events.length - 1; i >= 0; i--) {
@@ -51,14 +51,19 @@ public class BucksEvents extends ClusterBaseLayer<EventClusterItem> {
                 }
             }
             if (c < MAX_ITEMS && !found) {
-                EventClusterItem eventClusterItem = new EventClusterItem(events[i]);
-                if (eventClusterItem.shouldAdd()) {
-                    getClusterItems().add(eventClusterItem);
-                    coords[c++] = coord;
+                if (isInDate(events[i].getStartOfPeriod())
+                        || isInDate(events[i].getEndOfPeriod())
+                        || isInDate(events[i].getOverallStartTime())
+                        || isInDate(events[i].getOverallEndTime())) {
+                    EventClusterItem eventClusterItem = new EventClusterItem(events[i]);
+                    if (eventClusterItem.shouldAdd()) {
+                        getClusterItems().add(eventClusterItem);
+                        coords[c++] = coord;
+                    }
                 }
             }
         }
-        Log.i("BucksEvents", "Found " + events.length
+        Log.i("NorthantsEvents", "Found " + events.length
                 + ", discarded " + (events.length - getClusterItems().size()));
     }
 

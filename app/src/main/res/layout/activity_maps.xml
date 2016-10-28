@@ -659,6 +659,33 @@ limitations under the License.
                 android:layout_height="48dp">
 
                 <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/northants_event_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:alpha="222"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:text="@string/events"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
                     android:id="@+id/northants_traffic_flow_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
