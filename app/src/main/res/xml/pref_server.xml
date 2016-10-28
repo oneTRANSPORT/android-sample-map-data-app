@@ -23,23 +23,23 @@ limitations under the License.
         android:key="pref_server_settings"
         android:title="Server settings">
 
-        <EditTextPreference
-            android:defaultValue="@string/pref_default_host_name"
-            android:inputType="textNoSuggestions"
-            android:key="pref_host_name"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="CSE host name or IP address"/>
+        <!--<EditTextPreference-->
+            <!--android:defaultValue="@string/pref_default_host_name"-->
+            <!--android:inputType="textNoSuggestions"-->
+            <!--android:key="pref_host_name"-->
+            <!--android:maxLines="1"-->
+            <!--android:selectAllOnFocus="true"-->
+            <!--android:singleLine="true"-->
+            <!--android:title="CSE host name or IP address"/>-->
 
-        <EditTextPreference
-            android:defaultValue="@string/pref_default_cse_name"
-            android:inputType="textNoSuggestions"
-            android:key="pref_cse_name"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="CSE name"/>
+        <!--<EditTextPreference-->
+            <!--android:defaultValue="@string/pref_default_cse_name"-->
+            <!--android:inputType="textNoSuggestions"-->
+            <!--android:key="pref_cse_name"-->
+            <!--android:maxLines="1"-->
+            <!--android:selectAllOnFocus="true"-->
+            <!--android:singleLine="true"-->
+            <!--android:title="CSE name"/>-->
 
         <EditTextPreference
             android:defaultValue="@string/pref_default_user_ae_name"
