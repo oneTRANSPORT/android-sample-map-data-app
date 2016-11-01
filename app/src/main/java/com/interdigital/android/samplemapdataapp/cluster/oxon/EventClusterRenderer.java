@@ -59,4 +59,9 @@ public class EventClusterRenderer extends BaseClusterRenderer<EventClusterItem> 
         ((TextView) view.findViewById(R.id.location_text_view)).setText(locationReference);
         return view;
     }
+
+    @Override
+    public float getInfoWindowAnchorY() {
+        return 0.2f;
+    }
 }

@@ -53,7 +53,12 @@ public class EventClusterRenderer extends BaseClusterRenderer<EventClusterItem> 
         String reason = eventClusterItem.getEvent().getDescription();
 
         ((TextView) view.findViewById(R.id.reason_text_view)).setText(reason);
-        ((TextView) view.findViewById(R.id.location_text_view)).setVisibility(View.GONE);
+        view.findViewById(R.id.location_text_view).setVisibility(View.GONE);
         return view;
+    }
+
+    @Override
+    public float getInfoWindowAnchorY() {
+        return 0.2f;
     }
 }

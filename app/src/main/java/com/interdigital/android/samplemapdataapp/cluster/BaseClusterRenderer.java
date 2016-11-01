@@ -45,7 +45,7 @@ public abstract class BaseClusterRenderer<T extends ClusterItem> extends Default
     @Override
     protected void onBeforeClusterItemRendered(T clusterItem, MarkerOptions markerOptions) {
         markerOptions.icon(BitmapDescriptorFactory.fromResource(getIconResource(clusterItem)))
-                .visible(visible).anchor(0.5f, getAnchorY());
+                .visible(visible).anchor(0.5f, getAnchorY()).infoWindowAnchor(0.5f, getInfoWindowAnchorY());
     }
 
     @Override
@@ -76,5 +76,9 @@ public abstract class BaseClusterRenderer<T extends ClusterItem> extends Default
 
     public float getAnchorY() {
         return 0.5f;
+    }
+
+    public float getInfoWindowAnchorY() {
+        return 0f;
     }
 }
